@@ -115,6 +115,32 @@ const quiz = [
     explain: "Queens has a pattern, but boulevards and older names can bend it.",
   },
   {
+    type: "match",
+    prompt: "Match each Queens landmark to its address.",
+    left: [
+      "Louis Armstrong House Museum",
+      "Citi Field",
+      "MoMA PS1",
+      "Museum of the Moving Image",
+      "New York Hall of Science",
+    ],
+    right: [
+      "22-25 Jackson Avenue",
+      "47-01 111th Street",
+      "34-56 107th Street",
+      "123-01 Roosevelt Avenue",
+      "36-01 35th Avenue",
+    ],
+    pairs: {
+      "Louis Armstrong House Museum": "34-56 107th Street",
+      "Citi Field": "123-01 Roosevelt Avenue",
+      "MoMA PS1": "22-25 Jackson Avenue",
+      "Museum of the Moving Image": "36-01 35th Avenue",
+      "New York Hall of Science": "47-01 111th Street",
+    },
+    explain: "Each Queens address reads as cross-street, then house number, then street name — which is enough to roughly place a building on the grid.",
+  },
+  {
     type: "input",
     prompt: "Which boro has the best address system?",
     answer: ["queens"],
