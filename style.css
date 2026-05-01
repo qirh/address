@@ -49,6 +49,25 @@ hr {
   margin: 1.5em 0;
 }
 
+table {
+  border-collapse: collapse;
+  margin: 1em 0;
+  font-size: 0.95em;
+}
+
+th,
+td {
+  padding: 0.4em 0.8em;
+  border: 1px solid #999;
+  text-align: left;
+  vertical-align: top;
+}
+
+th {
+  background: #f0f0f0;
+  font-weight: bold;
+}
+
 /* Header — text-only */
 .site-header {
   margin-bottom: 1em;
