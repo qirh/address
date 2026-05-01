@@ -344,6 +344,17 @@ button:active,
   border-color: #6c6;
 }
 
+/*
+ * Each pair gets one of 5 shared colors so the user can see at a
+ * glance which left token is paired with which right.
+ * data-pair-color is set on both tokens of a pair.
+ */
+.match-token[data-pair-color="1"] { background: #fff1b8; border-color: #d4a017; }
+.match-token[data-pair-color="2"] { background: #f9d6e0; border-color: #c44a72; }
+.match-token[data-pair-color="3"] { background: #cfe5ff; border-color: #2f62d6; }
+.match-token[data-pair-color="4"] { background: #d6f0d4; border-color: #2f8a3a; }
+.match-token[data-pair-color="5"] { background: #f0d6f5; border-color: #8a3aa0; }
+
 .feedback {
   margin: 0.5em 0;
   font-style: italic;

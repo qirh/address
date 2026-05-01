@@ -494,11 +494,37 @@ function renderMatch(card, question) {
   const leftColumn = card.querySelector("[data-left]");
   const rightColumn = card.querySelector("[data-right]");
   let activeLeft = null;
+  // Each pair gets a color slot 1..5; reused if a left is re-paired.
+  const colorByLeft = {};
+  let nextColorSlot = 1;
+
+  function leftToken(label) {
+    return leftColumn.querySelector(`[data-label="${CSS.escape(label)}"]`);
+  }
+  function rightToken(label) {
+    return rightColumn.querySelector(`[data-label="${CSS.escape(label)}"]`);
+  }
+  function clearTokenPairing(token) {
+    if (!token) return;
+    token.classList.remove("matched");
+    delete token.dataset.pairColor;
+  }
+  function resetMatchState() {
+    quizState.matchPairs = {};
+    activeLeft = null;
+    nextColorSlot = 1;
+    Object.keys(colorByLeft).forEach((k) => delete colorByLeft[k]);
+    card.querySelectorAll(".match-token").forEach((node) => {
+      node.classList.remove("matched", "selected");
+      delete node.dataset.pairColor;
+    });
+  }
 
   const commit = wireQuizActions(
     card,
     () => question.left.every((left) => quizState.matchPairs[left] === question.pairs[left]),
     question,
+    { onWrong: resetMatchState },
   );
 
   question.left.forEach((label) => {
@@ -515,14 +541,42 @@ function renderMatch(card, question) {
     const token = createMatchToken(label);
     token.addEventListener("click", () => {
       if (!activeLeft) return;
+
+      // If this LEFT was previously paired with a different right, unpair the old right.
+      const prevRight = quizState.matchPairs[activeLeft];
+      if (prevRight && prevRight !== label) {
+        clearTokenPairing(rightToken(prevRight));
+      }
+      // If this RIGHT was previously paired with a different left, unpair the old left.
+      const prevLeft = Object.keys(quizState.matchPairs).find(
+        (k) => quizState.matchPairs[k] === label,
+      );
+      if (prevLeft && prevLeft !== activeLeft) {
+        clearTokenPairing(leftToken(prevLeft));
+        delete quizState.matchPairs[prevLeft];
+        delete colorByLeft[prevLeft];
+      }
+
       quizState.matchPairs[activeLeft] = label;
+
+      // Reuse the color this left already had, or assign the next slot.
+      let color = colorByLeft[activeLeft];
+      if (!color) {
+        color = String(((nextColorSlot - 1) % 5) + 1);
+        colorByLeft[activeLeft] = color;
+        nextColorSlot++;
+      }
+
       token.classList.add("matched");
-      leftColumn.querySelectorAll(".match-token").forEach((node) => {
-        if (node.textContent === activeLeft) node.classList.add("matched");
-        node.classList.remove("selected");
-      });
+      token.dataset.pairColor = color;
+      const left = leftToken(activeLeft);
+      if (left) {
+        left.classList.add("matched");
+        left.dataset.pairColor = color;
+        left.classList.remove("selected");
+      }
+
       activeLeft = null;
-      // Auto-commit once every left item has a partner
       if (Object.keys(quizState.matchPairs).length === question.left.length) {
         commit();
       }
@@ -536,6 +590,7 @@ function createMatchToken(label) {
   token.type = "button";
   token.className = "match-token";
   token.textContent = label;
+  token.dataset.label = label;
   return token;
 }
 
@@ -587,7 +642,7 @@ function renderBreakdown(card, question) {
   });
 }
 
-function wireQuizActions(card, isCorrect, question) {
+function wireQuizActions(card, isCorrect, question, { onWrong } = {}) {
   const feedback = card.querySelector(".feedback");
   card.querySelector("[data-restart]")?.addEventListener("click", restartQuiz);
 
@@ -611,6 +666,7 @@ function wireQuizActions(card, isCorrect, question) {
           : fallback;
       feedback.textContent = msg;
       feedback.className = "feedback bad";
+      onWrong?.();
       return;
     }
 
