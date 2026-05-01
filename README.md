@@ -1,6 +1,10 @@
-# NYC Address Decoder
+# Address Quest
 
-A small static site for a Queens tour. It explains Manhattan and Queens address systems, includes interactive decoders, and finishes with an address quiz.
+A small static site for a Queens tour. It has three sections:
+
+- Manhattan address system
+- Queens address system
+- Quiz
 
 ## Run locally
 
@@ -20,9 +24,6 @@ This repo includes a GitHub Pages workflow in `.github/workflows/pages.yml`. Pus
 
 ## Sources
 
-- NYC Planning Geosupport User Programming Guide
-- CBS New York on Queens hyphenated addresses
+- Ephemeral New York on decoding Manhattan addresses
 - Steve Morse on the format of Queens streets
-- NYPL on the Commissioners' Plan of 1811
 - Manhattan address algorithm reference
-- Wikimedia Commons image sources linked in the page

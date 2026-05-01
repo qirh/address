@@ -10,6 +10,17 @@ function escapeHtml(value) {
   })[character]);
 }
 
+function ordinal(value) {
+  const n = Number(value);
+  if (!Number.isFinite(n)) return "";
+  const mod100 = n % 100;
+  if (mod100 >= 11 && mod100 <= 13) return "th";
+  if (n % 10 === 1) return "st";
+  if (n % 10 === 2) return "nd";
+  if (n % 10 === 3) return "rd";
+  return "th";
+}
+
 const avenueRules = {
   "1st Avenue": [{ min: 0, max: Infinity, divisor: 20, offset: 3 }],
   "2nd Avenue": [{ min: 0, max: Infinity, divisor: 20, offset: 3 }],
@@ -38,22 +49,34 @@ const avenueRules = {
 const quiz = [
   {
     type: "choice",
-    prompt: "In most of Manhattan above 8th Street, what divides East streets from West streets?",
-    options: ["Broadway", "Fifth Avenue", "Central Park West", "Park Avenue"],
-    answer: 1,
-    explain: "Fifth Avenue is the main east-west divider for numbered street addresses.",
+    prompt: "The old Manhattan card starts by doing what to the building number?",
+    options: [
+      "Drop the last digit",
+      "Add the ZIP code",
+      "Double the whole number",
+      "Subtract Fifth Avenue",
+    ],
+    answer: 0,
+    explain: "The shortcut drops the last digit, halves the remainder, then adds the avenue key.",
   },
   {
     type: "choice",
-    prompt: "In a Queens address like 31-19 37th Street, what does 31 usually help you find?",
+    prompt: "501 Fifth Avenue lands near which crosstown street?",
+    options: ["14th Street", "42nd to 43rd Street", "72nd Street", "125th Street"],
+    answer: 1,
+    explain: "501 on Fifth Avenue estimates to about 43rd Street, close to the real 42nd Street area.",
+  },
+  {
+    type: "choice",
+    prompt: "In 21-23 15th Avenue, what is the 21?",
     options: [
-      "The ZIP code",
-      "The subway line",
-      "A nearby cross street or grid line",
+      "The lower-numbered cross street",
       "The apartment number",
+      "The ZIP code",
+      "The avenue number",
     ],
-    answer: 2,
-    explain: "The prefix before the hyphen is the walking clue for the nearby cross street.",
+    answer: 0,
+    explain: "The first field is the lower-numbered cross street.",
   },
   {
     type: "breakdown",
@@ -63,51 +86,49 @@ const quiz = [
       { label: "12", answer: "house", choices: ["cross", "house", "street"] },
       { label: "47th Avenue", answer: "street", choices: ["cross", "house", "street"] },
     ],
-    explain: "43 is the nearby-grid clue, 12 is the building number on the block, and 47th Avenue is the street.",
-  },
-  {
-    type: "choice",
-    prompt: "Which is the best quick read of 22-28 36th Street in Queens?",
-    options: [
-      "A range from 22 to 28",
-      "One hyphenated house number",
-      "A ZIP code plus a house number",
-      "An apartment number",
-    ],
-    answer: 1,
-    explain: "In Queens, the hyphen is usually part of a single house number.",
+    explain: "43 is the cross-street field, 12 is the house number, and 47th Avenue is the street name.",
   },
   {
     type: "match",
-    prompt: "Match the address part to what it does.",
-    left: ["Prefix before hyphen", "Suffix after hyphen", "Street name"],
-    right: ["Building position on the block", "The road the building is on", "Nearby cross-street clue"],
+    prompt: "Match the Queens street family to the usual direction.",
+    left: ["Street / Place / Lane", "Avenue / Road / Drive / Terrace", "Boulevard"],
+    right: ["Major route or exception", "Usually north-south", "Usually east-west"],
     pairs: {
-      "Prefix before hyphen": "Nearby cross-street clue",
-      "Suffix after hyphen": "Building position on the block",
-      "Street name": "The road the building is on",
+      "Street / Place / Lane": "Usually north-south",
+      "Avenue / Road / Drive / Terrace": "Usually east-west",
+      "Boulevard": "Major route or exception",
     },
-    explain: "Queens addresses carry location clues in all three pieces.",
+    explain: "Queens has a pattern, but boulevards and older names can bend it.",
   },
   {
     type: "choice",
-    prompt: "Using the Manhattan avenue estimate, 501 Fifth Avenue lands around which area?",
-    options: ["14th Street", "42nd to 43rd Street", "72nd Street", "125th Street"],
-    answer: 1,
-    explain: "501 divided by 20 plus the Fifth Avenue offset gives about 43, close to the real 42nd Street area.",
+    prompt: "What usually happens to the house-number field after crossing the next numbered Street or Avenue?",
+    options: [
+      "It resets around 01",
+      "It turns into the ZIP code",
+      "It skips to 999",
+      "It becomes the neighborhood name",
+    ],
+    answer: 0,
+    explain: "The house-number field usually resets when the next numbered cross street is crossed.",
   },
   {
     type: "input",
-    prompt: "Type the borough that is famous for hyphenated house numbers.",
+    prompt: "Type the borough famous for this hyphenated address style.",
     answer: ["queens"],
-    explain: "Queens is the borough where hyphenated house numbers are the norm.",
+    explain: "Queens is the borough people associate with this hyphenated address format.",
   },
   {
     type: "choice",
-    prompt: "A tourist sees 52-03 Center Boulevard. What street is the building actually on?",
-    options: ["52nd Avenue", "3rd Street", "Center Boulevard", "Boulevard 52"],
-    answer: 2,
-    explain: "The street name after the house number is the road the building is on.",
+    prompt: "Which pair could be very close to each other in Queens?",
+    options: [
+      "15-23 156th Street and 156-23 15th Avenue",
+      "15-23 156th Street and 15-23 156th Avenue",
+      "501 Fifth Avenue and 43-12 47th Avenue",
+      "21-23 15th Avenue and 21-23 15th Street",
+    ],
+    answer: 0,
+    explain: "Swapping the cross-street field and street name can put two Queens addresses around the corner from each other.",
   },
 ];
 
@@ -119,51 +140,6 @@ const quizState = {
   matchPairs: {},
 };
 
-function decodeQueensAddress(raw) {
-  const cleaned = raw.trim().replace(/\s+/g, " ");
-  const match = cleaned.match(/^(\d{1,3})-(\d{1,3})\s+(.+)$/i);
-  if (!match) {
-    return {
-      ok: false,
-      html: "Try a hyphenated Queens-style address, like <strong>31-19 37th Street</strong>.",
-    };
-  }
-
-  const [, prefix, suffix, street] = match;
-  const safeStreet = escapeHtml(street);
-  const likelyCrossType = inferQueensCrossType(street);
-  return {
-    ok: true,
-    html: `
-      <strong>${prefix}</strong> is the walking clue, often pointing toward the ${prefix}${ordinal(prefix)} ${likelyCrossType}.
-      <br /><strong>${suffix}</strong> is the building's number on that block.
-      <br /><strong>${safeStreet}</strong> is the street the building is actually on.
-    `,
-  };
-}
-
-function inferQueensCrossType(street) {
-  const lower = street.toLowerCase();
-  if (lower.includes("street") || lower.includes("place") || lower.includes("lane")) {
-    return "Avenue/Road/Drive grid line";
-  }
-  if (lower.includes("avenue") || lower.includes("road") || lower.includes("drive")) {
-    return "Street/Place grid line";
-  }
-  return "nearby numbered grid line";
-}
-
-function ordinal(value) {
-  const n = Number(value);
-  if (!Number.isFinite(n)) return "";
-  const mod100 = n % 100;
-  if (mod100 >= 11 && mod100 <= 13) return "th";
-  if (n % 10 === 1) return "st";
-  if (n % 10 === 2) return "nd";
-  if (n % 10 === 3) return "rd";
-  return "th";
-}
-
 function estimateManhattanCrossStreet(buildingNumber, avenue) {
   const number = Number(buildingNumber);
   const rules = avenueRules[avenue];
@@ -174,37 +150,69 @@ function estimateManhattanCrossStreet(buildingNumber, avenue) {
   const rule = rules.find((item) => number >= item.min && number <= item.max) || rules[0];
   const estimate = Math.round(number / rule.divisor + rule.offset);
   return `
-    <strong>${buildingNumber} ${avenue}</strong> estimates to about
-    <strong>${estimate}${ordinal(estimate)} Street</strong>.
-    <br />Formula used: ${buildingNumber} / ${rule.divisor} ${rule.offset >= 0 ? "+" : "-"} ${Math.abs(rule.offset)}.
-    <br />Treat this as a quick wayfinding estimate, not a legal address lookup.
+    <strong>${escapeHtml(buildingNumber)} ${escapeHtml(avenue)}</strong><br>
+    Drop the last digit, divide by 2, then add the key number.
+    <br><strong>Estimated cross street: ${estimate}${ordinal(estimate)} Street.</strong>
   `;
 }
 
-function setupDecoders() {
-  const queensInput = $("#queens-address");
-  const queensResult = $("#queens-result");
-  const decodeQueens = () => {
-    queensResult.innerHTML = decodeQueensAddress(queensInput.value).html;
-  };
-  $("#decode-queens").addEventListener("click", decodeQueens);
-  queensInput.addEventListener("keydown", (event) => {
-    if (event.key === "Enter") decodeQueens();
-  });
+function inferQueensCrossFamily(street) {
+  const lower = street.toLowerCase();
+  if (/\b(street|st|place|pl|lane|ln)\b/.test(lower)) {
+    return "Avenue / Road / Drive / Terrace family";
+  }
+  if (/\b(avenue|ave|road|rd|drive|dr|terrace|ter)\b/.test(lower)) {
+    return "Street / Place / Lane family";
+  }
+  if (/\b(boulevard|blvd|parkway|expressway)\b/.test(lower)) {
+    return "major-route exception family";
+  }
+  return "nearby numbered grid family";
+}
 
-  const numberInput = $("#manhattan-number");
+function decodeQueensAddress(raw) {
+  const cleaned = raw.trim().replace(/\s+/g, " ");
+  const match = cleaned.match(/^(\d{1,3})-(\d{1,3})\s+(.+)$/i);
+  if (!match) {
+    return "Try the Queens format: <strong>43-12 47th Avenue</strong>.";
+  }
+
+  const [, cross, house, street] = match;
+  const safeStreet = escapeHtml(street);
+  return `
+    <strong>${cross}</strong> = lower-numbered cross street field
+    <br><strong>${house}</strong> = house number on the block
+    <br><strong>${safeStreet}</strong> = street name
+    <br><br>Since this is on <strong>${safeStreet}</strong>, the ${cross} clue likely belongs to the <strong>${inferQueensCrossFamily(street)}</strong>.
+  `;
+}
+
+function setupLabs() {
+  const manhattanInput = $("#manhattan-number");
   const avenueInput = $("#manhattan-avenue");
   const manhattanResult = $("#manhattan-result");
-  const decodeManhattan = () => {
-    manhattanResult.innerHTML = estimateManhattanCrossStreet(numberInput.value, avenueInput.value);
+  const runManhattan = () => {
+    manhattanResult.innerHTML = estimateManhattanCrossStreet(manhattanInput.value, avenueInput.value);
   };
-  $("#decode-manhattan").addEventListener("click", decodeManhattan);
-  numberInput.addEventListener("keydown", (event) => {
-    if (event.key === "Enter") decodeManhattan();
+
+  $("#decode-manhattan").addEventListener("click", runManhattan);
+  manhattanInput.addEventListener("keydown", (event) => {
+    if (event.key === "Enter") runManhattan();
   });
 
-  decodeQueens();
-  decodeManhattan();
+  const queensInput = $("#queens-address");
+  const queensResult = $("#queens-result");
+  const runQueens = () => {
+    queensResult.innerHTML = decodeQueensAddress(queensInput.value);
+  };
+
+  $("#decode-queens").addEventListener("click", runQueens);
+  queensInput.addEventListener("keydown", (event) => {
+    if (event.key === "Enter") runQueens();
+  });
+
+  runManhattan();
+  runQueens();
 }
 
 function renderQuiz() {
@@ -228,8 +236,8 @@ function renderChoice(card, question) {
     <div class="quiz-options"></div>
     <div class="feedback" aria-live="polite"></div>
     <div class="quiz-actions">
-      <button class="button secondary" type="button" data-restart>Restart</button>
-      <button class="button primary" type="button" data-next disabled>Next</button>
+      <button class="button" type="button" data-restart>Restart</button>
+      <button class="button" type="button" data-next disabled>Check</button>
     </div>
   `;
 
@@ -257,8 +265,8 @@ function renderInput(card, question) {
     <input class="quiz-input" autocomplete="off" />
     <div class="feedback" aria-live="polite"></div>
     <div class="quiz-actions">
-      <button class="button secondary" type="button" data-restart>Restart</button>
-      <button class="button primary" type="button" data-next>Check</button>
+      <button class="button" type="button" data-restart>Restart</button>
+      <button class="button" type="button" data-next>Check</button>
     </div>
   `;
   const input = card.querySelector(".quiz-input");
@@ -276,15 +284,15 @@ function renderInput(card, question) {
 function renderMatch(card, question) {
   card.innerHTML = `
     <h3>${question.prompt}</h3>
-    <p>Tap one item on the left, then its meaning on the right.</p>
+    <p>Tap one item on the left, then its match on the right.</p>
     <div class="match-board">
       <div class="match-column" data-left></div>
       <div class="match-column" data-right></div>
     </div>
     <div class="feedback" aria-live="polite"></div>
     <div class="quiz-actions">
-      <button class="button secondary" type="button" data-restart>Restart</button>
-      <button class="button primary" type="button" data-next disabled>Next</button>
+      <button class="button" type="button" data-restart>Restart</button>
+      <button class="button" type="button" data-next disabled>Check</button>
     </div>
   `;
 
@@ -340,8 +348,8 @@ function renderBreakdown(card, question) {
     <div class="breakdown-grid"></div>
     <div class="feedback" aria-live="polite"></div>
     <div class="quiz-actions">
-      <button class="button secondary" type="button" data-restart>Restart</button>
-      <button class="button primary" type="button" data-next>Check</button>
+      <button class="button" type="button" data-restart>Restart</button>
+      <button class="button" type="button" data-next>Check</button>
     </div>
   `;
 
@@ -357,8 +365,8 @@ function renderBreakdown(card, question) {
     part.choices.forEach((choice) => {
       const option = document.createElement("option");
       option.value = choice;
-      option.textContent = choice === "cross" ? "cross-street clue" :
-        choice === "house" ? "building number" : "street name";
+      option.textContent = choice === "cross" ? "cross-street field" :
+        choice === "house" ? "house number" : "street name";
       select.appendChild(option);
     });
     row.appendChild(label);
@@ -407,15 +415,15 @@ function renderResults() {
   $("#quiz-count").textContent = "Complete";
   $("#quiz-score").textContent = `${quizState.score} / ${quiz.length}`;
   const title = quizState.score >= 7
-    ? "Queens Grid Guide"
+    ? "Queens Address Legend"
     : quizState.score >= 5
-      ? "Street-Sign Ready"
-      : "Needs One More Walk Around the Block";
+      ? "Grid Reader"
+      : "Needs Another Walk Around the Block";
   $("#quiz-card").innerHTML = `
     <h3>${title}</h3>
     <p>You scored <strong>${quizState.score} out of ${quiz.length}</strong>.</p>
-    <p>Tour tip: when you see a Queens hyphen, split it first. When you see a Manhattan street address, ask where Fifth Avenue is.</p>
-    <button class="button primary" type="button" data-restart>Play again</button>
+    <p>Tour move: split the Queens hyphen first, then read the street type.</p>
+    <button class="button" type="button" data-restart>Play again</button>
   `;
   $("#quiz-card [data-restart]").addEventListener("click", restartQuiz);
 }
@@ -426,5 +434,5 @@ function restartQuiz() {
   renderQuiz();
 }
 
-setupDecoders();
+setupLabs();
 renderQuiz();

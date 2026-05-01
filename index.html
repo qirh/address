@@ -5,250 +5,206 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta
       name="description"
-      content="A tour-friendly Manhattan and Queens address explainer with interactive decoding games."
+      content="A simple Queens tour address game explaining Manhattan and Queens address systems."
     />
-    <title>NYC Address Decoder</title>
+    <title>Address Quest</title>
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
     <header class="site-header">
-      <a class="brand" href="#top" aria-label="NYC Address Decoder home">
-        <span class="brand-mark">NYC</span>
-        <span>Address Decoder</span>
+      <a class="brand" href="#manhattan" aria-label="Address Quest home">
+        <span class="brand-mark">AQ</span>
+        <span>Address Quest</span>
       </a>
       <nav class="top-nav" aria-label="Primary navigation">
         <a href="#manhattan">Manhattan</a>
         <a href="#queens">Queens</a>
-        <a href="#practice">Practice</a>
         <a href="#quiz">Quiz</a>
       </nav>
     </header>
 
-    <main id="top">
-      <section class="hero">
-        <div class="hero-copy">
-          <p class="eyebrow">A Queens tour warm-up</p>
-          <h1>Read the city before you cross the street.</h1>
-          <p>
-            Manhattan teaches you the grid. Queens teaches you the code hidden
-            in the hyphen. Learn both, then test yourself like a street-smart
-            scavenger hunt.
-          </p>
-          <div class="hero-actions">
-            <a class="button primary" href="#practice">Try a decoder</a>
-            <a class="button secondary" href="#quiz">Start quiz</a>
-          </div>
-        </div>
-        <figure class="hero-visual">
-          <img
-            src="https://commons.wikimedia.org/wiki/Special:FilePath/NYC-GRID-1811.png"
-            alt="Historic Manhattan street grid map from the Commissioners' Plan"
-          />
-          <figcaption>Manhattan's famous grid started as a planning tool.</figcaption>
-        </figure>
-      </section>
-
-      <section class="lesson-band" id="manhattan">
-        <div class="section-heading">
-          <p class="eyebrow">Part 1</p>
-          <h2>How Manhattan addresses work</h2>
-          <p>
-            Manhattan is easiest above Houston Street: streets mostly run
-            crosstown, avenues mostly run uptown and downtown, and Fifth Avenue
-            is the address divider for east and west streets.
-          </p>
-        </div>
-
-        <div class="split-layout">
-          <div class="lesson-copy">
-            <h3>The mental model</h3>
-            <ul class="rule-list">
-              <li>
-                Numbered streets climb as you go north: 14th, 23rd, 34th,
-                42nd, 59th, and so on.
-              </li>
-              <li>
-                Fifth Avenue divides most numbered streets into East and West.
-                Smaller street-address numbers are closer to Fifth Avenue.
-              </li>
-              <li>
-                On many crosstown blocks, the first hundred addresses are the
-                first block away from Fifth Avenue, the next hundred is the next
-                block, and so on.
-              </li>
-              <li>
-                For avenue addresses, New Yorkers use a rough calculator:
-                building number divided by 20, plus a street-specific offset.
-              </li>
-            </ul>
-          </div>
-
-          <figure class="photo-panel">
-            <img
-              src="https://commons.wikimedia.org/wiki/Special:FilePath/Street%20sign%20at%20corner%20of%20Fifth%20Avenue%20and%20E%2057th%20Street%20in%20NYC.jpg"
-              alt="Fifth Avenue and East 57th Street street signs in Manhattan"
-            />
-            <figcaption>Fifth Avenue is the east-west switch on many Manhattan street signs.</figcaption>
-          </figure>
-        </div>
-
-        <div class="example-grid">
-          <article class="example-card">
-            <h3>129 W 81st St</h3>
-            <p>
-              West means west of Fifth Avenue. The 100 block is roughly the
-              second avenue block west of Fifth, so you should think around
-              Columbus or Amsterdam depending on the neighborhood layout.
+    <main>
+      <section class="chapter manhattan-section" id="manhattan">
+        <div class="chapter-grid">
+          <div class="chapter-copy">
+            <p class="eyebrow">1. Manhattan Address System</p>
+            <h1>Manhattan is a pocket math trick.</h1>
+            <p class="lede">
+              Before everyone had maps in their pocket, New Yorkers used little
+              street-finder cards to estimate the nearest crosstown street for
+              an avenue address.
             </p>
-          </article>
-          <article class="example-card">
-            <h3>501 Fifth Ave</h3>
-            <p>
-              The avenue-address trick estimates this near 43rd Street. In real
-              life it sits around 42nd Street, which is why this rule is a guide,
-              not GPS.
-            </p>
-          </article>
-          <article class="example-card">
-            <h3>10 E 14th St</h3>
-            <p>
-              East means east of Fifth Avenue. A small number like 10 means you
-              are very close to the divider.
-            </p>
-          </article>
-        </div>
-      </section>
 
-      <section class="lesson-band queens-band" id="queens">
-        <div class="section-heading">
-          <p class="eyebrow">Part 2</p>
-          <h2>How Queens addresses work</h2>
-          <p>
-            Queens uses a hyphenated house-number system on most streets. Once
-            you learn the split, an address can give you a walking clue before
-            you even open a map.
-          </p>
-        </div>
-
-        <div class="split-layout reverse">
-          <figure class="photo-panel">
-            <img
-              src="https://commons.wikimedia.org/wiki/Special:FilePath/Jackson_Avenue_Street_Sign.jpg"
-              alt="Jackson Avenue street sign in Long Island City"
-            />
-            <figcaption>Queens mixes old place names with numbered streets, avenues, roads, drives, and boulevards.</figcaption>
-          </figure>
-
-          <div class="lesson-copy">
-            <h3>The hyphen is the clue</h3>
-            <div class="address-chip large" aria-label="Queens address example">
-              <span class="prefix">31</span><span class="dash">-</span><span class="suffix">19</span>
-              <span class="street-name">37th Street</span>
+            <div class="rule-stack">
+              <article class="rule-card">
+                <span class="rule-number">A</span>
+                <h2>Fifth Avenue splits east from west</h2>
+                <p>
+                  Numbered streets use East or West based on which side of Fifth
+                  Avenue they are on. Smaller numbers are usually closer to the
+                  divider.
+                </p>
+              </article>
+              <article class="rule-card">
+                <span class="rule-number">B</span>
+                <h2>Street numbers climb north</h2>
+                <p>
+                  14th Street is below 23rd, 23rd is below 34th, and the grid
+                  keeps marching uptown.
+                </p>
+              </article>
+              <article class="rule-card">
+                <span class="rule-number">C</span>
+                <h2>Avenue addresses use a formula</h2>
+                <p>
+                  The old card trick is: drop the last digit, halve what is
+                  left, then add the avenue's key number. It is an estimate, not
+                  GPS.
+                </p>
+              </article>
             </div>
-            <ul class="rule-list">
-              <li>
-                The number before the hyphen is a practical wayfinding clue for
-                the nearest numbered cross street or grid line.
-              </li>
-              <li>
-                The number after the hyphen is the building's position on that
-                block.
-              </li>
-              <li>
-                The street name after the house number is the street the
-                building is actually on.
-              </li>
-              <li>
-                The borough has exceptions because older towns and villages were
-                knitted into one Queens map.
-              </li>
-              <li>
-                Official systems still treat the hyphenated value as one house
-                number, so use the split as a navigation shortcut rather than a
-                legal-address rule.
-              </li>
-            </ul>
           </div>
+
+          <aside class="visual-column">
+            <figure class="source-photo old-card">
+              <img
+                src="https://ephemeralnewyork.wordpress.com/wp-content/uploads/2019/05/streetaddressguide.jpeg?h=736&w=450"
+                alt="Vintage Manhattan street address guide card with formulas for finding cross streets"
+              />
+              <figcaption>
+                A vintage Manhattan street-finder card, shared by Ephemeral New
+                York.
+              </figcaption>
+            </figure>
+          </aside>
         </div>
 
-        <div class="example-grid">
-          <article class="example-card">
-            <h3>31-19 37th Street</h3>
+        <div class="play-panel manhattan-lab" aria-labelledby="manhattan-lab-title">
+          <div>
+            <p class="eyebrow">Try it</p>
+            <h2 id="manhattan-lab-title">Find the nearest street</h2>
             <p>
-              "31" is the nearby-grid clue. "19" is the house number on the
-              block. "37th Street" is the street you are on.
+              Use the old-school Manhattan shortcut. The result gets you close
+              enough to sound like you know where you are going.
             </p>
-          </article>
-          <article class="example-card">
-            <h3>43-12 47th Avenue</h3>
-            <p>
-              The prefix "43" is the nearby-grid clue. The building sits on
-              47th Avenue, not on 43rd Street.
-            </p>
-          </article>
-          <article class="example-card">
-            <h3>22-28 36th Street</h3>
-            <p>
-              In Queens, this is one hyphenated house number. It is not the same
-              as a Manhattan-style range like 22-28 Reade Street.
-            </p>
-          </article>
+          </div>
+          <div class="lab-controls">
+            <label for="manhattan-number">Building number</label>
+            <input id="manhattan-number" inputmode="numeric" value="501" />
+
+            <label for="manhattan-avenue">Avenue</label>
+            <select id="manhattan-avenue">
+              <option value="1st Avenue">1st Avenue</option>
+              <option value="2nd Avenue">2nd Avenue</option>
+              <option value="3rd Avenue">3rd Avenue</option>
+              <option value="5th Avenue" selected>5th Avenue</option>
+              <option value="6th Avenue">6th Avenue</option>
+              <option value="7th Avenue">7th Avenue</option>
+              <option value="8th Avenue">8th Avenue</option>
+              <option value="Lexington Avenue">Lexington Avenue</option>
+              <option value="Madison Avenue">Madison Avenue</option>
+              <option value="Park Avenue">Park Avenue</option>
+            </select>
+
+            <button class="button" id="decode-manhattan" type="button">Estimate</button>
+          </div>
+          <output class="result-box" id="manhattan-result" aria-live="polite"></output>
         </div>
       </section>
 
-      <section class="practice-band" id="practice">
-        <div class="section-heading">
-          <p class="eyebrow">Practice</p>
-          <h2>Decode an address</h2>
-          <p>
-            Try the two systems side by side. These are teaching tools, so the
-            output is intentionally plain and approximate.
-          </p>
+      <section class="chapter queens-section" id="queens">
+        <div class="chapter-grid reverse">
+          <div class="chapter-copy">
+            <p class="eyebrow">2. Queens Address System</p>
+            <h1>Queens hides a map inside the hyphen.</h1>
+            <p class="lede">
+              Queens looks chaotic until the address breaks open. The first
+              number points to the lower-numbered cross street, the second
+              number is the building's spot on the block, and the street name is
+              where the building actually sits.
+            </p>
+
+            <div class="queens-address" aria-label="Example Queens address breakdown">
+              <span>
+                <strong>43</strong>
+                <small>cross street</small>
+              </span>
+              <b>-</b>
+              <span>
+                <strong>12</strong>
+                <small>house number</small>
+              </span>
+              <span class="street-piece">
+                <strong>47th Avenue</strong>
+                <small>street name</small>
+              </span>
+            </div>
+
+            <div class="rule-stack compact">
+              <article class="rule-card">
+                <span class="rule-number">1</span>
+                <h2>Streets, Places, and Lanes</h2>
+                <p>
+                  These usually run north-south and increase as you move east.
+                </p>
+              </article>
+              <article class="rule-card">
+                <span class="rule-number">2</span>
+                <h2>Avenues, Roads, Drives, and Terraces</h2>
+                <p>
+                  These usually run east-west and increase as you move south.
+                </p>
+              </article>
+              <article class="rule-card">
+                <span class="rule-number">3</span>
+                <h2>Boulevards and old names are wild cards</h2>
+                <p>
+                  Queens absorbed older communities, so named roads and big
+                  boulevards can bend the rules.
+                </p>
+              </article>
+            </div>
+          </div>
+
+          <aside class="visual-column">
+            <figure class="source-photo queens-diagram">
+              <img
+                src="https://stevemorse.org/census/changes/QueensFormat.jpg"
+                alt="Diagram showing Queens street, place, lane, avenue, road, drive, and terrace ordering"
+              />
+              <figcaption>
+                Queens street-type ordering diagram from Steve Morse's Queens
+                format guide.
+              </figcaption>
+            </figure>
+          </aside>
         </div>
 
-        <div class="tool-grid">
-          <section class="tool-panel" aria-labelledby="queens-tool-title">
-            <h3 id="queens-tool-title">Queens hyphen decoder</h3>
+        <div class="play-panel queens-lab" aria-labelledby="queens-lab-title">
+          <div>
+            <p class="eyebrow">Try it</p>
+            <h2 id="queens-lab-title">Split a Queens address</h2>
+            <p>
+              Put in a hyphenated Queens address and the decoder will label the
+              pieces like a tour guide would.
+            </p>
+          </div>
+          <div class="lab-controls">
             <label for="queens-address">Queens address</label>
-            <input id="queens-address" value="31-19 37th Street" autocomplete="off" />
-            <button class="button primary" id="decode-queens" type="button">Decode Queens</button>
-            <div class="result-box" id="queens-result" aria-live="polite"></div>
-          </section>
-
-          <section class="tool-panel" aria-labelledby="manhattan-tool-title">
-            <h3 id="manhattan-tool-title">Manhattan avenue estimator</h3>
-            <div class="field-row">
-              <label for="manhattan-number">Building number</label>
-              <input id="manhattan-number" inputmode="numeric" value="501" />
-            </div>
-            <div class="field-row">
-              <label for="manhattan-avenue">Avenue</label>
-              <select id="manhattan-avenue">
-                <option value="1st Avenue">1st Avenue</option>
-                <option value="2nd Avenue">2nd Avenue</option>
-                <option value="3rd Avenue">3rd Avenue</option>
-                <option value="5th Avenue" selected>5th Avenue</option>
-                <option value="6th Avenue">6th Avenue</option>
-                <option value="7th Avenue">7th Avenue</option>
-                <option value="8th Avenue">8th Avenue</option>
-                <option value="Lexington Avenue">Lexington Avenue</option>
-                <option value="Madison Avenue">Madison Avenue</option>
-                <option value="Park Avenue">Park Avenue</option>
-              </select>
-            </div>
-            <button class="button primary" id="decode-manhattan" type="button">Estimate Manhattan</button>
-            <div class="result-box" id="manhattan-result" aria-live="polite"></div>
-          </section>
+            <input id="queens-address" value="43-12 47th Avenue" autocomplete="off" />
+            <button class="button" id="decode-queens" type="button">Decode</button>
+          </div>
+          <output class="result-box" id="queens-result" aria-live="polite"></output>
         </div>
       </section>
 
-      <section class="quiz-band" id="quiz">
-        <div class="section-heading">
-          <p class="eyebrow">Game</p>
-          <h2>Address Quest</h2>
-          <p>
-            Eight quick rounds. Read the signs, split the hyphens, and prove you
-            can navigate Queens with Manhattan in your back pocket.
+      <section class="chapter quiz-section" id="quiz">
+        <div class="quiz-intro">
+          <p class="eyebrow">3. Quiz</p>
+          <h1>Can you read the borough?</h1>
+          <p class="lede">
+            A short address game for the tour. Some questions are quick taps,
+            some make you break an address into pieces.
           </p>
         </div>
 
@@ -260,29 +216,14 @@
           <div id="quiz-card" class="quiz-card" aria-live="polite"></div>
         </div>
       </section>
-
-      <section class="sources-band" id="sources">
-        <div class="section-heading">
-          <p class="eyebrow">Sources</p>
-          <h2>Where the rules come from</h2>
-          <p>
-            The lesson is simplified for tour use. Exact address validation is
-            a city data problem, but these sources explain the patterns.
-          </p>
-        </div>
-        <ul class="source-list">
-          <li><a href="https://nycplanning.github.io/Geosupport-UPG/chapters/chapterV/section02/">NYC Planning Geosupport User Programming Guide</a></li>
-          <li><a href="https://www.nyc.gov/assets/planning/download/pdf/data-maps/open-data/upg.pdf?r=17b">NYC Planning Geosupport PDF</a></li>
-          <li><a href="https://www.cbsnews.com/newyork/news/queens-mailing-address-hyphens/">CBS New York on Queens hyphenated addresses</a></li>
-          <li><a href="https://stevemorse.org/census/changes/QueensFormat.htm">Steve Morse: Format of Queens Streets</a></li>
-          <li><a href="https://www.nypl.org/blog/2010/07/30/designing-city-new-york-commissioners-plan-1811">NYPL on the Commissioners' Plan of 1811</a></li>
-          <li><a href="https://en.wikipedia.org/wiki/Manhattan_address_algorithm">Manhattan address algorithm reference</a></li>
-          <li><a href="https://commons.wikimedia.org/wiki/File:NYC-GRID-1811.png">Wikimedia Commons: 1811 grid image</a></li>
-          <li><a href="https://commons.wikimedia.org/wiki/File:Street_sign_at_corner_of_Fifth_Avenue_and_E_57th_Street_in_NYC.jpg">Wikimedia Commons: Fifth Avenue street sign</a></li>
-          <li><a href="https://commons.wikimedia.org/wiki/File:Jackson_Avenue_Street_Sign.jpg">Wikimedia Commons: Jackson Avenue street sign</a></li>
-        </ul>
-      </section>
     </main>
+
+    <footer class="site-footer">
+      <span>Sources:</span>
+      <a href="https://ephemeralnewyork.wordpress.com/2019/05/20/this-is-how-to-decode-any-manhattan-address/">Ephemeral New York</a>
+      <a href="https://stevemorse.org/census/changes/QueensFormat.htm">Steve Morse Queens guide</a>
+      <a href="https://en.wikipedia.org/wiki/Manhattan_address_algorithm">Manhattan address algorithm</a>
+    </footer>
 
     <script src="script.js"></script>
   </body>
