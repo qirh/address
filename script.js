@@ -137,30 +137,28 @@ const quiz = [
     explain: "Queens has a pattern, but boulevards and older names can bend it.",
   },
   {
-    type: "match",
-    prompt: "Match each Queens landmark to its address.",
-    left: [
-      "Louis Armstrong House Museum",
-      "Citi Field",
-      "MoMA PS1",
-      "Museum of the Moving Image",
-      "New York Hall of Science",
+    type: "breakdown",
+    prompt:
+      "Louis Armstrong House Museum is at 34-56 107th Street. The building sits on a single street; it is between two cross streets. Tag each field.",
+    parts: [
+      { label: "34", answer: "cross", choices: ["cross", "house", "street"] },
+      { label: "56", answer: "house", choices: ["cross", "house", "street"] },
+      { label: "107th Street", answer: "street", choices: ["cross", "house", "street"] },
     ],
-    right: [
-      "22-25 Jackson Avenue",
-      "47-01 111th Street",
-      "34-56 107th Street",
-      "123-01 Roosevelt Avenue",
-      "36-01 35th Avenue",
+    explain:
+      "Louis Armstrong's house is on 107th Street, between 34th and 35th Avenues. 34 is the cross-street field, 56 is the house number, 107th Street is the street it sits on.",
+  },
+  {
+    type: "breakdown",
+    prompt:
+      "Citi Field is at 123-01 Roosevelt Avenue. Tag each field.",
+    parts: [
+      { label: "123", answer: "cross", choices: ["cross", "house", "street"] },
+      { label: "01", answer: "house", choices: ["cross", "house", "street"] },
+      { label: "Roosevelt Avenue", answer: "street", choices: ["cross", "house", "street"] },
     ],
-    pairs: {
-      "Louis Armstrong House Museum": "34-56 107th Street",
-      "Citi Field": "123-01 Roosevelt Avenue",
-      "MoMA PS1": "22-25 Jackson Avenue",
-      "Museum of the Moving Image": "36-01 35th Avenue",
-      "New York Hall of Science": "47-01 111th Street",
-    },
-    explain: "Each Queens address reads as cross-street, then house number, then street name — which is enough to roughly place a building on the grid.",
+    explain:
+      "Citi Field sits on Roosevelt Avenue, between 123rd and 124th Streets. 123 is the cross-street field, 01 is the house number, Roosevelt Avenue is the street.",
   },
   {
     type: "input",
