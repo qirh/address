@@ -6,6 +6,12 @@ A small static site for a Queens tour. It has three sections:
 - Queens address system
 - Quiz
 
+## Live site
+
+```text
+https://qirh.github.io/address/
+```
+
 ## Run locally
 
 ```sh
