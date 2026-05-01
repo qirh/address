@@ -21,6 +21,28 @@ function ordinal(value) {
   return "th";
 }
 
+function playTrainSlap({ big = false } = {}) {
+  if (
+    typeof window === "undefined" ||
+    (window.matchMedia &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches)
+  ) {
+    return;
+  }
+  const overlay = document.createElement("div");
+  overlay.className = big ? "train-slap train-slap-big" : "train-slap";
+  overlay.setAttribute("aria-hidden", "true");
+  overlay.innerHTML = `
+    <div class="train-7">
+      <span class="train-bullet">7</span>
+      <span class="train-body" aria-hidden="true"></span>
+    </div>
+    <div class="train-kablam">KABLAM</div>
+  `;
+  document.body.appendChild(overlay);
+  setTimeout(() => overlay.remove(), big ? 2000 : 1200);
+}
+
 const avenueRules = {
   "Avenue A": [{ min: 0, max: Infinity, divisor: 20, offset: 3 }],
   "Avenue B": [{ min: 0, max: Infinity, divisor: 20, offset: 3 }],
@@ -568,6 +590,7 @@ function wireQuizActions(card, isCorrect, question) {
         quizState.score += 1;
         feedback.textContent = question.explain;
         feedback.className = "feedback good";
+        playTrainSlap({ big: question.type === "letters" });
       } else {
         feedback.textContent = `Not quite. ${question.explain}`;
         feedback.className = "feedback bad";

@@ -439,3 +439,139 @@ button:active,
 .site-footer a {
   margin-right: 0.5em;
 }
+
+/* ---------- 7-train KABLAM slap ---------- */
+.train-slap {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9999;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.train-7 {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  gap: 0;
+  transform: translateX(120vw);
+  animation: train-sweep 1.2s cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
+  filter: drop-shadow(0 6px 14px rgba(0, 0, 0, 0.35));
+}
+
+.train-bullet {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  background: #b933ad;
+  color: #fff;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 64px;
+  font-weight: 900;
+  letter-spacing: -2px;
+  border: 4px solid #fff;
+  box-shadow: 0 0 0 4px #b933ad;
+  flex-shrink: 0;
+}
+
+.train-body {
+  display: inline-block;
+  width: 280px;
+  height: 64px;
+  margin-left: 6px;
+  background:
+    repeating-linear-gradient(
+      90deg,
+      transparent 0,
+      transparent 36px,
+      rgba(255, 255, 255, 0.3) 36px,
+      rgba(255, 255, 255, 0.3) 64px
+    ),
+    linear-gradient(180deg, #c83bbc 0%, #a02a96 100%);
+  border-radius: 6px;
+  border: 3px solid #6b1c63;
+}
+
+@keyframes train-sweep {
+  0%   { transform: translateX(120vw) skewX(-8deg); opacity: 0.95; }
+  45%  { transform: translateX(0)     skewX(-6deg); opacity: 1; }
+  100% { transform: translateX(-130vw) skewX(-8deg); opacity: 0; }
+}
+
+.train-kablam {
+  position: absolute;
+  font-family: "Impact", "Helvetica Neue", Arial, sans-serif;
+  font-size: 96px;
+  font-weight: 900;
+  color: #ffd84d;
+  letter-spacing: 0.04em;
+  text-shadow:
+    -3px -3px 0 #000,
+     3px -3px 0 #000,
+    -3px  3px 0 #000,
+     3px  3px 0 #000,
+     0 8px 0 #b933ad;
+  transform: scale(0) rotate(-30deg);
+  opacity: 0;
+  animation: kablam-pop 0.85s cubic-bezier(0.34, 1.56, 0.64, 1) 0.35s forwards;
+}
+
+@keyframes kablam-pop {
+  0%   { transform: scale(0) rotate(-30deg); opacity: 0; }
+  35%  { transform: scale(1.25) rotate(8deg); opacity: 1; }
+  60%  { transform: scale(1) rotate(-3deg); }
+  100% { transform: scale(1.6) rotate(0); opacity: 0; }
+}
+
+/* Big variant — fired only on the QUEENS letters question */
+.train-slap-big .train-bullet {
+  width: 280px;
+  height: 280px;
+  font-size: 200px;
+  border-width: 12px;
+  box-shadow: 0 0 0 12px #b933ad;
+}
+
+.train-slap-big .train-body {
+  width: 70vw;
+  height: 200px;
+  margin-left: 14px;
+  border-width: 8px;
+  background:
+    repeating-linear-gradient(
+      90deg,
+      transparent 0,
+      transparent 100px,
+      rgba(255, 255, 255, 0.3) 100px,
+      rgba(255, 255, 255, 0.3) 180px
+    ),
+    linear-gradient(180deg, #c83bbc 0%, #a02a96 100%);
+}
+
+.train-slap-big .train-7 {
+  animation-duration: 1.6s;
+}
+
+.train-slap-big .train-kablam {
+  font-size: 200px;
+  text-shadow:
+    -6px -6px 0 #000,
+     6px -6px 0 #000,
+    -6px  6px 0 #000,
+     6px  6px 0 #000,
+     0 14px 0 #b933ad;
+  animation-duration: 1.2s;
+  animation-delay: 0.5s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .train-slap {
+    display: none;
+  }
+}
