@@ -560,9 +560,9 @@ function wireQuizActions(card, isCorrect, question) {
 function renderResults() {
   $("#quiz-count").textContent = "Complete";
   $("#quiz-score").textContent = `${quizState.score} / ${quiz.length}`;
-  const title = quizState.score >= 7
+  const title = quizState.score === quiz.length
     ? "Queens Address Legend"
-    : quizState.score >= 5
+    : quizState.score / quiz.length >= 0.5
       ? "Grid Reader"
       : "Needs Another Walk Around the Block";
   $("#quiz-card").innerHTML = `
