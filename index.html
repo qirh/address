@@ -187,41 +187,91 @@
                     </div>
                 </div>
 
-                ----
-
                 <h2>Avenue addresses</h2>
+                <p>
+                    Avenues are long. Instead of a fixed building-number
+                    range per block, the address itself tells you which
+                    cross street you're near — but you have to do a tiny
+                    bit of math. Let's take
+                    <strong>523 Third Avenue</strong>:
+                </p>
+                <ol>
+                    <li>
+                        Drop the last digit:
+                        <strong>523 → 52</strong>
+                    </li>
+                    <li>
+                        Divide by two:
+                        <strong>52 ÷ 2 = 26</strong>
+                    </li>
+                    <li>
+                        Add Third Avenue's magic number,
+                        <strong>+10</strong>:
+                        <strong>26 + 10 = 36</strong>
+                    </li>
+                </ol>
+                <p>
+                    So 523 Third Avenue is near
+                    <strong>36th Street</strong>.
+                </p>
 
+                <h3>Magic numbers</h3>
+                <p>
+                    Every avenue has its own number to add or subtract
+                    at the end. The sheet below has the full list, plus
+                    the special-case ranges for 5th Avenue, 7th Avenue,
+                    and Broadway.
+                </p>
+                <figure class="source-photo">
+                    <img
+                        src="assets/manhattan-formula.svg"
+                        alt="Formula sheet listing the magic number for each Manhattan avenue, plus special cases for 5th Avenue, 7th Avenue, and Broadway"
+                    />
+                    <figcaption>
+                        Magic numbers for every Manhattan avenue.
+                    </figcaption>
+                </figure>
+
+                <h3>More worked examples</h3>
                 <div class="examples-panel">
                     <p class="eyebrow">Examples</p>
                     <div class="example-grid">
                         <article>
-                            <h2>1 E 22nd street</h2>
+                            <h2>200 Madison Ave</h2>
                             <p>
-                                Drop 3 -> 52. Divide by 2 -> 26. Add Third Ave's
-                                10. Result: near <strong>36th St</strong>.
+                                Drop the 0 → 20. Divide by 2 → 10. Add
+                                Madison's <strong>+27</strong>: 10 + 27 =
+                                <strong>37</strong>. So 200 Madison Ave
+                                is near 37th St.
                             </p>
                         </article>
                         <article>
-                            <h2>501 Fifth Ave</h2>
+                            <h2>800 Park Ave</h2>
                             <p>
-                                Drop 1 -> 50. Divide by 2 -> 25. Fifth Ave in
-                                this range adds 18. Result: about
-                                <strong>43rd St</strong>.
+                                Drop the 0 → 80. Divide by 2 → 40. Add
+                                Park's <strong>+34</strong>: 40 + 34 =
+                                <strong>74</strong>. So 800 Park Ave
+                                is near 74th St.
                             </p>
                         </article>
                         <article>
-                            <h2>78 Riverside Dr</h2>
+                            <h2>1000 6th Ave</h2>
                             <p>
-                                Special case: drop 8 -> 7, then add 72. Result:
-                                about <strong>79th St</strong>.
+                                Drop the 0 → 100. Divide by 2 → 50. 6th
+                                Ave <strong>subtracts 12</strong>:
+                                50 − 12 = <strong>38</strong>. So 1000
+                                6th Ave is near 38th St.
                             </p>
                         </article>
                         <article>
-                            <h2>129 W 81st St</h2>
+                            <h2>500 5th Ave</h2>
                             <p>
-                                This is already a numbered street address. West
-                                means west of Fifth Avenue; 81st tells you the
-                                cross street.
+                                5th Ave is a special case — its magic
+                                number depends on the range. For
+                                401–600, add <strong>+18</strong>. Drop
+                                the 0 → 50. Divide by 2 → 25. Add 18 =
+                                <strong>43</strong>. So 500 5th Ave is
+                                near 43rd St.
                             </p>
                         </article>
                     </div>
