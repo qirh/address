@@ -681,12 +681,25 @@ function wireQuizActions(card, isCorrect, question, { onWrong } = {}) {
     playTrainSlap({ big: question.type === "letters" });
 
     advancing = true;
-    const delay = question.type === "letters" ? 2300 : 1500;
-    setTimeout(() => {
+    showNextButton();
+  }
+
+  function showNextButton() {
+    const actions = card.querySelector(".quiz-actions");
+    if (!actions || actions.querySelector("[data-next]")) return;
+    const next = document.createElement("button");
+    next.type = "button";
+    next.className = "button";
+    next.dataset.next = "";
+    next.textContent =
+      quizState.index === quiz.length - 1 ? "See results" : "Next →";
+    next.addEventListener("click", () => {
       quizState.index += 1;
       if (quizState.index >= quiz.length) renderResults();
       else renderQuiz();
-    }, delay);
+    });
+    actions.appendChild(next);
+    next.focus();
   }
 
   return commit;
