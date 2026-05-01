@@ -21,6 +21,28 @@ function ordinal(value) {
   return "th";
 }
 
+function playTrainSlap({ big = false } = {}) {
+  if (
+    typeof window === "undefined" ||
+    (window.matchMedia &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches)
+  ) {
+    return;
+  }
+  const overlay = document.createElement("div");
+  overlay.className = big ? "train-slap train-slap-big" : "train-slap";
+  overlay.setAttribute("aria-hidden", "true");
+  overlay.innerHTML = `
+    <div class="train-7">
+      <span class="train-bullet">7</span>
+      <span class="train-body" aria-hidden="true"></span>
+    </div>
+    <div class="train-kablam">KABLAM</div>
+  `;
+  document.body.appendChild(overlay);
+  setTimeout(() => overlay.remove(), big ? 2600 : 1800);
+}
+
 const avenueRules = {
   "Avenue A": [{ min: 0, max: Infinity, divisor: 20, offset: 3 }],
   "Avenue B": [{ min: 0, max: Infinity, divisor: 20, offset: 3 }],
@@ -113,6 +135,30 @@ const quiz = [
       "Boulevard": "Major route or exception",
     },
     explain: "Queens has a pattern, but boulevards and older names can bend it.",
+  },
+  {
+    type: "fillBlanks",
+    prompt:
+      "Louis Armstrong House Museum is at 34-56 107th Street. Fill in each blank with the matching part of the address.",
+    blanks: [
+      { label: "Cross street", answer: "34" },
+      { label: "House number", answer: "56" },
+      { label: "Street name", answer: "107th Street" },
+    ],
+    explain:
+      "Louis Armstrong's house is on 107th Street, between 34th and 35th Avenues. 34 is the cross-street field, 56 is the house number, 107th Street is the street it sits on.",
+  },
+  {
+    type: "fillBlanks",
+    prompt:
+      "Citi Field is at 123-01 Roosevelt Avenue. Fill in each blank with the matching part of the address.",
+    blanks: [
+      { label: "Cross street", answer: "123" },
+      { label: "House number", answer: "01" },
+      { label: "Street name", answer: "Roosevelt Avenue" },
+    ],
+    explain:
+      "Citi Field sits on Roosevelt Avenue, between 123rd and 124th Streets. 123 is the cross-street field, 01 is the house number, Roosevelt Avenue is the street.",
   },
   {
     type: "input",
@@ -278,6 +324,61 @@ function renderQuiz() {
   else if (question.type === "match") renderMatch(card, question);
   else if (question.type === "breakdown") renderBreakdown(card, question);
   else if (question.type === "letters") renderLetters(card, question);
+  else if (question.type === "fillBlanks") renderFillBlanks(card, question);
+}
+
+function renderFillBlanks(card, question) {
+  card.innerHTML = `
+    <h3>${escapeHtml(question.prompt)}</h3>
+    <div class="fill-blanks-grid"></div>
+    <div class="feedback" aria-live="polite"></div>
+    <div class="quiz-actions">
+      <button class="button" type="button" data-restart>Restart</button>
+    </div>
+  `;
+
+  const grid = card.querySelector(".fill-blanks-grid");
+  const inputs = [];
+
+  function matches(blank, value) {
+    const userVal = value.trim();
+    if (/^\d+$/.test(blank.answer)) {
+      const a = parseInt(userVal, 10);
+      const b = parseInt(blank.answer, 10);
+      return Number.isFinite(a) && Number.isFinite(b) && a === b;
+    }
+    return userVal.toLowerCase() === blank.answer.toLowerCase();
+  }
+
+  const commit = wireQuizActions(
+    card,
+    () => question.blanks.every((b, i) => matches(b, inputs[i].value)),
+    question,
+  );
+
+  question.blanks.forEach((blank, i) => {
+    const row = document.createElement("div");
+    row.className = "fill-blanks-row";
+    const label = document.createElement("label");
+    label.textContent = blank.label;
+    label.htmlFor = `fill-blank-${i}`;
+    const input = document.createElement("input");
+    input.id = `fill-blank-${i}`;
+    input.type = "text";
+    input.autocomplete = "off";
+    input.spellcheck = false;
+    input.addEventListener("keydown", (event) => {
+      if (event.key === "Enter") {
+        if (inputs.every((inp) => inp.value.trim())) commit();
+      }
+    });
+    inputs.push(input);
+    row.appendChild(label);
+    row.appendChild(input);
+    grid.appendChild(row);
+  });
+
+  if (inputs[0]) inputs[0].focus();
 }
 
 function renderLetters(card, question) {
@@ -298,7 +399,6 @@ function renderLetters(card, question) {
     <div class="feedback" aria-live="polite"></div>
     <div class="quiz-actions">
       <button class="button" type="button" data-restart>Restart</button>
-      <button class="button" type="button" data-next>Check</button>
     </div>
   `;
 
@@ -320,37 +420,13 @@ function renderLetters(card, question) {
     input.autocomplete = "off";
     input.autocapitalize = "characters";
     input.dataset.expected = answer[i].toUpperCase();
-    input.addEventListener("input", () => {
-      const typed = input.value.toUpperCase();
-      // Reject anything that isn't the letter expected for this slot.
-      if (typed && typed !== input.dataset.expected) {
-        input.value = "";
-        return;
-      }
-      input.value = typed;
-      if (typed.length === 1) {
-        const next = inputs[inputs.indexOf(input) + 1];
-        if (next) next.focus();
-      }
-    });
-    input.addEventListener("keydown", (event) => {
-      if (event.key === "Backspace" && !input.value) {
-        const prev = inputs[inputs.indexOf(input) - 1];
-        if (prev) {
-          event.preventDefault();
-          prev.focus();
-        }
-      } else if (event.key === "Enter") {
-        card.querySelector("[data-next]").click();
-      }
-    });
     inputs.push(input);
     container.appendChild(input);
   }
 
   if (inputs[0]) inputs[0].focus();
 
-  wireQuizActions(
+  const commit = wireQuizActions(
     card,
     () => {
       let assembled = "";
@@ -367,18 +443,53 @@ function renderLetters(card, question) {
     },
     question,
   );
+
+  inputs.forEach((input) => {
+    input.addEventListener("input", () => {
+      const typed = input.value.toUpperCase();
+      if (typed && typed !== input.dataset.expected) {
+        input.value = "";
+        return;
+      }
+      input.value = typed;
+      if (typed.length === 1) {
+        const next = inputs[inputs.indexOf(input) + 1];
+        if (next) {
+          next.focus();
+        } else if (inputs.every((slot) => slot.value)) {
+          commit();
+        }
+      }
+    });
+    input.addEventListener("keydown", (event) => {
+      if (event.key === "Backspace" && !input.value) {
+        const prev = inputs[inputs.indexOf(input) - 1];
+        if (prev) {
+          event.preventDefault();
+          prev.focus();
+        }
+      } else if (event.key === "Enter") {
+        if (inputs.every((slot) => slot.value)) commit();
+      }
+    });
+  });
 }
 
 function renderChoice(card, question) {
   card.innerHTML = `
-    <h3>${question.prompt}</h3>
+    <h3>${escapeHtml(question.prompt)}</h3>
     <div class="quiz-options"></div>
     <div class="feedback" aria-live="polite"></div>
     <div class="quiz-actions">
       <button class="button" type="button" data-restart>Restart</button>
-      <button class="button" type="button" data-next disabled>Check</button>
     </div>
   `;
+
+  const commit = wireQuizActions(
+    card,
+    () => quizState.selected === question.answer,
+    question,
+  );
 
   const options = card.querySelector(".quiz-options");
   question.options.forEach((option, index) => {
@@ -390,39 +501,38 @@ function renderChoice(card, question) {
       quizState.selected = index;
       card.querySelectorAll(".quiz-option").forEach((node) => node.classList.remove("selected"));
       button.classList.add("selected");
-      card.querySelector("[data-next]").disabled = false;
+      commit();
     });
     options.appendChild(button);
   });
-
-  wireQuizActions(card, () => quizState.selected === question.answer, question);
 }
 
 function renderInput(card, question) {
   card.innerHTML = `
-    <h3>${question.prompt}</h3>
+    <h3>${escapeHtml(question.prompt)}</h3>
     <input class="quiz-input" autocomplete="off" />
     <div class="feedback" aria-live="polite"></div>
     <div class="quiz-actions">
       <button class="button" type="button" data-restart>Restart</button>
-      <button class="button" type="button" data-next>Check</button>
     </div>
   `;
   const input = card.querySelector(".quiz-input");
   input.focus();
-  input.addEventListener("keydown", (event) => {
-    if (event.key === "Enter") card.querySelector("[data-next]").click();
-  });
-  wireQuizActions(
+
+  const commit = wireQuizActions(
     card,
     () => question.answer.includes(input.value.trim().toLowerCase()),
     question,
   );
+
+  input.addEventListener("keydown", (event) => {
+    if (event.key === "Enter") commit();
+  });
 }
 
 function renderMatch(card, question) {
   card.innerHTML = `
-    <h3>${question.prompt}</h3>
+    <h3>${escapeHtml(question.prompt)}</h3>
     <p>Tap one item on the left, then its match on the right.</p>
     <div class="match-board">
       <div class="match-column" data-left></div>
@@ -431,13 +541,44 @@ function renderMatch(card, question) {
     <div class="feedback" aria-live="polite"></div>
     <div class="quiz-actions">
       <button class="button" type="button" data-restart>Restart</button>
-      <button class="button" type="button" data-next disabled>Check</button>
     </div>
   `;
 
   const leftColumn = card.querySelector("[data-left]");
   const rightColumn = card.querySelector("[data-right]");
   let activeLeft = null;
+  // Each pair gets a color slot 1..5; reused if a left is re-paired.
+  const colorByLeft = {};
+  let nextColorSlot = 1;
+
+  function leftToken(label) {
+    return leftColumn.querySelector(`[data-label="${CSS.escape(label)}"]`);
+  }
+  function rightToken(label) {
+    return rightColumn.querySelector(`[data-label="${CSS.escape(label)}"]`);
+  }
+  function clearTokenPairing(token) {
+    if (!token) return;
+    token.classList.remove("matched");
+    delete token.dataset.pairColor;
+  }
+  function resetMatchState() {
+    quizState.matchPairs = {};
+    activeLeft = null;
+    nextColorSlot = 1;
+    Object.keys(colorByLeft).forEach((k) => delete colorByLeft[k]);
+    card.querySelectorAll(".match-token").forEach((node) => {
+      node.classList.remove("matched", "selected");
+      delete node.dataset.pairColor;
+    });
+  }
+
+  const commit = wireQuizActions(
+    card,
+    () => question.left.every((left) => quizState.matchPairs[left] === question.pairs[left]),
+    question,
+    { onWrong: resetMatchState },
+  );
 
   question.left.forEach((label) => {
     const token = createMatchToken(label);
@@ -453,24 +594,48 @@ function renderMatch(card, question) {
     const token = createMatchToken(label);
     token.addEventListener("click", () => {
       if (!activeLeft) return;
+
+      // If this LEFT was previously paired with a different right, unpair the old right.
+      const prevRight = quizState.matchPairs[activeLeft];
+      if (prevRight && prevRight !== label) {
+        clearTokenPairing(rightToken(prevRight));
+      }
+      // If this RIGHT was previously paired with a different left, unpair the old left.
+      const prevLeft = Object.keys(quizState.matchPairs).find(
+        (k) => quizState.matchPairs[k] === label,
+      );
+      if (prevLeft && prevLeft !== activeLeft) {
+        clearTokenPairing(leftToken(prevLeft));
+        delete quizState.matchPairs[prevLeft];
+        delete colorByLeft[prevLeft];
+      }
+
       quizState.matchPairs[activeLeft] = label;
+
+      // Reuse the color this left already had, or assign the next slot.
+      let color = colorByLeft[activeLeft];
+      if (!color) {
+        color = String(((nextColorSlot - 1) % 5) + 1);
+        colorByLeft[activeLeft] = color;
+        nextColorSlot++;
+      }
+
       token.classList.add("matched");
-      leftColumn.querySelectorAll(".match-token").forEach((node) => {
-        if (node.textContent === activeLeft) node.classList.add("matched");
-        node.classList.remove("selected");
-      });
+      token.dataset.pairColor = color;
+      const left = leftToken(activeLeft);
+      if (left) {
+        left.classList.add("matched");
+        left.dataset.pairColor = color;
+        left.classList.remove("selected");
+      }
+
       activeLeft = null;
-      card.querySelector("[data-next]").disabled =
-        Object.keys(quizState.matchPairs).length !== question.left.length;
+      if (Object.keys(quizState.matchPairs).length === question.left.length) {
+        commit();
+      }
     });
     rightColumn.appendChild(token);
   });
-
-  wireQuizActions(
-    card,
-    () => question.left.every((left) => quizState.matchPairs[left] === question.pairs[left]),
-    question,
-  );
 }
 
 function createMatchToken(label) {
@@ -478,19 +643,28 @@ function createMatchToken(label) {
   token.type = "button";
   token.className = "match-token";
   token.textContent = label;
+  token.dataset.label = label;
   return token;
 }
 
 function renderBreakdown(card, question) {
   card.innerHTML = `
-    <h3>${question.prompt}</h3>
+    <h3>${escapeHtml(question.prompt)}</h3>
     <div class="breakdown-grid"></div>
     <div class="feedback" aria-live="polite"></div>
     <div class="quiz-actions">
       <button class="button" type="button" data-restart>Restart</button>
-      <button class="button" type="button" data-next>Check</button>
     </div>
   `;
+
+  const commit = wireQuizActions(
+    card,
+    () => question.parts.every((part, index) => {
+      const select = card.querySelector(`[data-part-index="${index}"]`);
+      return select.value === part.answer;
+    }),
+    question,
+  );
 
   const grid = card.querySelector(".breakdown-grid");
   question.parts.forEach((part, index) => {
@@ -508,53 +682,80 @@ function renderBreakdown(card, question) {
         choice === "house" ? "house number" : "street name";
       select.appendChild(option);
     });
+    select.addEventListener("change", () => {
+      // Auto-commit once every dropdown has a value chosen
+      const allSelected = question.parts.every((_, i) =>
+        card.querySelector(`[data-part-index="${i}"]`).value !== "",
+      );
+      if (allSelected) commit();
+    });
     row.appendChild(label);
     row.appendChild(select);
     grid.appendChild(row);
   });
-
-  wireQuizActions(
-    card,
-    () => question.parts.every((part, index) => {
-      const select = card.querySelector(`[data-part-index="${index}"]`);
-      return select.value === part.answer;
-    }),
-    question,
-  );
 }
 
-function wireQuizActions(card, isCorrect, question) {
+function wireQuizActions(card, isCorrect, question, { onWrong } = {}) {
   const feedback = card.querySelector(".feedback");
-  const next = card.querySelector("[data-next]");
-  card.querySelector("[data-restart]").addEventListener("click", restartQuiz);
-  next.addEventListener("click", () => {
-    if (!quizState.answered) {
-      const correct = isCorrect();
-      if (!correct && question.blocking) {
-        const messages = question.wrongMessages || ["Wrong answer"];
-        feedback.textContent = messages[Math.floor(Math.random() * messages.length)];
-        feedback.className = "feedback bad";
-        return;
-      }
+  card.querySelector("[data-restart]")?.addEventListener("click", restartQuiz);
 
-      quizState.answered = true;
-      if (correct) {
-        quizState.score += 1;
-        feedback.textContent = question.explain;
-        feedback.className = "feedback good";
-      } else {
-        feedback.textContent = `Not quite. ${question.explain}`;
-        feedback.className = "feedback bad";
-      }
-      next.textContent = quizState.index === quiz.length - 1 ? "See results" : "Next";
-      $("#quiz-score").textContent = `${quizState.score} ${quizState.score === 1 ? "point" : "points"}`;
+  let attemptedWrong = false;
+  let advancing = false;
+
+  function commit() {
+    if (advancing) return;
+
+    const correct = isCorrect();
+    if (!correct) {
+      attemptedWrong = true;
+      const fallback = question.explain
+        ? `Not quite. ${question.explain}`
+        : "Not quite — try again.";
+      const msg =
+        question.wrongMessages && question.wrongMessages.length
+          ? question.wrongMessages[
+              Math.floor(Math.random() * question.wrongMessages.length)
+            ]
+          : fallback;
+      feedback.textContent = msg;
+      feedback.className = "feedback bad";
+      onWrong?.();
       return;
     }
 
-    quizState.index += 1;
-    if (quizState.index >= quiz.length) renderResults();
-    else renderQuiz();
-  });
+    if (!attemptedWrong) {
+      quizState.score += 1;
+      $("#quiz-score").textContent = `${quizState.score} ${
+        quizState.score === 1 ? "point" : "points"
+      }`;
+    }
+    feedback.textContent = question.explain || "Correct.";
+    feedback.className = "feedback good";
+    playTrainSlap({ big: question.type === "letters" });
+
+    advancing = true;
+    showNextButton();
+  }
+
+  function showNextButton() {
+    const actions = card.querySelector(".quiz-actions");
+    if (!actions || actions.querySelector("[data-next]")) return;
+    const next = document.createElement("button");
+    next.type = "button";
+    next.className = "button";
+    next.dataset.next = "";
+    next.textContent =
+      quizState.index === quiz.length - 1 ? "See results" : "Next →";
+    next.addEventListener("click", () => {
+      quizState.index += 1;
+      if (quizState.index >= quiz.length) renderResults();
+      else renderQuiz();
+    });
+    actions.appendChild(next);
+    next.focus();
+  }
+
+  return commit;
 }
 
 function renderResults() {
