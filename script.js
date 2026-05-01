@@ -281,9 +281,20 @@ function renderQuiz() {
 }
 
 function renderLetters(card, question) {
+  const given = new Set(question.givenIndexes || []);
+  const answer = String(question.answer);
+  const blanks = answer.length - given.size;
+  const givenLetters = [...given]
+    .sort((a, b) => a - b)
+    .map((i) => answer[i])
+    .join(", ");
+  const groupLabel = given.size
+    ? `${givenLetters} given; fill in the remaining ${blanks} ${blanks === 1 ? "letter" : "letters"}.`
+    : `Fill in all ${blanks} ${blanks === 1 ? "letter" : "letters"}.`;
+
   card.innerHTML = `
-    <h3>${question.prompt}</h3>
-    <div class="letters-input"></div>
+    <h3>${escapeHtml(question.prompt)}</h3>
+    <div class="letters-input" role="group" aria-label="${escapeHtml(groupLabel)}"></div>
     <div class="feedback" aria-live="polite"></div>
     <div class="quiz-actions">
       <button class="button" type="button" data-restart>Restart</button>
@@ -292,8 +303,6 @@ function renderLetters(card, question) {
   `;
 
   const container = card.querySelector(".letters-input");
-  const given = new Set(question.givenIndexes || []);
-  const answer = String(question.answer);
   const inputs = [];
 
   for (let i = 0; i < answer.length; i++) {
