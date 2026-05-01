@@ -53,7 +53,7 @@ const quiz = [
       "The apartment number",
     ],
     answer: 2,
-    explain: "The prefix before the hyphen is the cross-street clue.",
+    explain: "The prefix before the hyphen is the walking clue for the nearby cross street.",
   },
   {
     type: "breakdown",
@@ -63,7 +63,7 @@ const quiz = [
       { label: "12", answer: "house", choices: ["cross", "house", "street"] },
       { label: "47th Avenue", answer: "street", choices: ["cross", "house", "street"] },
     ],
-    explain: "43 is the cross-street clue, 12 is the building number on the block, and 47th Avenue is the street.",
+    explain: "43 is the nearby-grid clue, 12 is the building number on the block, and 47th Avenue is the street.",
   },
   {
     type: "choice",
@@ -135,7 +135,7 @@ function decodeQueensAddress(raw) {
   return {
     ok: true,
     html: `
-      <strong>${prefix}</strong> is the cross-street clue, likely pointing toward the ${prefix}${ordinal(prefix)} ${likelyCrossType}.
+      <strong>${prefix}</strong> is the walking clue, often pointing toward the ${prefix}${ordinal(prefix)} ${likelyCrossType}.
       <br /><strong>${suffix}</strong> is the building's number on that block.
       <br /><strong>${safeStreet}</strong> is the street the building is actually on.
     `,

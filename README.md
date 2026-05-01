@@ -21,6 +21,8 @@ This repo includes a GitHub Pages workflow in `.github/workflows/pages.yml`. Pus
 ## Sources
 
 - NYC Planning Geosupport User Programming Guide
+- CBS New York on Queens hyphenated addresses
+- Steve Morse on the format of Queens streets
 - NYPL on the Commissioners' Plan of 1811
 - Manhattan address algorithm reference
 - Wikimedia Commons image sources linked in the page
