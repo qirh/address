@@ -8,6 +8,12 @@
             content="A simple Queens tour address game explaining Manhattan and Queens address systems."
         />
         <title>Address Quest</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+            rel="stylesheet"
+        />
         <link rel="stylesheet" href="style.css" />
     </head>
     <body>
@@ -27,7 +33,7 @@
             <section class="chapter manhattan-section" id="manhattan">
                 <div class="chapter-grid">
                     <div class="chapter-copy">
-                        <h1 class="chapter-title">Manhattan Address System</h1>
+                        <h1 class="chapter-title">1. Manhattan Address System</h1>
                         <ul>
                             <li>Streets run east/west.</li>
                             <li>Avenues run north/south.</li>
@@ -78,7 +84,7 @@
                     </div>
                 </div>
 
-                <h2>1. Manahttan Street addresses</h2>
+                <h2>A. Manahttan Street addresses</h2>
                 <p>
                     Buildings start at 1 at either direction of 5th ave and fan
                     out. Let's take 22nd street as an example:
@@ -189,50 +195,93 @@
 
                 ----
 
-                <h2>2. Manhattan Avenue addresses</h2>
+                <h2>B. Manhattan Avenue addresses</h2>
                 <p>
-                    Avenue addresses are not simple and you need to do math and know a "magic number" to know where an address is
-                    out.
-                    The formula is take the address, divide by 20, then add a "magic number" which will give you an estimate of the cross streets.
-
-                    <ul>
-                        <li>The first block east of 5th Ave starts at 1E 22nd St</li>
-                        <li>The first block west of 5th Ave starts at 1W 22nd St</li>
-                    </ul>
-
+                    Avenue addresses are not simple and you need to do
+                    math and know a "magic number" to know where an
+                    address is at. The formula is:
                 </p>
+                <ol>
+                    <li>Take the address, drop the last digit</li>
+                    <li>Divide by 2</li>
+                    <li>Then add a "magic number"</li>
+                </ol>
+                <p>
+                    Which will give you an estimate of the nearest
+                    cross street. For example 523 Third ave
+                </p>
+                <ol>
+                    <li>534 --> 52</li>
+                    <li>52 / 2 --> 26</li>
+                    <li>26 + 10 --> 36</li>
+                </ol>
+                <p>
+                    So 523 Third ave is "close to" 36th street
+                </p>
+                <img
+                    src="assets/manhattan-formula.webp"
+                    alt="Readable formula sheet for estimating Manhattan cross streets from avenue addresses"
+                />
 
                 <div class="examples-panel">
                     <p class="eyebrow">Examples</p>
                     <div class="example-grid">
                         <article>
-                            <h2>1 E 22nd street</h2>
+                            <h2>350 Fifth Ave</h2>
                             <p>
-                                Drop 3 -> 52. Divide by 2 -> 26. Add Third Ave's
-                                10. Result: near <strong>36th St</strong>.
+                                5th Ave's magic number depends on the
+                                range. For 201–400 it's +16.
+                            </p>
+                            <ol>
+                                <li>350 --> 35</li>
+                                <li>35 / 2 --> 17.5</li>
+                                <li>17.5 + 16 --> 33.5</li>
+                            </ol>
+                            <p>
+                                So 350 Fifth Ave is close to 33rd st. This is the address of the Empire State Building, which is between 33rd and 34th sts.
+                            </p>
+
+                        </article>
+                        <article>
+                            <h2>405 Lexington Ave</h2>
+                            <p>
+                                Lexington Avenue's magic number is +22.
+                            </p>
+                            <ol>
+                                <li>405 --> 40</li>
+                                <li>40 / 2 --> 20</li>
+                                <li>20 + 22 --> 42</li>
+                            </ol>
+                            <p>
+                                So 405 Lexington Ave is close to 42nd st. This is the address of the Chrysler Building, on the corner of 42nd and Lexington.
                             </p>
                         </article>
                         <article>
-                            <h2>501 Fifth Ave</h2>
+                            <h2>1271 Sixth Ave</h2>
                             <p>
-                                Drop 1 -> 50. Divide by 2 -> 25. Fifth Ave in
-                                this range adds 18. Result: about
-                                <strong>43rd St</strong>.
+                                6th Avenue is one of the few avenues that subtracts instead of adds its magic number is −12.
+                            </p>
+                            <ol>
+                                <li>1271 --> 127</li>
+                                <li>127 / 2 --> 63.5</li>
+                                <li>63.5 - 12 --> 51.5</li>
+                            </ol>
+                            <p>
+                                So 1271 Sixth Ave is close to 51st st. This is the address of the Time &amp; Life Building (now News Corp), between 50th and 51st sts.
                             </p>
                         </article>
                         <article>
-                            <h2>78 Riverside Dr</h2>
+                            <h2>740 Park Ave</h2>
                             <p>
-                                Special case: drop 8 -> 7, then add 72. Result:
-                                about <strong>79th St</strong>.
+                                Park Avenue's magic number is +34.
                             </p>
-                        </article>
-                        <article>
-                            <h2>129 W 81st St</h2>
+                            <ol>
+                                <li>740 --> 74</li>
+                                <li>74 / 2 --> 37</li>
+                                <li>37 + 34 --> 71</li>
+                            </ol>
                             <p>
-                                This is already a numbered street address. West
-                                means west of Fifth Avenue; 81st tells you the
-                                cross street.
+                                So 740 Park Ave is close to 71st st. This is one of New York's most famous luxury co-ops, on the corner of 71st and Park.
                             </p>
                         </article>
                     </div>
@@ -348,19 +397,6 @@
                         aria-live="polite"
                     ></output>
                 </div>
-                <aside class="visual-column">
-                    <figure class="source-photo formula-photo">
-                        <img
-                            src="assets/manhattan-formula.webp"
-                            alt="Readable formula sheet for estimating Manhattan cross streets from avenue addresses"
-                        />
-                        <figcaption>
-                            Recreated from the clearer formula sheet image. The
-                            formula is for estimates, not exact address
-                            validation.
-                        </figcaption>
-                    </figure>
-                </aside>
             </section>
 
             <section class="chapter queens-section" id="queens">
@@ -370,7 +406,9 @@
                         <p class="lede">
                             Queens addresses usually have three fields:
                             cross-street field, house-number field, and
-                            street-name field. The hyphen matters.
+                            street-name field. The hyphen matters. For example let's look at
+
+                            43-12 47th Avenue
                         </p>
 
                         <div
@@ -523,8 +561,8 @@
 
                 <div class="quiz-shell">
                     <div class="quiz-status">
-                        <span id="quiz-count">Question 1 / 8</span>
                         <span id="quiz-score">0 points</span>
+                        <span id="quiz-count">Question 1 / 6</span>
                     </div>
                     <div
                         id="quiz-card"

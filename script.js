@@ -82,25 +82,6 @@ const avenueRules = {
 const quiz = [
   {
     type: "choice",
-    prompt: "The old Manhattan card starts by doing what to the building number?",
-    options: [
-      "Drop the last digit",
-      "Add the ZIP code",
-      "Double the whole number",
-      "Subtract Fifth Avenue",
-    ],
-    answer: 0,
-    explain: "The shortcut drops the last digit, halves the remainder, then adds the avenue key.",
-  },
-  {
-    type: "choice",
-    prompt: "501 Fifth Avenue lands near which crosstown street?",
-    options: ["14th Street", "42nd to 43rd Street", "72nd Street", "125th Street"],
-    answer: 1,
-    explain: "501 on Fifth Avenue estimates to about 43rd Street, close to the real 42nd Street area.",
-  },
-  {
-    type: "choice",
     prompt: "In 21-23 15th Avenue, what is the 21?",
     options: [
       "The lower-numbered cross street",
@@ -134,18 +115,6 @@ const quiz = [
     explain: "Queens has a pattern, but boulevards and older names can bend it.",
   },
   {
-    type: "choice",
-    prompt: "What usually happens to the house-number field after crossing the next numbered Street or Avenue?",
-    options: [
-      "It resets around 01",
-      "It turns into the ZIP code",
-      "It skips to 999",
-      "It becomes the neighborhood name",
-    ],
-    answer: 0,
-    explain: "The house-number field usually resets when the next numbered cross street is crossed.",
-  },
-  {
     type: "input",
     prompt: "Which boro has the best address system?",
     answer: ["queens"],
@@ -164,6 +133,13 @@ const quiz = [
     ],
     answer: 0,
     explain: "Swapping the cross-street field and street name can put two Queens addresses around the corner from each other.",
+  },
+  {
+    type: "letters",
+    prompt: "What is the best boro?",
+    answer: "QUEENS",
+    givenIndexes: [0],
+    explain: "Queens, obviously.",
   },
 ];
 
@@ -191,23 +167,41 @@ function estimateManhattanCrossStreet(buildingNumber, avenue) {
   }
 
   const base = Math.trunc(number / 10);
+  const fmt = (n) => (Number.isInteger(n) ? String(n) : n.toFixed(1));
+
   let estimate;
-  let method;
+  let steps;
   if (rule.custom === "fifth-high") {
     const deduction = 20 + Math.floor((number - 1310) / 20);
     estimate = base - deduction;
-    method = `Drop the last digit to get ${base}, then subtract ${deduction}.`;
+    steps = [
+      `${number} --> ${base}`,
+      `${base} - ${deduction} --> ${estimate}`,
+    ];
   } else if (rule.divisor === 10) {
-    estimate = Math.round(base + rule.offset);
-    method = `Drop the last digit to get ${base}, then ${rule.offset >= 0 ? "add" : "subtract"} ${Math.abs(rule.offset)}.`;
+    estimate = Math.floor(base + rule.offset);
+    const op = rule.offset >= 0 ? "+" : "-";
+    steps = [
+      `${number} --> ${base}`,
+      `${base} ${op} ${Math.abs(rule.offset)} --> ${estimate}`,
+    ];
   } else {
-    estimate = Math.round(base / 2 + rule.offset);
-    method = `Drop the last digit to get ${base}, divide by 2, then ${rule.offset >= 0 ? "add" : "subtract"} ${Math.abs(rule.offset)}.`;
+    const halved = base / 2;
+    const sum = halved + rule.offset;
+    estimate = Math.floor(sum);
+    const op = rule.offset >= 0 ? "+" : "-";
+    steps = [
+      `${number} --> ${base}`,
+      `${base} / 2 --> ${fmt(halved)}`,
+      `${fmt(halved)} ${op} ${Math.abs(rule.offset)} --> ${fmt(sum)}`,
+    ];
   }
+
+  const stepsHtml = steps.map((s) => `<li>${s}</li>`).join("");
   return `
-    <strong>${escapeHtml(buildingNumber)} ${escapeHtml(avenue)}</strong><br>
-    ${method}
-    <br><strong>Estimated cross street: ${estimate}${ordinal(estimate)} Street.</strong>
+    <strong>${escapeHtml(buildingNumber)} ${escapeHtml(avenue)}</strong>
+    <ol>${stepsHtml}</ol>
+    <strong>Estimated cross street: ${estimate}${ordinal(estimate)} Street.</strong>
   `;
 }
 
@@ -283,6 +277,87 @@ function renderQuiz() {
   else if (question.type === "input") renderInput(card, question);
   else if (question.type === "match") renderMatch(card, question);
   else if (question.type === "breakdown") renderBreakdown(card, question);
+  else if (question.type === "letters") renderLetters(card, question);
+}
+
+function renderLetters(card, question) {
+  card.innerHTML = `
+    <h3>${question.prompt}</h3>
+    <div class="letters-input"></div>
+    <div class="feedback" aria-live="polite"></div>
+    <div class="quiz-actions">
+      <button class="button" type="button" data-restart>Restart</button>
+      <button class="button" type="button" data-next>Check</button>
+    </div>
+  `;
+
+  const container = card.querySelector(".letters-input");
+  const given = new Set(question.givenIndexes || []);
+  const answer = String(question.answer);
+  const inputs = [];
+
+  for (let i = 0; i < answer.length; i++) {
+    if (given.has(i)) {
+      const span = document.createElement("span");
+      span.className = "letter-given";
+      span.textContent = answer[i];
+      container.appendChild(span);
+      continue;
+    }
+    const input = document.createElement("input");
+    input.className = "letter-slot";
+    input.type = "text";
+    input.maxLength = 1;
+    input.autocomplete = "off";
+    input.autocapitalize = "characters";
+    input.dataset.expected = answer[i].toUpperCase();
+    input.addEventListener("input", () => {
+      const typed = input.value.toUpperCase();
+      // Reject anything that isn't the letter expected for this slot.
+      if (typed && typed !== input.dataset.expected) {
+        input.value = "";
+        return;
+      }
+      input.value = typed;
+      if (typed.length === 1) {
+        const next = inputs[inputs.indexOf(input) + 1];
+        if (next) next.focus();
+      }
+    });
+    input.addEventListener("keydown", (event) => {
+      if (event.key === "Backspace" && !input.value) {
+        const prev = inputs[inputs.indexOf(input) - 1];
+        if (prev) {
+          event.preventDefault();
+          prev.focus();
+        }
+      } else if (event.key === "Enter") {
+        card.querySelector("[data-next]").click();
+      }
+    });
+    inputs.push(input);
+    container.appendChild(input);
+  }
+
+  if (inputs[0]) inputs[0].focus();
+
+  wireQuizActions(
+    card,
+    () => {
+      let assembled = "";
+      let inputIdx = 0;
+      for (let i = 0; i < answer.length; i++) {
+        if (given.has(i)) {
+          assembled += answer[i];
+        } else {
+          assembled += (inputs[inputIdx]?.value || "").toUpperCase();
+          inputIdx++;
+        }
+      }
+      return assembled.toUpperCase() === answer.toUpperCase();
+    },
+    question,
+  );
 }
 
 function renderChoice(card, question) {
