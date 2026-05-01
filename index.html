@@ -1,299 +1,543 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta
-      name="description"
-      content="A simple Queens tour address game explaining Manhattan and Queens address systems."
-    />
-    <title>Address Quest</title>
-    <link rel="stylesheet" href="style.css" />
-  </head>
-  <body>
-    <header class="site-header">
-      <a class="brand" href="#manhattan" aria-label="Address Quest home">
-        <span class="brand-mark">AQ</span>
-        <span>Address Quest</span>
-      </a>
-      <nav class="top-nav" aria-label="Primary navigation">
-        <a href="#manhattan">Manhattan</a>
-        <a href="#queens">Queens</a>
-        <a href="#quiz">Quiz</a>
-      </nav>
-    </header>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta
+            name="description"
+            content="A simple Queens tour address game explaining Manhattan and Queens address systems."
+        />
+        <title>Address Quest</title>
+        <link rel="stylesheet" href="style.css" />
+    </head>
+    <body>
+        <header class="site-header">
+            <a class="brand" href="#manhattan" aria-label="Address Quest home">
+                <span class="brand-mark">AQ</span>
+                <span>Address Quest</span>
+            </a>
+            <nav class="top-nav" aria-label="Primary navigation">
+                <a href="#manhattan">Manhattan</a>
+                <a href="#queens">Queens</a>
+                <a href="#quiz">Quiz</a>
+            </nav>
+        </header>
 
-    <main>
-      <section class="chapter manhattan-section" id="manhattan">
-        <div class="chapter-grid">
-          <div class="chapter-copy">
-            <h1 class="chapter-title">1. Manhattan Address System</h1>
-            <p class="lede">
-              Manhattan has two useful address patterns: numbered streets split
-              east/west at Fifth Avenue, and many avenue addresses can be
-              converted into an estimated cross street with a formula.
-            </p>
+        <main>
+            <section class="chapter manhattan-section" id="manhattan">
+                <div class="chapter-grid">
+                    <div class="chapter-copy">
+                        <h1 class="chapter-title">Manhattan Address System</h1>
+                        <ul>
+                            <li>Streets run east/west.</li>
+                            <li>Avenues run north/south.</li>
+                            <li>
+                                <em>Caveat:</em> We will focus on the area
+                                between 14th and 59th. The same system applies
+                                throughout the whole island, but there are some
+                                complexties in other parts that we want to
+                                avoid.
+                            </li>
+                        </ul>
 
-            <div class="rule-stack">
-              <article class="rule-card">
-                <span class="rule-number">A</span>
-                <h2>Numbered streets: read East or West first</h2>
+                        <div class="rule-stack">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th></th>
+                                        <th>Streets</th>
+                                        <th>Avenues</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <th scope="row">Direction</th>
+                                        <td>east / west</td>
+                                        <td>north / south</td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">Count</th>
+                                        <td>~200</td>
+                                        <td>~20</td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">Numbers increase</th>
+                                        <td>south → north</td>
+                                        <td>east → west</td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">Finding an address</th>
+                                        <td>straightforward</td>
+                                        <td>
+                                            needs a formula and a "magic number"
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <h2>Street addresses</h2>
                 <p>
-                  Numbered streets use East or West based on which side of Fifth
-                  Avenue they are on. Example: <strong>10 E 14th St</strong> is
-                  just east of Fifth; <strong>200 W 57th St</strong> is west of
-                  Fifth.
+                    Buildings start at 1 at either direction of 5th ave and fan
+                    out. Let's take 22nd street as an example:
+
+                    <ul>
+                        <li>The first block east of 5th Ave starts at 1E 22nd St</li>
+                        <li>The first block west of 5th Ave starts at 1W 22nd St</li>
+                    </ul>
+
                 </p>
-              </article>
-              <article class="rule-card">
-                <span class="rule-number">B</span>
-                <h2>Street numbers climb as you go uptown</h2>
-                <p>
-                  14th Street is below 23rd, 23rd is below 34th, and the grid
-                  keeps marching north. If someone says 86th Street, think
-                  Upper Manhattan compared with 14th or 23rd.
-                </p>
-              </article>
-              <article class="rule-card">
-                <span class="rule-number">C</span>
-                <h2>Avenue addresses use the magic-number formula</h2>
-                <p>
-                  The old card trick is: drop the last digit, halve what is
-                  left, then add or subtract the avenue's key number. Example:
-                  <strong>523 Third Ave</strong> becomes 52 / 2 + 10 =
-                  <strong>36th Street</strong>.
-                </p>
-              </article>
-            </div>
-          </div>
 
-          <aside class="visual-column">
-            <figure class="source-photo formula-photo">
-              <img
-                src="assets/manhattan-formula.svg"
-                alt="Readable formula sheet for estimating Manhattan cross streets from avenue addresses"
-              />
-              <figcaption>
-                Recreated from the clearer formula sheet image. The formula is
-                for estimates, not exact address validation.
-              </figcaption>
-            </figure>
-          </aside>
-        </div>
+                <figure class="source-photo">
+                    <img
+                        src="assets/manhattan-streets-map.jpg"
+                        alt="Map of Midtown Manhattan showing cross streets and avenues from 1st Avenue to 10th Avenue"
+                    />
+                </figure>
 
-        <div class="examples-panel">
-          <p class="eyebrow">Examples</p>
-          <div class="example-grid">
-            <article>
-              <h2>523 Third Ave</h2>
-              <p>Drop 3 -> 52. Divide by 2 -> 26. Add Third Ave's 10. Result: near <strong>36th St</strong>.</p>
-            </article>
-            <article>
-              <h2>501 Fifth Ave</h2>
-              <p>Drop 1 -> 50. Divide by 2 -> 25. Fifth Ave in this range adds 18. Result: about <strong>43rd St</strong>.</p>
-            </article>
-            <article>
-              <h2>78 Riverside Dr</h2>
-              <p>Special case: drop 8 -> 7, then add 72. Result: about <strong>79th St</strong>.</p>
-            </article>
-            <article>
-              <h2>129 W 81st St</h2>
-              <p>This is already a numbered street address. West means west of Fifth Avenue; 81st tells you the cross street.</p>
-            </article>
-          </div>
-        </div>
+                <h3>West of 5th Ave (W addresses)</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Avenue Block</th>
+                            <th>Building Number Range</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>5th → 6th Avenue</td>
+                            <td>1–99 W</td>
+                        </tr>
+                        <tr>
+                            <td>6th → 7th Avenue</td>
+                            <td>100–199 W</td>
+                        </tr>
+                        <tr>
+                            <td>7th → 8th Avenue</td>
+                            <td>200–299 W</td>
+                        </tr>
+                        <tr>
+                            <td>8th → 9th Avenue</td>
+                            <td>300–399 W</td>
+                        </tr>
+                        <tr>
+                            <td>9th → 10th Avenue</td>
+                            <td>400–499 W</td>
+                        </tr>
+                    </tbody>
+                </table>
 
-        <div class="play-panel manhattan-lab" aria-labelledby="manhattan-lab-title">
-          <div>
-            <p class="eyebrow">Try it</p>
-            <h2 id="manhattan-lab-title">Find the nearest street</h2>
-            <p>
-              Use the old-school Manhattan shortcut. The result gets you close
-              enough to sound like you know where you are going.
-            </p>
-          </div>
-          <div class="lab-controls">
-            <label for="manhattan-number">Building number</label>
-            <input id="manhattan-number" inputmode="numeric" value="501" />
+                <h3>East of 5th Ave (E addresses)</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Avenue Block</th>
+                            <th>Building Number Range</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>5th → Park Ave (used to be called 4th ave)</td>
+                            <td>1–99</td>
+                        </tr>
+                        <tr>
+                            <td>Park Ave (used to be called 4th ave) → 3rd Ave</td>
+                            <td>100–199</td>
+                        </tr>
+                        <tr>
+                            <td>3rd → 2nd Ave</td>
+                            <td>200–299</td>
+                        </tr>
+                        <tr>
+                            <td>2nd → 1st Ave</td>
+                            <td>300–399</td>
+                        </tr>
+                    </tbody>
+                </table>
 
-            <label for="manhattan-avenue">Avenue</label>
-            <select id="manhattan-avenue">
-              <option value="Avenue A">Avenue A</option>
-              <option value="Avenue B">Avenue B</option>
-              <option value="Avenue C">Avenue C</option>
-              <option value="Avenue D">Avenue D</option>
-              <option value="1st Avenue">1st Avenue</option>
-              <option value="2nd Avenue">2nd Avenue</option>
-              <option value="3rd Avenue">3rd Avenue</option>
-              <option value="4th Avenue">4th Avenue</option>
-              <option value="5th Avenue" selected>5th Avenue</option>
-              <option value="6th Avenue">6th Avenue</option>
-              <option value="7th Avenue">7th Avenue</option>
-              <option value="8th Avenue">8th Avenue</option>
-              <option value="9th Avenue">9th Avenue</option>
-              <option value="10th Avenue">10th Avenue</option>
-              <option value="11th Avenue">11th Avenue</option>
-              <option value="Amsterdam Avenue">Amsterdam Avenue</option>
-              <option value="Audubon Avenue">Audubon Avenue</option>
-              <option value="Broadway">Broadway</option>
-              <option value="Central Park West">Central Park West</option>
-              <option value="Columbus Avenue">Columbus Avenue</option>
-              <option value="Convent Avenue">Convent Avenue</option>
-              <option value="Edgecombe Avenue">Edgecombe Avenue</option>
-              <option value="Fort Washington Avenue">Fort Washington Avenue</option>
-              <option value="Lenox Avenue">Lenox Avenue</option>
-              <option value="Lexington Avenue">Lexington Avenue</option>
-              <option value="Madison Avenue">Madison Avenue</option>
-              <option value="Manhattan Avenue">Manhattan Avenue</option>
-              <option value="Park Avenue">Park Avenue</option>
-              <option value="Park Avenue South">Park Avenue South</option>
-              <option value="Pleasant Avenue">Pleasant Avenue</option>
-              <option value="Riverside Drive">Riverside Drive</option>
-              <option value="St. Nicholas Avenue">St. Nicholas Avenue</option>
-              <option value="Wadsworth Avenue">Wadsworth Avenue</option>
-              <option value="West End Avenue">West End Avenue</option>
-              <option value="York Avenue">York Avenue</option>
-            </select>
+                <div class="examples-panel">
+                    <p class="eyebrow">Examples</p>
+                    <div class="example-grid">
+                        <article>
+                            <h2>1 E 22nd street</h2>
+                            <p>
+                                22nd st between 5th ave and Park ave
+                            </p>
+                        </article>
+                        <article>
+                            <h2>1 W 22nd street</h2>
+                            <p>
+                                22nd st between 5th ave and 6th ave
+                            </p>
+                        </article>
+                        <article>
+                            <h2>150 E 22nd street</h2>
+                            <p>
+                                22nd st between Park ave and 3rd ave
+                            </p>
+                        </article>
+                        <article>
+                            <h2>329 W 22nd St</h2>
+                            <p>
+                                22nd st between 8th and 9th
+                            </p>
+                        </article>
+                    </div>
+                </div>
 
-            <button class="button" id="decode-manhattan" type="button">Estimate</button>
-          </div>
-          <output class="result-box" id="manhattan-result" aria-live="polite"></output>
-        </div>
-      </section>
+                ----
 
-      <section class="chapter queens-section" id="queens">
-        <div class="chapter-grid reverse">
-          <div class="chapter-copy">
-            <h1 class="chapter-title">2. Queens Address System</h1>
-            <p class="lede">
-              Queens addresses usually have three fields: cross-street field,
-              house-number field, and street-name field. The hyphen matters.
-            </p>
+                <h2>Avenue addresses</h2>
 
-            <div class="queens-address" aria-label="Example Queens address breakdown">
-              <span>
-                <strong>43</strong>
-                <small>cross street</small>
-              </span>
-              <b>-</b>
-              <span>
-                <strong>12</strong>
-                <small>house number</small>
-              </span>
-              <span class="street-piece">
-                <strong>47th Avenue</strong>
-                <small>street name</small>
-              </span>
-            </div>
+                <div class="examples-panel">
+                    <p class="eyebrow">Examples</p>
+                    <div class="example-grid">
+                        <article>
+                            <h2>1 E 22nd street</h2>
+                            <p>
+                                Drop 3 -> 52. Divide by 2 -> 26. Add Third Ave's
+                                10. Result: near <strong>36th St</strong>.
+                            </p>
+                        </article>
+                        <article>
+                            <h2>501 Fifth Ave</h2>
+                            <p>
+                                Drop 1 -> 50. Divide by 2 -> 25. Fifth Ave in
+                                this range adds 18. Result: about
+                                <strong>43rd St</strong>.
+                            </p>
+                        </article>
+                        <article>
+                            <h2>78 Riverside Dr</h2>
+                            <p>
+                                Special case: drop 8 -> 7, then add 72. Result:
+                                about <strong>79th St</strong>.
+                            </p>
+                        </article>
+                        <article>
+                            <h2>129 W 81st St</h2>
+                            <p>
+                                This is already a numbered street address. West
+                                means west of Fifth Avenue; 81st tells you the
+                                cross street.
+                            </p>
+                        </article>
+                    </div>
+                </div>
 
-            <div class="rule-stack compact">
-              <article class="rule-card">
-                <span class="rule-number">1</span>
-                <h2>Streets, Places, and Lanes usually run north-south</h2>
-                <p>
-                  They generally increase as you move east. If extra roads are
-                  squeezed in, the order is Street, then Place, then Lane.
-                </p>
-              </article>
-              <article class="rule-card">
-                <span class="rule-number">2</span>
-                <h2>Avenues, Roads, Drives, and Terraces usually run east-west</h2>
-                <p>
-                  They generally increase as you move south. If extra roads are
-                  squeezed in, the order is Avenue, Road, Drive, then Terrace.
-                </p>
-              </article>
-              <article class="rule-card">
-                <span class="rule-number">3</span>
-                <h2>The house number resets after major cross streets</h2>
-                <p>
-                  The number after the hyphen often starts near 01 on a new
-                  block. Odd numbers are usually on one side, even numbers on
-                  the other.
-                </p>
-              </article>
-            </div>
-          </div>
+                <div
+                    class="play-panel manhattan-lab"
+                    aria-labelledby="manhattan-lab-title"
+                >
+                    <div>
+                        <p class="eyebrow">Try it</p>
+                        <h2 id="manhattan-lab-title">
+                            Find the nearest street
+                        </h2>
+                        <p>
+                            Use the old-school Manhattan shortcut. The result
+                            gets you close enough to sound like you know where
+                            you are going.
+                        </p>
+                    </div>
+                    <div class="lab-controls">
+                        <label for="manhattan-number">Building number</label>
+                        <input
+                            id="manhattan-number"
+                            inputmode="numeric"
+                            value="501"
+                        />
 
-          <aside class="visual-column">
-            <figure class="source-photo queens-diagram">
-              <img
-                src="https://stevemorse.org/census/changes/QueensFormat.jpg"
-                alt="Diagram showing Queens street, place, lane, avenue, road, drive, and terrace ordering"
-              />
-              <figcaption>
-                Queens street-type ordering diagram from Steve Morse's Queens
-                format guide.
-              </figcaption>
-            </figure>
-          </aside>
-        </div>
+                        <label for="manhattan-avenue">Avenue</label>
+                        <select id="manhattan-avenue">
+                            <option value="Avenue A">Avenue A</option>
+                            <option value="Avenue B">Avenue B</option>
+                            <option value="Avenue C">Avenue C</option>
+                            <option value="Avenue D">Avenue D</option>
+                            <option value="1st Avenue">1st Avenue</option>
+                            <option value="2nd Avenue">2nd Avenue</option>
+                            <option value="3rd Avenue">3rd Avenue</option>
+                            <option value="4th Avenue">4th Avenue</option>
+                            <option value="5th Avenue" selected>
+                                5th Avenue
+                            </option>
+                            <option value="6th Avenue">6th Avenue</option>
+                            <option value="7th Avenue">7th Avenue</option>
+                            <option value="8th Avenue">8th Avenue</option>
+                            <option value="9th Avenue">9th Avenue</option>
+                            <option value="10th Avenue">10th Avenue</option>
+                            <option value="11th Avenue">11th Avenue</option>
+                            <option value="Amsterdam Avenue">
+                                Amsterdam Avenue
+                            </option>
+                            <option value="Audubon Avenue">
+                                Audubon Avenue
+                            </option>
+                            <option value="Broadway">Broadway</option>
+                            <option value="Central Park West">
+                                Central Park West
+                            </option>
+                            <option value="Columbus Avenue">
+                                Columbus Avenue
+                            </option>
+                            <option value="Convent Avenue">
+                                Convent Avenue
+                            </option>
+                            <option value="Edgecombe Avenue">
+                                Edgecombe Avenue
+                            </option>
+                            <option value="Fort Washington Avenue">
+                                Fort Washington Avenue
+                            </option>
+                            <option value="Lenox Avenue">Lenox Avenue</option>
+                            <option value="Lexington Avenue">
+                                Lexington Avenue
+                            </option>
+                            <option value="Madison Avenue">
+                                Madison Avenue
+                            </option>
+                            <option value="Manhattan Avenue">
+                                Manhattan Avenue
+                            </option>
+                            <option value="Park Avenue">Park Avenue</option>
+                            <option value="Park Avenue South">
+                                Park Avenue South
+                            </option>
+                            <option value="Pleasant Avenue">
+                                Pleasant Avenue
+                            </option>
+                            <option value="Riverside Drive">
+                                Riverside Drive
+                            </option>
+                            <option value="St. Nicholas Avenue">
+                                St. Nicholas Avenue
+                            </option>
+                            <option value="Wadsworth Avenue">
+                                Wadsworth Avenue
+                            </option>
+                            <option value="West End Avenue">
+                                West End Avenue
+                            </option>
+                            <option value="York Avenue">York Avenue</option>
+                        </select>
 
-        <div class="examples-panel">
-          <p class="eyebrow">Examples</p>
-          <div class="example-grid">
-            <article>
-              <h2>21-23 15th Avenue</h2>
-              <p>On 15th Avenue, between 21st and 22nd Streets. The house number on that block is 23.</p>
-            </article>
-            <article>
-              <h2>15-23 156th Street</h2>
-              <p>On 156th Street, between 15th and 16th Avenues. Same house number, different street family.</p>
-            </article>
-            <article>
-              <h2>156-23 15th Avenue</h2>
-              <p>Could be around the corner from 15-23 156th Street because the fields swap roles.</p>
-            </article>
-            <article>
-              <h2>15-23 156th Avenue</h2>
-              <p>This is not close to 15-23 156th Street. Same first two fields, totally different Avenue.</p>
-            </article>
-          </div>
-        </div>
+                        <button
+                            class="button"
+                            id="decode-manhattan"
+                            type="button"
+                        >
+                            Estimate
+                        </button>
+                    </div>
+                    <output
+                        class="result-box"
+                        id="manhattan-result"
+                        aria-live="polite"
+                    ></output>
+                </div>
+                <aside class="visual-column">
+                    <figure class="source-photo formula-photo">
+                        <img
+                            src="assets/manhattan-formula.svg"
+                            alt="Readable formula sheet for estimating Manhattan cross streets from avenue addresses"
+                        />
+                        <figcaption>
+                            Recreated from the clearer formula sheet image. The
+                            formula is for estimates, not exact address
+                            validation.
+                        </figcaption>
+                    </figure>
+                </aside>
+            </section>
 
-        <div class="play-panel queens-lab" aria-labelledby="queens-lab-title">
-          <div>
-            <p class="eyebrow">Try it</p>
-            <h2 id="queens-lab-title">Split a Queens address</h2>
-            <p>
-              Put in a hyphenated Queens address and the decoder will label the
-              pieces like a tour guide would.
-            </p>
-          </div>
-          <div class="lab-controls">
-            <label for="queens-address">Queens address</label>
-            <input id="queens-address" value="43-12 47th Avenue" autocomplete="off" />
-            <button class="button" id="decode-queens" type="button">Decode</button>
-          </div>
-          <output class="result-box" id="queens-result" aria-live="polite"></output>
-        </div>
-      </section>
+            <section class="chapter queens-section" id="queens">
+                <div class="chapter-grid reverse">
+                    <div class="chapter-copy">
+                        <h1 class="chapter-title">2. Queens Address System</h1>
+                        <p class="lede">
+                            Queens addresses usually have three fields:
+                            cross-street field, house-number field, and
+                            street-name field. The hyphen matters.
+                        </p>
 
-      <section class="chapter quiz-section" id="quiz">
-        <div class="quiz-intro">
-          <h1 class="chapter-title">3. Quiz</h1>
-          <p class="lede">
-            Test the formula, the hyphen, and the Queens street families.
-          </p>
-        </div>
+                        <div
+                            class="queens-address"
+                            aria-label="Example Queens address breakdown"
+                        >
+                            <span>
+                                <strong>43</strong>
+                                <small>cross street</small>
+                            </span>
+                            <b>-</b>
+                            <span>
+                                <strong>12</strong>
+                                <small>house number</small>
+                            </span>
+                            <span class="street-piece">
+                                <strong>47th Avenue</strong>
+                                <small>street name</small>
+                            </span>
+                        </div>
 
-        <div class="quiz-shell">
-          <div class="quiz-status">
-            <span id="quiz-count">Question 1 / 8</span>
-            <span id="quiz-score">0 points</span>
-          </div>
-          <div id="quiz-card" class="quiz-card" aria-live="polite"></div>
-        </div>
-      </section>
-    </main>
+                        <div class="rule-stack compact">
+                            <article class="rule-card">
+                                <span class="rule-number">1</span>
+                                <h2>
+                                    Streets, Places, and Lanes usually run
+                                    north-south
+                                </h2>
+                                <p>
+                                    They generally increase as you move east. If
+                                    extra roads are squeezed in, the order is
+                                    Street, then Place, then Lane.
+                                </p>
+                            </article>
+                            <article class="rule-card">
+                                <span class="rule-number">2</span>
+                                <h2>
+                                    Avenues, Roads, Drives, and Terraces usually
+                                    run east-west
+                                </h2>
+                                <p>
+                                    They generally increase as you move south.
+                                    If extra roads are squeezed in, the order is
+                                    Avenue, Road, Drive, then Terrace.
+                                </p>
+                            </article>
+                            <article class="rule-card">
+                                <span class="rule-number">3</span>
+                                <h2>
+                                    The house number resets after major cross
+                                    streets
+                                </h2>
+                                <p>
+                                    The number after the hyphen often starts
+                                    near 01 on a new block. Odd numbers are
+                                    usually on one side, even numbers on the
+                                    other.
+                                </p>
+                            </article>
+                        </div>
+                    </div>
 
-    <footer class="site-footer">
-      <span>Sources:</span>
-      <a href="https://ephemeralnewyork.wordpress.com/2019/05/20/this-is-how-to-decode-any-manhattan-address/">Ephemeral New York</a>
-      <a href="https://stevemorse.org/census/changes/QueensFormat.htm">Steve Morse Queens guide</a>
-      <a href="https://en.wikipedia.org/wiki/Manhattan_address_algorithm">Manhattan address algorithm</a>
-    </footer>
+                    <aside class="visual-column">
+                        <figure class="source-photo queens-diagram">
+                            <img
+                                src="https://stevemorse.org/census/changes/QueensFormat.jpg"
+                                alt="Diagram showing Queens street, place, lane, avenue, road, drive, and terrace ordering"
+                            />
+                            <figcaption>
+                                Queens street-type ordering diagram from Steve
+                                Morse's Queens format guide.
+                            </figcaption>
+                        </figure>
+                    </aside>
+                </div>
 
-    <script src="script.js"></script>
-  </body>
+                <div class="examples-panel">
+                    <p class="eyebrow">Examples</p>
+                    <div class="example-grid">
+                        <article>
+                            <h2>21-23 15th Avenue</h2>
+                            <p>
+                                On 15th Avenue, between 21st and 22nd Streets.
+                                The house number on that block is 23.
+                            </p>
+                        </article>
+                        <article>
+                            <h2>15-23 156th Street</h2>
+                            <p>
+                                On 156th Street, between 15th and 16th Avenues.
+                                Same house number, different street family.
+                            </p>
+                        </article>
+                        <article>
+                            <h2>156-23 15th Avenue</h2>
+                            <p>
+                                Could be around the corner from 15-23 156th
+                                Street because the fields swap roles.
+                            </p>
+                        </article>
+                        <article>
+                            <h2>15-23 156th Avenue</h2>
+                            <p>
+                                This is not close to 15-23 156th Street. Same
+                                first two fields, totally different Avenue.
+                            </p>
+                        </article>
+                    </div>
+                </div>
+
+                <div
+                    class="play-panel queens-lab"
+                    aria-labelledby="queens-lab-title"
+                >
+                    <div>
+                        <p class="eyebrow">Try it</p>
+                        <h2 id="queens-lab-title">Split a Queens address</h2>
+                        <p>
+                            Put in a hyphenated Queens address and the decoder
+                            will label the pieces like a tour guide would.
+                        </p>
+                    </div>
+                    <div class="lab-controls">
+                        <label for="queens-address">Queens address</label>
+                        <input
+                            id="queens-address"
+                            value="43-12 47th Avenue"
+                            autocomplete="off"
+                        />
+                        <button class="button" id="decode-queens" type="button">
+                            Decode
+                        </button>
+                    </div>
+                    <output
+                        class="result-box"
+                        id="queens-result"
+                        aria-live="polite"
+                    ></output>
+                </div>
+            </section>
+
+            <section class="chapter quiz-section" id="quiz">
+                <div class="quiz-intro">
+                    <h1 class="chapter-title">3. Quiz</h1>
+                    <p class="lede">
+                        Test the formula, the hyphen, and the Queens street
+                        families.
+                    </p>
+                </div>
+
+                <div class="quiz-shell">
+                    <div class="quiz-status">
+                        <span id="quiz-count">Question 1 / 8</span>
+                        <span id="quiz-score">0 points</span>
+                    </div>
+                    <div
+                        id="quiz-card"
+                        class="quiz-card"
+                        aria-live="polite"
+                    ></div>
+                </div>
+            </section>
+        </main>
+
+        <footer class="site-footer">
+            <span>Sources:</span>
+            <a
+                href="https://ephemeralnewyork.wordpress.com/2019/05/20/this-is-how-to-decode-any-manhattan-address/"
+                >Ephemeral New York</a
+            >
+            <a href="https://stevemorse.org/census/changes/QueensFormat.htm"
+                >Steve Morse Queens guide</a
+            >
+            <a href="https://en.wikipedia.org/wiki/Manhattan_address_algorithm"
+                >Manhattan address algorithm</a
+            >
+        </footer>
+
+        <script src="script.js"></script>
+    </body>
 </html>
