@@ -142,6 +142,13 @@ a {
   letter-spacing: 0.12em;
 }
 
+.chapter-title {
+  margin: 0 0 16px;
+  font-size: clamp(30px, 5vw, 58px);
+  line-height: 1;
+  letter-spacing: 0;
+}
+
 h1,
 h2,
 h3,
@@ -155,6 +162,12 @@ h1 {
   font-size: clamp(44px, 8vw, 92px);
   line-height: 0.92;
   letter-spacing: 0;
+}
+
+h1.chapter-title {
+  margin-bottom: 16px;
+  font-size: clamp(30px, 5vw, 58px);
+  line-height: 1;
 }
 
 h2 {
@@ -225,14 +238,14 @@ p {
   overflow: hidden;
 }
 
-.old-card {
-  max-width: 460px;
+.formula-photo {
+  max-width: 620px;
   margin-left: auto;
 }
 
-.old-card img {
+.formula-photo img {
   width: 100%;
-  background: #efe2b8;
+  background: white;
 }
 
 .queens-diagram {
@@ -267,6 +280,39 @@ figcaption {
   border-radius: 8px;
   background: white;
   box-shadow: var(--shadow);
+}
+
+.examples-panel {
+  margin-top: clamp(28px, 5vw, 56px);
+  padding: 18px;
+  border: 3px solid var(--line);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.82);
+  box-shadow: var(--shadow);
+}
+
+.example-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.example-grid article {
+  min-height: 168px;
+  padding: 16px;
+  border: 3px solid var(--line);
+  border-radius: 8px;
+  background: #fffdf8;
+}
+
+.example-grid h2 {
+  display: inline-block;
+  margin-bottom: 12px;
+  padding: 6px 8px;
+  border: 3px solid var(--line);
+  border-radius: 8px;
+  background: var(--yellow);
+  font-size: 18px;
 }
 
 .lab-controls {
@@ -526,7 +572,11 @@ select {
     grid-template-columns: 1fr;
   }
 
-  .old-card,
+  .example-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .formula-photo,
   .queens-diagram {
     margin-left: 0;
   }
@@ -571,7 +621,8 @@ select {
   .quiz-status,
   .quiz-actions,
   .match-board,
-  .breakdown-line {
+  .breakdown-line,
+  .example-grid {
     grid-template-columns: 1fr;
     flex-direction: column;
   }
