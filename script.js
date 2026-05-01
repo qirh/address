@@ -22,17 +22,22 @@ function ordinal(value) {
 }
 
 const avenueRules = {
+  "Avenue A": [{ min: 0, max: Infinity, divisor: 20, offset: 3 }],
+  "Avenue B": [{ min: 0, max: Infinity, divisor: 20, offset: 3 }],
+  "Avenue C": [{ min: 0, max: Infinity, divisor: 20, offset: 3 }],
+  "Avenue D": [{ min: 0, max: Infinity, divisor: 20, offset: 3 }],
   "1st Avenue": [{ min: 0, max: Infinity, divisor: 20, offset: 3 }],
   "2nd Avenue": [{ min: 0, max: Infinity, divisor: 20, offset: 3 }],
   "3rd Avenue": [{ min: 0, max: Infinity, divisor: 20, offset: 10 }],
+  "4th Avenue": [{ min: 0, max: Infinity, divisor: 20, offset: 8 }],
   "5th Avenue": [
     { min: 63, max: 108, divisor: 20, offset: 11 },
-    { min: 109, max: 199, divisor: 20, offset: 13 },
-    { min: 200, max: 399, divisor: 20, offset: 16 },
-    { min: 400, max: 599, divisor: 20, offset: 18 },
-    { min: 600, max: 774, divisor: 20, offset: 20 },
-    { min: 775, max: 1286, divisor: 10, offset: -18 },
-    { min: 1287, max: 1499, divisor: 20, offset: 45 },
+    { min: 109, max: 200, divisor: 20, offset: 13 },
+    { min: 201, max: 400, divisor: 20, offset: 16 },
+    { min: 401, max: 600, divisor: 20, offset: 18 },
+    { min: 601, max: 775, divisor: 20, offset: 20 },
+    { min: 776, max: 1309, divisor: 10, offset: -18 },
+    { min: 1310, max: 1494, custom: "fifth-high" },
     { min: 1500, max: Infinity, divisor: 20, offset: 24 },
   ],
   "6th Avenue": [{ min: 0, max: Infinity, divisor: 20, offset: -12 }],
@@ -41,9 +46,37 @@ const avenueRules = {
     { min: 1801, max: Infinity, divisor: 20, offset: 20 },
   ],
   "8th Avenue": [{ min: 0, max: Infinity, divisor: 20, offset: 9 }],
+  "9th Avenue": [{ min: 0, max: Infinity, divisor: 20, offset: 13 }],
+  "10th Avenue": [{ min: 0, max: Infinity, divisor: 20, offset: 14 }],
+  "11th Avenue": [{ min: 0, max: Infinity, divisor: 20, offset: 15 }],
+  "Amsterdam Avenue": [{ min: 0, max: Infinity, divisor: 20, offset: 59 }],
+  "Audubon Avenue": [{ min: 0, max: Infinity, divisor: 20, offset: 165 }],
+  "Broadway": [
+    { min: 1, max: 754, named: "Building numbers from 1 to 754 are on named streets south of 8th Street." },
+    { min: 756, max: 846, divisor: 10, offset: -29 },
+    { min: 847, max: 953, divisor: 10, offset: -25 },
+    { min: 954, max: Infinity, divisor: 10, offset: -31 },
+  ],
+  "Central Park West": [{ min: 0, max: Infinity, divisor: 10, offset: 60 }],
+  "Columbus Avenue": [{ min: 0, max: Infinity, divisor: 20, offset: 60 }],
+  "Convent Avenue": [{ min: 0, max: Infinity, divisor: 20, offset: 127 }],
+  "Edgecombe Avenue": [{ min: 0, max: Infinity, divisor: 20, offset: 134 }],
+  "Fort Washington Avenue": [{ min: 0, max: Infinity, divisor: 20, offset: 158 }],
+  "Lenox Avenue": [{ min: 0, max: Infinity, divisor: 20, offset: 10 }],
   "Lexington Avenue": [{ min: 0, max: Infinity, divisor: 20, offset: 22 }],
   "Madison Avenue": [{ min: 0, max: Infinity, divisor: 20, offset: 27 }],
+  "Manhattan Avenue": [{ min: 0, max: Infinity, divisor: 20, offset: 100 }],
   "Park Avenue": [{ min: 0, max: Infinity, divisor: 20, offset: 34 }],
+  "Park Avenue South": [{ min: 0, max: Infinity, divisor: 20, offset: 8 }],
+  "Pleasant Avenue": [{ min: 0, max: Infinity, divisor: 20, offset: 101 }],
+  "Riverside Drive": [
+    { min: 0, max: 567, divisor: 10, offset: 72 },
+    { min: 568, max: Infinity, divisor: 10, offset: 78 },
+  ],
+  "St. Nicholas Avenue": [{ min: 0, max: Infinity, divisor: 20, offset: 110 }],
+  "Wadsworth Avenue": [{ min: 0, max: Infinity, divisor: 20, offset: 173 }],
+  "West End Avenue": [{ min: 0, max: Infinity, divisor: 20, offset: 59 }],
+  "York Avenue": [{ min: 0, max: Infinity, divisor: 20, offset: 4 }],
 };
 
 const quiz = [
@@ -114,9 +147,11 @@ const quiz = [
   },
   {
     type: "input",
-    prompt: "Type the borough famous for this hyphenated address style.",
+    prompt: "Which boro has the best address system?",
     answer: ["queens"],
-    explain: "Queens is the borough people associate with this hyphenated address format.",
+    blocking: true,
+    wrongMessages: ["ewwww, no", "of course no", "WRONG", "try again", "absolutely not"],
+    explain: "Correct. Queens, obviously.",
   },
   {
     type: "choice",
@@ -148,10 +183,30 @@ function estimateManhattanCrossStreet(buildingNumber, avenue) {
   }
 
   const rule = rules.find((item) => number >= item.min && number <= item.max) || rules[0];
-  const estimate = Math.round(number / rule.divisor + rule.offset);
+  if (rule.named) {
+    return `
+      <strong>${escapeHtml(buildingNumber)} ${escapeHtml(avenue)}</strong><br>
+      ${rule.named}
+    `;
+  }
+
+  const base = Math.trunc(number / 10);
+  let estimate;
+  let method;
+  if (rule.custom === "fifth-high") {
+    const deduction = 20 + Math.floor((number - 1310) / 20);
+    estimate = base - deduction;
+    method = `Drop the last digit to get ${base}, then subtract ${deduction}.`;
+  } else if (rule.divisor === 10) {
+    estimate = Math.round(base + rule.offset);
+    method = `Drop the last digit to get ${base}, then ${rule.offset >= 0 ? "add" : "subtract"} ${Math.abs(rule.offset)}.`;
+  } else {
+    estimate = Math.round(base / 2 + rule.offset);
+    method = `Drop the last digit to get ${base}, divide by 2, then ${rule.offset >= 0 ? "add" : "subtract"} ${Math.abs(rule.offset)}.`;
+  }
   return `
     <strong>${escapeHtml(buildingNumber)} ${escapeHtml(avenue)}</strong><br>
-    Drop the last digit, divide by 2, then add the key number.
+    ${method}
     <br><strong>Estimated cross street: ${estimate}${ordinal(estimate)} Street.</strong>
   `;
 }
@@ -256,7 +311,7 @@ function renderChoice(card, question) {
     options.appendChild(button);
   });
 
-  wireQuizActions(card, () => quizState.selected === question.answer, question.explain);
+  wireQuizActions(card, () => quizState.selected === question.answer, question);
 }
 
 function renderInput(card, question) {
@@ -277,7 +332,7 @@ function renderInput(card, question) {
   wireQuizActions(
     card,
     () => question.answer.includes(input.value.trim().toLowerCase()),
-    question.explain,
+    question,
   );
 }
 
@@ -330,7 +385,7 @@ function renderMatch(card, question) {
   wireQuizActions(
     card,
     () => question.left.every((left) => quizState.matchPairs[left] === question.pairs[left]),
-    question.explain,
+    question,
   );
 }
 
@@ -380,24 +435,31 @@ function renderBreakdown(card, question) {
       const select = card.querySelector(`[data-part-index="${index}"]`);
       return select.value === part.answer;
     }),
-    question.explain,
+    question,
   );
 }
 
-function wireQuizActions(card, isCorrect, explanation) {
+function wireQuizActions(card, isCorrect, question) {
   const feedback = card.querySelector(".feedback");
   const next = card.querySelector("[data-next]");
   card.querySelector("[data-restart]").addEventListener("click", restartQuiz);
   next.addEventListener("click", () => {
     if (!quizState.answered) {
       const correct = isCorrect();
+      if (!correct && question.blocking) {
+        const messages = question.wrongMessages || ["Wrong answer"];
+        feedback.textContent = messages[Math.floor(Math.random() * messages.length)];
+        feedback.className = "feedback bad";
+        return;
+      }
+
       quizState.answered = true;
       if (correct) {
         quizState.score += 1;
-        feedback.textContent = `Correct. ${explanation}`;
+        feedback.textContent = question.explain;
         feedback.className = "feedback good";
       } else {
-        feedback.textContent = `Not quite. ${explanation}`;
+        feedback.textContent = `Not quite. ${question.explain}`;
         feedback.className = "feedback bad";
       }
       next.textContent = quizState.index === quiz.length - 1 ? "See results" : "Next";
