@@ -33,9 +33,17 @@ function playTrainSlap({ big = false } = {}) {
   overlay.className = big ? "train-slap train-slap-big" : "train-slap";
   overlay.setAttribute("aria-hidden", "true");
   overlay.innerHTML = `
-    <div class="train-7">
-      <span class="train-bullet">7</span>
-      <span class="train-body" aria-hidden="true"></span>
+    <div class="train-7" aria-hidden="true">
+      <span class="train-cab">
+        <span class="train-headlight"></span>
+        <span class="train-bullet">7</span>
+      </span>
+      <span class="train-body">
+        <span class="train-window"></span>
+        <span class="train-window"></span>
+        <span class="train-window"></span>
+        <span class="train-window"></span>
+      </span>
     </div>
     <div class="train-kablam">KABLAM</div>
   `;

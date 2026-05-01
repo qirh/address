@@ -487,47 +487,106 @@ button:active,
 .train-7 {
   position: absolute;
   display: flex;
-  align-items: center;
+  align-items: stretch;
   gap: 0;
+  height: 110px;
   transform: translateX(120vw);
   animation: train-sweep 1.6s cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
-  filter: drop-shadow(0 6px 14px rgba(0, 0, 0, 0.35));
+  filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.4));
+}
+
+/* Front car (cab): rounded nose, headlight, bullet badge near the window */
+.train-cab {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  width: 160px;
+  padding-right: 12px;
+  background: linear-gradient(180deg, #e6e6e6 0%, #c2c2c2 50%, #909090 100%);
+  border: 2px solid #5a5a5a;
+  border-radius: 60% 6px 6px 60% / 70% 6px 6px 70%;
+}
+
+.train-headlight {
+  position: absolute;
+  left: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 14px;
+  height: 14px;
+  background: radial-gradient(circle, #fffceb 0%, #ffe14a 100%);
+  border-radius: 50%;
+  box-shadow: 0 0 16px 6px rgba(255, 224, 90, 0.6);
+}
+
+/* Windshield */
+.train-cab::before {
+  content: "";
+  position: absolute;
+  left: 38px;
+  top: 22%;
+  width: 56px;
+  height: 46%;
+  background: linear-gradient(180deg, #2c4060 0%, #182338 100%);
+  border: 1px solid #555;
+  border-radius: 50% 6px 6px 6px / 70% 6px 6px 6px;
 }
 
 .train-bullet {
+  position: relative;
+  z-index: 1;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 128px;
-  height: 128px;
+  width: 60px;
+  height: 60px;
   border-radius: 50%;
   background: #b933ad;
   color: #fff;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-size: 88px;
+  font-size: 40px;
   font-weight: 900;
-  letter-spacing: -2px;
-  border: 5px solid #fff;
-  box-shadow: 0 0 0 5px #b933ad;
-  flex-shrink: 0;
+  letter-spacing: -1px;
+  border: 3px solid #fff;
 }
 
+/* Passenger car: silver body, dark tinted windows, purple MTA stripe */
 .train-body {
-  display: inline-block;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
   width: 360px;
-  height: 84px;
-  margin-left: 6px;
-  background:
-    repeating-linear-gradient(
-      90deg,
-      transparent 0,
-      transparent 44px,
-      rgba(255, 255, 255, 0.3) 44px,
-      rgba(255, 255, 255, 0.3) 76px
-    ),
-    linear-gradient(180deg, #c83bbc 0%, #a02a96 100%);
-  border-radius: 6px;
-  border: 3px solid #6b1c63;
+  margin-left: -2px;
+  padding: 0 14px;
+  background: linear-gradient(180deg, #e6e6e6 0%, #c2c2c2 50%, #909090 100%);
+  border: 2px solid #5a5a5a;
+  border-left: none;
+  border-radius: 0 8px 8px 0;
+}
+
+.train-body::before {
+  /* Purple MTA stripe down the side */
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 16%;
+  height: 9px;
+  background: #b933ad;
+}
+
+.train-window {
+  flex: 1;
+  max-width: 56px;
+  height: 50%;
+  margin: 0 5px;
+  background: linear-gradient(180deg, #2c4060 0%, #182338 100%);
+  border: 1px solid #555;
+  border-radius: 4px;
+  position: relative;
+  z-index: 1;
 }
 
 @keyframes train-sweep {
@@ -562,32 +621,54 @@ button:active,
 }
 
 /* Big variant — fired only on the QUEENS letters question */
+.train-slap-big .train-7 {
+  height: 320px;
+  animation-duration: 2.1s;
+}
+
+.train-slap-big .train-cab {
+  width: 380px;
+  padding-right: 30px;
+  border-width: 4px;
+}
+
+.train-slap-big .train-cab::before {
+  left: 90px;
+  width: 130px;
+  border-width: 2px;
+  border-radius: 50% 12px 12px 12px / 70% 12px 12px 12px;
+}
+
+.train-slap-big .train-headlight {
+  left: 36px;
+  width: 36px;
+  height: 36px;
+  box-shadow: 0 0 36px 14px rgba(255, 224, 90, 0.6);
+}
+
 .train-slap-big .train-bullet {
-  width: 340px;
-  height: 340px;
-  font-size: 240px;
-  border-width: 14px;
-  box-shadow: 0 0 0 14px #b933ad;
+  width: 160px;
+  height: 160px;
+  font-size: 110px;
+  border-width: 8px;
 }
 
 .train-slap-big .train-body {
-  width: 82vw;
-  height: 240px;
-  margin-left: 14px;
-  border-width: 8px;
-  background:
-    repeating-linear-gradient(
-      90deg,
-      transparent 0,
-      transparent 120px,
-      rgba(255, 255, 255, 0.3) 120px,
-      rgba(255, 255, 255, 0.3) 220px
-    ),
-    linear-gradient(180deg, #c83bbc 0%, #a02a96 100%);
+  width: 60vw;
+  border-width: 4px;
+  padding: 0 22px;
 }
 
-.train-slap-big .train-7 {
-  animation-duration: 2.1s;
+.train-slap-big .train-body::before {
+  height: 22px;
+  bottom: 16%;
+}
+
+.train-slap-big .train-window {
+  max-width: none;
+  margin: 0 10px;
+  border-width: 2px;
+  border-radius: 8px;
 }
 
 .train-slap-big .train-kablam {
