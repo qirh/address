@@ -40,7 +40,7 @@ function playTrainSlap({ big = false } = {}) {
     <div class="train-kablam">KABLAM</div>
   `;
   document.body.appendChild(overlay);
-  setTimeout(() => overlay.remove(), big ? 2000 : 1200);
+  setTimeout(() => overlay.remove(), big ? 2600 : 1800);
 }
 
 const avenueRules = {
@@ -137,25 +137,25 @@ const quiz = [
     explain: "Queens has a pattern, but boulevards and older names can bend it.",
   },
   {
-    type: "breakdown",
+    type: "fillBlanks",
     prompt:
-      "Louis Armstrong House Museum is at 34-56 107th Street. The building sits on a single street; it is between two cross streets. Tag each field.",
-    parts: [
-      { label: "34", answer: "cross", choices: ["cross", "house", "street"] },
-      { label: "56", answer: "house", choices: ["cross", "house", "street"] },
-      { label: "107th Street", answer: "street", choices: ["cross", "house", "street"] },
+      "Louis Armstrong House Museum is at 34-56 107th Street. Fill in each blank with the matching part of the address.",
+    blanks: [
+      { label: "Cross street", answer: "34" },
+      { label: "House number", answer: "56" },
+      { label: "Street name", answer: "107th Street" },
     ],
     explain:
       "Louis Armstrong's house is on 107th Street, between 34th and 35th Avenues. 34 is the cross-street field, 56 is the house number, 107th Street is the street it sits on.",
   },
   {
-    type: "breakdown",
+    type: "fillBlanks",
     prompt:
-      "Citi Field is at 123-01 Roosevelt Avenue. Tag each field.",
-    parts: [
-      { label: "123", answer: "cross", choices: ["cross", "house", "street"] },
-      { label: "01", answer: "house", choices: ["cross", "house", "street"] },
-      { label: "Roosevelt Avenue", answer: "street", choices: ["cross", "house", "street"] },
+      "Citi Field is at 123-01 Roosevelt Avenue. Fill in each blank with the matching part of the address.",
+    blanks: [
+      { label: "Cross street", answer: "123" },
+      { label: "House number", answer: "01" },
+      { label: "Street name", answer: "Roosevelt Avenue" },
     ],
     explain:
       "Citi Field sits on Roosevelt Avenue, between 123rd and 124th Streets. 123 is the cross-street field, 01 is the house number, Roosevelt Avenue is the street.",
@@ -324,6 +324,61 @@ function renderQuiz() {
   else if (question.type === "match") renderMatch(card, question);
   else if (question.type === "breakdown") renderBreakdown(card, question);
   else if (question.type === "letters") renderLetters(card, question);
+  else if (question.type === "fillBlanks") renderFillBlanks(card, question);
+}
+
+function renderFillBlanks(card, question) {
+  card.innerHTML = `
+    <h3>${escapeHtml(question.prompt)}</h3>
+    <div class="fill-blanks-grid"></div>
+    <div class="feedback" aria-live="polite"></div>
+    <div class="quiz-actions">
+      <button class="button" type="button" data-restart>Restart</button>
+    </div>
+  `;
+
+  const grid = card.querySelector(".fill-blanks-grid");
+  const inputs = [];
+
+  function matches(blank, value) {
+    const userVal = value.trim();
+    if (/^\d+$/.test(blank.answer)) {
+      const a = parseInt(userVal, 10);
+      const b = parseInt(blank.answer, 10);
+      return Number.isFinite(a) && Number.isFinite(b) && a === b;
+    }
+    return userVal.toLowerCase() === blank.answer.toLowerCase();
+  }
+
+  const commit = wireQuizActions(
+    card,
+    () => question.blanks.every((b, i) => matches(b, inputs[i].value)),
+    question,
+  );
+
+  question.blanks.forEach((blank, i) => {
+    const row = document.createElement("div");
+    row.className = "fill-blanks-row";
+    const label = document.createElement("label");
+    label.textContent = blank.label;
+    label.htmlFor = `fill-blank-${i}`;
+    const input = document.createElement("input");
+    input.id = `fill-blank-${i}`;
+    input.type = "text";
+    input.autocomplete = "off";
+    input.spellcheck = false;
+    input.addEventListener("keydown", (event) => {
+      if (event.key === "Enter") {
+        if (inputs.every((inp) => inp.value.trim())) commit();
+      }
+    });
+    inputs.push(input);
+    row.appendChild(label);
+    row.appendChild(input);
+    grid.appendChild(row);
+  });
+
+  if (inputs[0]) inputs[0].focus();
 }
 
 function renderLetters(card, question) {
