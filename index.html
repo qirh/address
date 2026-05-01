@@ -76,29 +76,18 @@
                             </table>
                         </div>
                     </div>
-
-                    <aside class="visual-column">
-                        <figure class="source-photo formula-photo">
-                            <img
-                                src="assets/manhattan-formula.svg"
-                                alt="Readable formula sheet for estimating Manhattan cross streets from avenue addresses"
-                            />
-                            <figcaption>
-                                Recreated from the clearer formula sheet image.
-                                The formula is for estimates, not exact address
-                                validation.
-                            </figcaption>
-                        </figure>
-                    </aside>
                 </div>
 
                 <h2>Street addresses</h2>
                 <p>
-                    On any cross street, building numbers begin at 1 right at
-                    5th Avenue and grow outward. West-side blocks add about 100
-                    numbers each. East-side blocks add about 25 each, because
-                    the avenues over there (Madison, Park, Lexington) are
-                    packed closer together.
+                    Buildings start at 1 at either direction of 5th ave and fan
+                    out. Let's take 22nd street as an example:
+
+                    <ul>
+                        <li>The first block east of 5th Ave starts at 1E 22nd St</li>
+                        <li>The first block west of 5th Ave starts at 1W 22nd St</li>
+                    </ul>
+
                 </p>
 
                 <figure class="source-photo">
@@ -106,10 +95,6 @@
                         src="assets/manhattan-streets-map.jpg"
                         alt="Map of Midtown Manhattan showing cross streets and avenues from 1st Avenue to 10th Avenue"
                     />
-                    <figcaption>
-                        The grid we will work with — between 14th and 59th,
-                        between 10th Avenue and 1st Avenue.
-                    </figcaption>
                 </figure>
 
                 <h3>West of 5th Ave (W addresses)</h3>
@@ -121,11 +106,26 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr><td>5th → 6th Avenue</td><td>1–99</td></tr>
-                        <tr><td>6th → 7th Avenue</td><td>100–199</td></tr>
-                        <tr><td>7th → 8th Avenue</td><td>200–299</td></tr>
-                        <tr><td>8th → 9th Avenue</td><td>300–399</td></tr>
-                        <tr><td>9th → 10th Avenue</td><td>400–499</td></tr>
+                        <tr>
+                            <td>5th → 6th Avenue</td>
+                            <td>1–99 W</td>
+                        </tr>
+                        <tr>
+                            <td>6th → 7th Avenue</td>
+                            <td>100–199 W</td>
+                        </tr>
+                        <tr>
+                            <td>7th → 8th Avenue</td>
+                            <td>200–299 W</td>
+                        </tr>
+                        <tr>
+                            <td>8th → 9th Avenue</td>
+                            <td>300–399 W</td>
+                        </tr>
+                        <tr>
+                            <td>9th → 10th Avenue</td>
+                            <td>400–499 W</td>
+                        </tr>
                     </tbody>
                 </table>
 
@@ -138,12 +138,22 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr><td>5th → Madison Ave</td><td>1–25</td></tr>
-                        <tr><td>Madison → Park Ave</td><td>25–50</td></tr>
-                        <tr><td>Park → Lexington Ave</td><td>50–75</td></tr>
-                        <tr><td>Lexington → 3rd Ave</td><td>75–100</td></tr>
-                        <tr><td>3rd → 2nd Ave</td><td>100–125</td></tr>
-                        <tr><td>2nd → 1st Ave</td><td>125–150</td></tr>
+                        <tr>
+                            <td>5th → Park Ave (used to be called 4th ave)</td>
+                            <td>1–99</td>
+                        </tr>
+                        <tr>
+                            <td>Park Ave (used to be called 4th ave) → 3rd Ave</td>
+                            <td>100–199</td>
+                        </tr>
+                        <tr>
+                            <td>3rd → 2nd Ave</td>
+                            <td>200–299</td>
+                        </tr>
+                        <tr>
+                            <td>2nd → 1st Ave</td>
+                            <td>300–399</td>
+                        </tr>
                     </tbody>
                 </table>
 
@@ -293,6 +303,19 @@
                         aria-live="polite"
                     ></output>
                 </div>
+                <aside class="visual-column">
+                    <figure class="source-photo formula-photo">
+                        <img
+                            src="assets/manhattan-formula.svg"
+                            alt="Readable formula sheet for estimating Manhattan cross streets from avenue addresses"
+                        />
+                        <figcaption>
+                            Recreated from the clearer formula sheet image. The
+                            formula is for estimates, not exact address
+                            validation.
+                        </figcaption>
+                    </figure>
+                </aside>
             </section>
 
             <section class="chapter queens-section" id="queens">
