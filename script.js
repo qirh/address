@@ -341,13 +341,9 @@ function renderFillBlanks(card, question) {
   const inputs = [];
 
   function matches(blank, value) {
-    const userVal = value.trim();
-    if (/^\d+$/.test(blank.answer)) {
-      const a = parseInt(userVal, 10);
-      const b = parseInt(blank.answer, 10);
-      return Number.isFinite(a) && Number.isFinite(b) && a === b;
-    }
-    return userVal.toLowerCase() === blank.answer.toLowerCase();
+    // Strict case-insensitive trim. The leading zero in addresses like
+    // 123-01 is part of the field, so '01' should not equal '1'.
+    return value.trim().toLowerCase() === blank.answer.toLowerCase();
   }
 
   const commit = wireQuizActions(
@@ -752,7 +748,9 @@ function wireQuizActions(card, isCorrect, question, { onWrong } = {}) {
       else renderQuiz();
     });
     actions.appendChild(next);
-    next.focus();
+    // Deliberately not auto-focused: an Enter keydown that triggered
+    // the commit would otherwise fire again on the freshly focused
+    // Next button and skip past the explanation.
   }
 
   return commit;
