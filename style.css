@@ -1,785 +1,357 @@
 /*
- * Address Quest — clean, mobile-first design system.
- * White surface + ink type + thin gray borders. No chrome, no chunky
- * shadows, no fill colors except for ink-on-paper contrast and a tiny
- * green/red for semantic feedback.
+ * Minimal CSS, old-HTML look.
+ * Serif body, default link blue, plain headings, no chrome.
+ * Most of the markup's class-based fancy styling is intentionally
+ * stripped so the page reads as a document.
  */
 
-:root {
-  /* Color */
-  --bg: #ffffff;
-  --bg-subtle: #fafafa;
-  --surface: #ffffff;
-  --border: rgba(15, 15, 17, 0.08);
-  --border-strong: rgba(15, 15, 17, 0.16);
-  --text: #0a0a0c;
-  --text-muted: #65696f;
-  --text-faint: #9a9da3;
-  --success: #047857;
-  --success-bg: rgba(4, 120, 87, 0.08);
-  --error: #b91c1c;
-
-  /* Effects */
-  --shadow-card: 0 1px 2px rgba(15, 15, 17, 0.04),
-                 0 4px 14px rgba(15, 15, 17, 0.04);
-  --ring: 0 0 0 3px rgba(15, 15, 17, 0.08);
-
-  /* Shape */
-  --radius-sm: 6px;
-  --radius-md: 10px;
-  --radius-lg: 14px;
-}
-
-* {
-  box-sizing: border-box;
-}
-
-*:focus-visible {
-  outline: none;
-  box-shadow: var(--ring);
-  border-color: var(--text);
-}
-
-html {
-  scroll-behavior: smooth;
-}
-
 body {
-  margin: 0;
-  background: var(--bg);
-  color: var(--text);
-  font-family:
-    "Inter", ui-sans-serif, system-ui, -apple-system,
-    BlinkMacSystemFont, "Segoe UI", sans-serif;
+  max-width: 720px;
+  margin: 2em auto;
+  padding: 0 1em;
+  font-family: Georgia, "Times New Roman", Times, serif;
   font-size: 16px;
-  line-height: 1.55;
-  letter-spacing: -0.005em;
-  -webkit-font-smoothing: antialiased;
-  text-rendering: optimizeLegibility;
+  line-height: 1.5;
+  color: #000;
+  background: #fff;
 }
 
 img {
-  display: block;
   max-width: 100%;
+  height: auto;
 }
 
 a {
-  color: inherit;
+  color: #0000ee;
 }
 
-/* ---------- Header ---------- */
-.site-header {
-  position: sticky;
-  top: 0;
-  z-index: 20;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-  padding: 14px clamp(20px, 4vw, 48px);
-  border-bottom: 1px solid var(--border);
-  background: rgba(255, 255, 255, 0.86);
-  backdrop-filter: saturate(180%) blur(14px);
-  -webkit-backdrop-filter: saturate(180%) blur(14px);
-}
-
-.brand {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  color: var(--text);
-  font-size: 15px;
-  font-weight: 600;
-  letter-spacing: -0.01em;
-  text-decoration: none;
-}
-
-.brand-mark {
-  display: inline-grid;
-  place-items: center;
-  width: 28px;
-  height: 28px;
-  border-radius: 8px;
-  background: var(--text);
-  color: var(--bg);
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.04em;
-}
-
-.top-nav {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 2px;
-  font-size: 14px;
-  font-weight: 500;
-}
-
-.top-nav a {
-  padding: 6px 12px;
-  border-radius: 999px;
-  color: var(--text-muted);
-  text-decoration: none;
-  transition: color 0.15s, background-color 0.15s;
-}
-
-.top-nav a:hover {
-  color: var(--text);
-  background: rgba(15, 15, 17, 0.04);
-}
-
-/* ---------- Section / chapter ---------- */
-.chapter {
-  padding: clamp(56px, 9vw, 120px) clamp(20px, 6vw, 80px);
-  border-bottom: 1px solid var(--border);
-}
-
-.chapter:nth-of-type(even) {
-  background: var(--bg-subtle);
-}
-
-.chapter-grid {
-  display: grid;
-  grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
-  gap: clamp(40px, 6vw, 80px);
-  align-items: start;
-  max-width: 1180px;
-  margin: 0 auto;
-}
-
-.chapter-grid.reverse {
-  grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
-}
-
-.chapter-copy,
-.quiz-intro {
-  max-width: 580px;
-}
-
-.visual-column {
-  position: relative;
-}
-
-/* ---------- Typography ---------- */
-.eyebrow {
-  display: inline-block;
-  margin: 0 0 14px;
-  padding: 4px 10px;
-  border-radius: 999px;
-  background: rgba(15, 15, 17, 0.05);
-  color: var(--text-muted);
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 0.01em;
-  text-transform: none;
-}
-
-.chapter-title,
-h1 {
-  margin: 0 0 16px;
-  font-weight: 600;
-  line-height: 1.08;
-  letter-spacing: -0.022em;
-  color: var(--text);
-}
-
-.chapter-title {
-  font-size: clamp(28px, 4vw, 44px);
+a:visited {
+  color: #551a8b;
 }
 
 h1 {
-  font-size: clamp(34px, 5vw, 56px);
-  max-width: 780px;
-}
-
-h1.chapter-title {
-  font-size: clamp(28px, 4vw, 44px);
+  font-size: 1.8em;
+  margin: 0.6em 0 0.2em;
 }
 
 h2 {
-  margin: 0 0 8px;
-  font-size: 17px;
-  font-weight: 600;
-  letter-spacing: -0.01em;
-  color: var(--text);
-  line-height: 1.3;
-}
-
-h3 {
-  margin: 0 0 8px;
-  font-size: 16px;
-  font-weight: 600;
-  color: var(--text);
+  font-size: 1.2em;
+  margin: 1em 0 0.3em;
 }
 
 p {
-  margin: 0 0 12px;
-  color: var(--text-muted);
-  line-height: 1.6;
+  margin: 0.6em 0;
+}
+
+hr {
+  border: 0;
+  border-top: 1px solid #999;
+  margin: 1.5em 0;
+}
+
+/* Header — text-only */
+.site-header {
+  margin-bottom: 1em;
+  padding-bottom: 0.5em;
+  border-bottom: 1px solid #999;
+}
+
+.brand-mark {
+  display: none;
+}
+
+.brand {
+  font-weight: bold;
+  text-decoration: none;
+  color: inherit;
+}
+
+.top-nav {
+  display: inline;
+  margin-left: 1em;
+  font-size: 0.95em;
+}
+
+.top-nav a {
+  margin-right: 0.5em;
+}
+
+/* Sections — separated by horizontal rules */
+.chapter {
+  padding-top: 1.2em;
+  margin-top: 1.2em;
+  border-top: 1px solid #999;
+}
+
+.chapter:first-of-type {
+  border-top: 0;
+  margin-top: 0;
+}
+
+.chapter-title,
+h1.chapter-title {
+  font-size: 1.5em;
+  margin: 0.4em 0 0.4em;
+}
+
+/* Eyebrow → italic small */
+.eyebrow {
+  font-style: italic;
+  font-size: 0.9em;
+  color: #555;
+  display: block;
+  margin: 1em 0 0.2em;
+  font-weight: normal;
+  text-transform: none;
+  letter-spacing: 0;
 }
 
 .lede {
-  font-size: clamp(16px, 1.6vw, 19px);
-  color: var(--text-muted);
-  max-width: 640px;
-  margin-bottom: 32px;
-  line-height: 1.55;
+  font-size: 1em;
+  color: #000;
+  margin: 0.5em 0 1em;
 }
 
-/* ---------- Rule cards (typographic, no chrome) ---------- */
+/* Rule "cards" → plain numbered list */
 .rule-stack {
-  display: grid;
-  gap: 22px;
-  margin-top: 32px;
-}
-
-.rule-stack.compact {
-  margin-top: 26px;
-  gap: 18px;
+  margin: 1em 0;
+  padding: 0;
 }
 
 .rule-card {
-  position: relative;
-  padding: 0 0 0 32px;
-  border-left: 1.5px solid var(--border-strong);
+  margin: 0.5em 0;
+  padding: 0;
 }
 
 .rule-number {
-  position: absolute;
-  left: -11px;
-  top: 1px;
-  display: grid;
-  place-items: center;
-  width: 22px;
-  height: 22px;
-  border-radius: 50%;
-  background: var(--bg);
-  border: 1px solid var(--border-strong);
-  color: var(--text-muted);
-  font-family:
-    ui-monospace, "SF Mono", "Menlo", "Monaco", monospace;
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0;
+  font-weight: bold;
+  margin-right: 0.4em;
 }
 
 .rule-card h2 {
-  margin-bottom: 6px;
+  display: inline;
+  font-size: 1em;
+  font-weight: bold;
+  margin: 0;
 }
 
 .rule-card p {
-  font-size: 15px;
-  margin-bottom: 0;
+  margin: 0.2em 0 0.5em;
 }
 
-.rule-card strong {
-  color: var(--text);
-  font-weight: 600;
-}
-
-/* ---------- Source photos / diagrams ---------- */
-.source-photo {
-  margin: 0;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-md);
-  background: var(--surface);
-  overflow: hidden;
-  box-shadow: var(--shadow-card);
-}
-
-.formula-photo {
-  max-width: 580px;
-  margin-left: auto;
-}
-
-.formula-photo img {
-  width: 100%;
-  background: white;
-}
-
+/* Photos / diagrams */
+.source-photo,
+.formula-photo,
 .queens-diagram {
-  max-width: 280px;
-  margin: 0 auto;
-}
-
-.queens-diagram img {
-  width: 100%;
-  padding: 16px;
-  background: white;
+  margin: 1em 0;
+  text-align: center;
 }
 
 figcaption {
-  padding: 11px 14px;
-  border-top: 1px solid var(--border);
-  color: var(--text-muted);
-  font-size: 13px;
-  line-height: 1.5;
-  background: var(--bg);
+  font-style: italic;
+  font-size: 0.9em;
+  color: #555;
+  margin-top: 0.3em;
 }
 
-/* ---------- Examples ---------- */
+/* Examples — plain definition-list-ish blocks */
 .examples-panel {
-  margin-top: clamp(40px, 6vw, 64px);
-}
-
-.examples-panel .eyebrow {
-  margin-bottom: 16px;
-}
-
-.example-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 1px;
-  border: 1px solid var(--border);
-  background: var(--border);
-  border-radius: var(--radius-md);
-  overflow: hidden;
+  margin: 1em 0;
 }
 
 .example-grid article {
-  padding: 18px 20px;
-  background: var(--surface);
-  display: grid;
-  gap: 6px;
+  margin: 0.6em 0;
 }
 
 .example-grid h2 {
-  font-family:
-    ui-monospace, "SF Mono", "Menlo", "Monaco", monospace;
-  font-size: 14px;
-  font-weight: 600;
-  margin: 0;
-  letter-spacing: -0.01em;
+  display: inline;
+  font-size: 1em;
+  font-weight: bold;
 }
 
 .example-grid p {
-  font-size: 14px;
-  line-height: 1.55;
-  margin: 0;
+  margin: 0.2em 0 0.5em;
 }
 
-.example-grid p strong {
-  color: var(--text);
-  font-weight: 600;
-}
-
-/* ---------- Play panel (interactive lab) ---------- */
+/* Try-it panel — looks like a form */
 .play-panel {
-  display: grid;
-  grid-template-columns: minmax(180px, 0.7fr) minmax(260px, 1fr) minmax(260px, 1fr);
-  gap: 24px;
-  align-items: start;
-  margin-top: clamp(40px, 6vw, 64px);
-  padding: 24px;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  background: var(--surface);
-  box-shadow: var(--shadow-card);
-}
-
-.play-panel .eyebrow {
-  margin-bottom: 8px;
+  margin: 1em 0;
+  padding: 0.7em 0;
+  border-top: 1px solid #ccc;
+  border-bottom: 1px solid #ccc;
 }
 
 .play-panel h2 {
-  margin-bottom: 6px;
-  font-size: 18px;
+  font-size: 1.1em;
 }
 
-.play-panel > div:first-child p {
-  font-size: 14px;
-  margin-bottom: 0;
-}
-
-.lab-controls {
-  display: grid;
-  gap: 10px;
-  align-content: start;
+.lab-controls > * {
+  margin: 0.3em 0;
 }
 
 label {
-  display: block;
-  margin-bottom: -4px;
-  color: var(--text);
-  font-size: 13px;
-  font-weight: 500;
-  text-transform: none;
-  letter-spacing: 0;
+  display: inline-block;
+  font-weight: bold;
+  margin-right: 0.4em;
+}
+
+input,
+select,
+button,
+.button {
+  font: inherit;
 }
 
 input,
 select {
-  width: 100%;
-  height: 40px;
-  padding: 0 12px;
-  border: 1px solid var(--border-strong);
-  border-radius: var(--radius-sm);
-  background: var(--bg);
-  color: var(--text);
-  font: inherit;
-  font-size: 14px;
-  transition: border-color 0.15s, box-shadow 0.15s;
-  appearance: none;
-  -webkit-appearance: none;
-}
-
-select {
-  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'><path fill='%2365696f' d='M3 4.5l3 3 3-3' stroke='%2365696f' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' fill='none'/></svg>");
-  background-repeat: no-repeat;
-  background-position: right 12px center;
-  padding-right: 32px;
-}
-
-input:focus,
-select:focus {
-  outline: none;
-  border-color: var(--text);
-  box-shadow: 0 0 0 3px rgba(15, 15, 17, 0.06);
-}
-
-.button {
-  height: 40px;
-  padding: 0 18px;
-  border: none;
-  border-radius: var(--radius-sm);
-  background: var(--text);
-  color: var(--bg);
-  font: inherit;
-  font-size: 14px;
-  font-weight: 500;
-  letter-spacing: -0.005em;
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  transition: background-color 0.15s, transform 0.05s;
-}
-
-.button:hover {
-  background: #2a2a2e;
-}
-
-.button:active {
-  transform: translateY(1px);
-}
-
-.button:disabled {
-  opacity: 0.4;
-  cursor: not-allowed;
-  transform: none;
+  margin-right: 0.3em;
 }
 
 .result-box {
-  padding: 16px;
-  border: 1px dashed var(--border-strong);
-  border-radius: var(--radius-md);
-  background: var(--bg-subtle);
-  font-size: 14px;
-  line-height: 1.55;
-  color: var(--text-muted);
-  min-height: 120px;
+  background: #f5f5f5;
+  border: 1px solid #ccc;
+  padding: 0.5em 0.8em;
+  margin: 0.7em 0;
 }
 
-.result-box strong {
-  color: var(--text);
-  font-weight: 600;
-}
-
-/* ---------- Queens address breakdown ---------- */
+/* Queens address breakdown — monospace inline block */
 .queens-address {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: stretch;
-  gap: 8px;
-  max-width: 720px;
-  margin: 28px 0;
-  padding: 12px;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-md);
-  background: var(--surface);
+  display: inline-block;
+  font-family: monospace;
+  font-size: 1.05em;
+  margin: 1em 0;
+  padding: 0.3em 0.5em;
+  border: 1px solid #999;
+  background: #fafafa;
 }
 
 .queens-address span,
 .queens-address b {
-  flex: 1 1 auto;
-  display: grid;
-  place-items: center;
-  padding: 14px 16px;
-  border-radius: var(--radius-sm);
-  background: var(--bg-subtle);
-  text-align: center;
+  display: inline-block;
+  padding: 0 0.3em;
+  vertical-align: middle;
 }
 
 .queens-address b {
-  flex: 0 0 auto;
-  min-width: 44px;
-  background: var(--text);
-  color: var(--bg);
-  font-family:
-    ui-monospace, "SF Mono", "Menlo", monospace;
-  font-size: 22px;
-  font-weight: 600;
-}
-
-.queens-address strong {
-  display: block;
-  font-size: clamp(20px, 3vw, 26px);
-  font-weight: 600;
-  line-height: 1.1;
-  color: var(--text);
+  font-weight: bold;
 }
 
 .queens-address small {
   display: block;
-  margin-top: 6px;
-  color: var(--text-muted);
-  font-size: 11px;
-  font-weight: 500;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
+  font-style: italic;
+  font-size: 0.75em;
+  color: #555;
+  text-transform: none;
+  letter-spacing: 0;
 }
 
-.queens-address .street-piece {
-  background: var(--bg-subtle);
-}
-
-/* ---------- Quiz ---------- */
-.quiz-intro {
-  margin-bottom: 32px;
-}
-
+/* Quiz */
 .quiz-shell {
-  max-width: 720px;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  background: var(--surface);
-  overflow: hidden;
-  box-shadow: var(--shadow-card);
+  border: 1px solid #999;
+  padding: 0.8em 1em;
+  margin: 1em 0;
+  background: #fafafa;
 }
 
 .quiz-status {
-  display: flex;
-  justify-content: space-between;
-  gap: 14px;
-  padding: 14px 22px;
-  border-bottom: 1px solid var(--border);
-  color: var(--text-muted);
-  font-size: 13px;
-  font-weight: 500;
-  background: var(--bg);
-}
-
-.quiz-card {
-  padding: clamp(20px, 3vw, 32px);
-}
-
-.quiz-options,
-.breakdown-grid,
-.match-board {
-  margin-top: 16px;
+  font-size: 0.9em;
+  color: #555;
+  margin-bottom: 0.7em;
+  padding-bottom: 0.4em;
+  border-bottom: 1px solid #ccc;
 }
 
 .quiz-options {
-  display: grid;
-  gap: 8px;
+  margin: 0.5em 0;
 }
 
 .quiz-option,
 .match-token {
-  min-height: 44px;
-  padding: 10px 14px;
-  border: 1px solid var(--border-strong);
-  border-radius: var(--radius-sm);
-  background: var(--bg);
-  color: var(--text);
-  font: inherit;
-  font-size: 14px;
-  font-weight: 500;
+  display: block;
+  width: 100%;
   text-align: left;
+  margin: 0.2em 0;
+  padding: 0.3em 0.6em;
+  background: #fff;
+  border: 1px solid #999;
+  font: inherit;
   cursor: pointer;
-  transition: background-color 0.15s, border-color 0.15s;
 }
 
 .quiz-option:hover,
 .match-token:hover {
-  background: var(--bg-subtle);
+  background: #f0f0f0;
 }
 
 .quiz-option.selected,
 .match-token.selected {
-  background: var(--text);
-  color: var(--bg);
-  border-color: var(--text);
+  background: #ffd;
+  border-color: #cc0;
 }
 
 .match-token.matched {
-  background: var(--success-bg);
-  border-color: rgba(4, 120, 87, 0.32);
-  color: var(--success);
+  background: #efe;
+  border-color: #6c6;
 }
 
 .feedback {
-  min-height: 26px;
-  margin-top: 14px;
-  font-size: 14px;
-  font-weight: 500;
+  margin: 0.5em 0;
+  font-style: italic;
 }
 
 .feedback.good {
-  color: var(--success);
+  color: green;
 }
 
 .feedback.bad {
-  color: var(--error);
-}
-
-.quiz-actions {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: flex-end;
-  gap: 8px;
-  margin-top: 20px;
+  color: red;
 }
 
 .match-board {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 8px;
+  display: table;
+  width: 100%;
+  border-spacing: 0.5em 0;
+  margin: 0.5em 0;
 }
 
 .match-column {
-  display: grid;
-  gap: 8px;
-}
-
-.breakdown-grid {
-  display: grid;
-  gap: 0;
+  display: table-cell;
+  vertical-align: top;
 }
 
 .breakdown-line {
-  display: grid;
-  grid-template-columns: minmax(120px, 0.4fr) 1fr;
-  gap: 14px;
-  align-items: center;
-  padding: 12px 0;
-  border-bottom: 1px solid var(--border);
-}
-
-.breakdown-line:last-child {
-  border-bottom: 0;
+  margin: 0.3em 0;
+  padding: 0.2em 0;
+  border-bottom: 1px dotted #ccc;
 }
 
 .breakdown-line span:first-child {
-  font-family:
-    ui-monospace, "SF Mono", "Menlo", monospace;
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--text-muted);
+  font-weight: bold;
+  margin-right: 0.5em;
+}
+
+.quiz-actions {
+  margin-top: 0.7em;
 }
 
 .quiz-input {
-  margin-top: 16px;
+  margin: 0.7em 0;
 }
 
-/* ---------- Footer ---------- */
+/* Footer */
 .site-footer {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px 20px;
-  padding: 28px clamp(20px, 4vw, 48px);
-  background: var(--bg);
-  color: var(--text-muted);
-  font-size: 13px;
-  border-top: 1px solid var(--border);
+  margin-top: 2em;
+  padding-top: 1em;
+  border-top: 1px solid #999;
+  font-size: 0.85em;
+  color: #555;
 }
 
 .site-footer span {
-  color: var(--text);
-  font-weight: 600;
+  color: #000;
+  font-weight: bold;
 }
 
 .site-footer a {
-  color: var(--text-muted);
-  text-decoration: none;
-  transition: color 0.15s;
-}
-
-.site-footer a:hover {
-  color: var(--text);
-}
-
-/* ---------- Responsive ---------- */
-@media (max-width: 920px) {
-  .chapter-grid,
-  .chapter-grid.reverse,
-  .play-panel {
-    grid-template-columns: 1fr;
-  }
-
-  .formula-photo,
-  .queens-diagram {
-    margin: 0;
-    max-width: 100%;
-  }
-
-  .play-panel {
-    padding: 20px;
-  }
-}
-
-@media (max-width: 620px) {
-  .site-header {
-    padding: 12px 16px;
-  }
-
-  .top-nav {
-    margin-left: auto;
-  }
-
-  .chapter {
-    padding-left: 20px;
-    padding-right: 20px;
-  }
-
-  .chapter-title,
-  h1.chapter-title {
-    font-size: 26px;
-  }
-
-  h1 {
-    font-size: 32px;
-  }
-
-  .example-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .queens-address {
-    flex-direction: column;
-  }
-
-  .queens-address span,
-  .queens-address b {
-    flex: 1 1 100%;
-  }
-
-  .quiz-status,
-  .quiz-actions,
-  .match-board,
-  .breakdown-line {
-    grid-template-columns: 1fr;
-    flex-direction: column;
-  }
-
-  .breakdown-line {
-    align-items: flex-start;
-    gap: 4px;
-  }
-
-  .button {
-    width: 100%;
-  }
+  margin-right: 0.5em;
 }
