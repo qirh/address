@@ -350,10 +350,10 @@ button:active,
  * data-pair-color is set on both tokens of a pair.
  */
 .match-token[data-pair-color="1"] { background: #fff1b8; border-color: #d4a017; }
-.match-token[data-pair-color="2"] { background: #f9d6e0; border-color: #c44a72; }
+.match-token[data-pair-color="2"] { background: #d0eee5; border-color: #1a8c7a; }
 .match-token[data-pair-color="3"] { background: #cfe5ff; border-color: #2f62d6; }
 .match-token[data-pair-color="4"] { background: #d6f0d4; border-color: #2f8a3a; }
-.match-token[data-pair-color="5"] { background: #f0d6f5; border-color: #8a3aa0; }
+.match-token[data-pair-color="5"] { background: #d6dcf2; border-color: #4a4a8a; }
 
 .feedback {
   margin: 0.5em 0;
