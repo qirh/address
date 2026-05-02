@@ -297,6 +297,318 @@ function decodeQueensAddress(raw) {
   `;
 }
 
+const mapPrototypes = [
+  {
+    id: "sunnyside-block",
+    kicker: "Example 1",
+    title: "Find the address block",
+    map: "sunnyside",
+    prompt:
+      "43-12 47th Avenue: tap the part of 47th Avenue between 43rd Street and 44th Street.",
+    facts: [
+      "43 is the cross-street clue.",
+      "47th Avenue is the road the building sits on.",
+      "So the right spot is the 47th Avenue block immediately after 43rd Street.",
+    ],
+    targets: [
+      {
+        label: "A: 47th Avenue between 43rd and 44th",
+        shortLabel: "A",
+        x: 48,
+        y: 70,
+        width: 78,
+        height: 38,
+        answer: true,
+        success:
+          "Yes. 43 points you to 43rd Street, and 47th Avenue is the road itself.",
+      },
+      {
+        label: "B: Queens Boulevard near 43rd Street",
+        shortLabel: "B",
+        x: 47,
+        y: 49,
+        width: 70,
+        height: 38,
+        failure:
+          "Same cross-street clue, wrong road. The address says 47th Avenue.",
+      },
+      {
+        label: "C: 47th Avenue between 47th and 48th",
+        shortLabel: "C",
+        x: 74,
+        y: 70,
+        width: 70,
+        height: 38,
+        failure:
+          "Right road, but too far east. The first number is 43.",
+      },
+    ],
+  },
+  {
+    id: "corona-block",
+    kicker: "Example 2",
+    title: "Use the cross-street clue",
+    map: "corona",
+    prompt:
+      "Louis Armstrong House Museum is 34-56 107th Street. Tap the block on 107th Street just below 34th Avenue.",
+    facts: [
+      "34 is the cross-street clue.",
+      "56 is the house number on that block.",
+      "107th Street is the street the house sits on.",
+    ],
+    targets: [
+      {
+        label: "A: 107th Street between 34th and 35th",
+        shortLabel: "A",
+        x: 51,
+        y: 41,
+        width: 58,
+        height: 54,
+        answer: true,
+        success:
+          "Correct. The 34 tells you to start at 34th Avenue; 107th Street tells you the vertical road.",
+      },
+      {
+        label: "B: 108th Street between 34th and 35th",
+        shortLabel: "B",
+        x: 67,
+        y: 41,
+        width: 58,
+        height: 54,
+        failure:
+          "Right avenue band, wrong street. The address says 107th Street.",
+      },
+      {
+        label: "C: 107th Street between 35th and 37th",
+        shortLabel: "C",
+        x: 51,
+        y: 63,
+        width: 58,
+        height: 54,
+        failure:
+          "Right street, one avenue too far south. The cross-street clue is 34.",
+      },
+    ],
+  },
+  {
+    id: "landmark-tour",
+    kicker: "Example 3",
+    title: "Landmark address hunt",
+    map: "landmarks",
+    prompt:
+      "Tap the landmark whose address is 22-25 Jackson Avenue.",
+    facts: [
+      "22-25 Jackson Avenue is MoMA PS1 in Long Island City.",
+      "36-01 35 Avenue is Museum of the Moving Image in Astoria.",
+      "34-56 107th Street is Louis Armstrong House Museum in Corona.",
+    ],
+    targets: [
+      {
+        label: "MoMA PS1",
+        shape: "pin",
+        x: 19,
+        y: 44,
+        answer: true,
+        success:
+          "Correct. MoMA PS1 is the Long Island City landmark at 22-25 Jackson Avenue.",
+      },
+      {
+        label: "Moving Image",
+        shape: "pin",
+        x: 31,
+        y: 26,
+        failure:
+          "Close, but that is Museum of the Moving Image: 36-01 35 Avenue.",
+      },
+      {
+        label: "Louis Armstrong House",
+        shape: "pin",
+        x: 69,
+        y: 38,
+        failure:
+          "That is the Corona example: 34-56 107th Street.",
+      },
+      {
+        label: "King Manor",
+        shape: "pin",
+        x: 82,
+        y: 76,
+        failure:
+          "Wrong part of Queens. King Manor is 150-03 Jamaica Avenue.",
+      },
+    ],
+  },
+];
+
+function renderMapSvg(kind) {
+  if (kind === "landmarks") {
+    return `
+      <svg viewBox="0 0 100 62" role="img" aria-label="Schematic Queens landmark map with Long Island City, Astoria, Corona, Flushing Meadows, and Jamaica">
+        <rect class="map-water" x="0" y="0" width="100" height="62"></rect>
+        <path class="map-land" d="M10 12 L46 4 L88 14 L96 34 L83 57 L35 58 L8 45 Z"></path>
+        <path class="map-park" d="M58 25 L78 22 L82 42 L61 45 Z"></path>
+        <path class="map-road major" d="M12 39 C28 35 42 32 58 34 S83 42 94 46"></path>
+        <path class="map-subway" d="M14 37 C28 34 40 31 55 31 S73 32 87 30"></path>
+        <path class="map-road" d="M22 13 L19 54"></path>
+        <path class="map-road" d="M36 9 L30 54"></path>
+        <path class="map-road" d="M52 8 L48 56"></path>
+        <path class="map-road" d="M70 13 L66 55"></path>
+        <path class="map-road" d="M13 25 C29 23 45 22 62 25 S86 32 94 35"></path>
+        <path class="map-road" d="M16 49 C32 46 49 47 66 51 S82 55 90 54"></path>
+        <text class="map-label" x="12" y="33">Long Island City</text>
+        <text class="map-label" x="28" y="20">Astoria</text>
+        <text class="map-label" x="54" y="29">Corona</text>
+        <text class="map-label" x="72" y="25">Flushing</text>
+        <text class="map-label" x="72" y="52">Jamaica</text>
+        <text class="map-label small muted" x="59" y="39">Flushing Meadows</text>
+        <text class="map-label small muted" x="45" y="52">Queens Blvd</text>
+        <text class="map-label small" x="33" y="31">7 train</text>
+      </svg>
+    `;
+  }
+
+  if (kind === "corona") {
+    return `
+      <svg viewBox="0 0 100 62" role="img" aria-label="Corona Queens grid around 34th Avenue and 107th Street">
+        <rect class="map-land" x="0" y="0" width="100" height="62"></rect>
+        <path class="map-park" d="M6 8 L23 8 L23 53 L6 53 Z"></path>
+        <path class="map-road street" d="M36 7 L36 56"></path>
+        <path class="map-road street" d="M52 7 L52 56"></path>
+        <path class="map-road street" d="M68 7 L68 56"></path>
+        <path class="map-road avenue" d="M25 18 L91 18"></path>
+        <path class="map-road avenue" d="M25 34 L91 34"></path>
+        <path class="map-road avenue" d="M25 50 L91 50"></path>
+        <path class="map-subway" d="M4 57 C21 53 43 51 60 51 S82 53 96 49"></path>
+        <text class="map-label small muted" x="8" y="32">Flushing Meadows-Corona Park</text>
+        <text class="map-label small" x="30" y="12">106th St</text>
+        <text class="map-label small" x="46" y="12">107th St</text>
+        <text class="map-label small" x="62" y="12">108th St</text>
+        <text class="map-label small" x="75" y="17">34th Ave</text>
+        <text class="map-label small" x="75" y="33">35th Ave</text>
+        <text class="map-label small" x="75" y="49">37th Ave</text>
+        <rect class="map-address-callout" x="40" y="20" width="25" height="10" rx="1"></rect>
+        <text class="map-address-text" x="42" y="27">34-56</text>
+      </svg>
+    `;
+  }
+
+  return `
+    <svg viewBox="0 0 100 62" role="img" aria-label="Schematic Sunnyside and Long Island City street grid">
+      <rect class="map-water" x="0" y="0" width="100" height="62"></rect>
+      <path class="map-land" d="M8 4 L96 4 L96 58 L9 58 L3 43 Z"></path>
+      <path class="map-park" d="M15 10 L34 10 L33 20 L14 21 Z"></path>
+      <path class="map-road major" d="M5 40 C20 37 36 36 53 38 S81 44 98 48"></path>
+      <path class="map-subway" d="M5 52 C18 50 31 48 47 49 S74 53 96 50"></path>
+      <path class="map-road street" d="M34 8 L30 56"></path>
+      <path class="map-road street" d="M46 8 L43 57"></path>
+      <path class="map-road street" d="M56 8 L55 57"></path>
+      <path class="map-road street" d="M69 8 L69 57"></path>
+      <path class="map-road street" d="M82 8 L84 57"></path>
+      <path class="map-road avenue" d="M10 24 L92 24"></path>
+      <path class="map-road avenue" d="M8 34 L94 34"></path>
+      <path class="map-road avenue" d="M8 49 L94 49"></path>
+      <rect class="map-address-callout" x="40" y="6" width="31" height="12" rx="1"></rect>
+      <text class="map-address-text" x="43" y="14">43-12</text>
+      <text class="map-label small" x="27" y="60">41st St</text>
+      <text class="map-label small" x="39" y="60">43rd St</text>
+      <text class="map-label small" x="52" y="60">44th St</text>
+      <text class="map-label small" x="66" y="60">47th St</text>
+      <text class="map-label small" x="11" y="23">Skillman Ave</text>
+      <text class="map-label small" x="11" y="33">Queens Blvd</text>
+      <text class="map-label small" x="11" y="48">47th Ave</text>
+      <text class="map-label small muted" x="18" y="17">Sunnyside</text>
+      <text class="map-label small" x="58" y="53">7 train</text>
+    </svg>
+  `;
+}
+
+function setupMapPrototypes() {
+  const root = $("#map-prototypes");
+  if (!root) return;
+
+  mapPrototypes.forEach((prototype) => {
+    const article = document.createElement("article");
+    article.className = "map-prototype";
+    article.innerHTML = `
+      <span class="prototype-kicker">${escapeHtml(prototype.kicker)}</span>
+      <h2>${escapeHtml(prototype.title)}</h2>
+      <div class="prototype-layout">
+        <div>
+          <p class="prototype-prompt"><strong>${escapeHtml(prototype.prompt)}</strong></p>
+          <div class="queens-mini-map">${renderMapSvg(prototype.map)}</div>
+          <output class="map-feedback" aria-live="polite"></output>
+          <button class="button map-reset" type="button">Reset this sketch</button>
+          <div class="map-legend" aria-label="Map legend">
+            <span class="legend-chip street">streets / places / lanes</span>
+            <span class="legend-chip avenue">avenues / roads / drives</span>
+            <span class="legend-chip subway">7 train</span>
+          </div>
+        </div>
+        <aside class="map-side-panel">
+          <strong>What it teaches</strong>
+          <ul>${prototype.facts.map((fact) => `<li>${escapeHtml(fact)}</li>`).join("")}</ul>
+        </aside>
+      </div>
+    `;
+
+    const map = article.querySelector(".queens-mini-map");
+    const feedback = article.querySelector(".map-feedback");
+    const reset = article.querySelector(".map-reset");
+    const found = new Set();
+    const correctTargetCount = prototype.targets.filter((target) => target.answer).length;
+
+    prototype.targets.forEach((target) => {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = "map-target";
+      button.dataset.shape = target.shape || "block";
+      button.setAttribute("aria-label", target.label);
+      if (target.shortLabel || target.shape === "pin") {
+        button.innerHTML = `<span class="target-label">${escapeHtml(target.shortLabel || target.label)}</span>`;
+      }
+      button.style.left = `${target.x}%`;
+      button.style.top = `${target.y}%`;
+      if (target.width) button.style.width = `${target.width}px`;
+      if (target.height) button.style.height = `${target.height}px`;
+      if (target.rotation) {
+        button.style.transform = `translate(-50%, -50%) rotate(${target.rotation}deg)`;
+      }
+
+      button.addEventListener("click", () => {
+        if (target.answer) {
+          button.classList.add("is-correct");
+          feedback.textContent = target.success || "Correct.";
+          feedback.className = "map-feedback good";
+          found.add(target.id || target.label);
+          if (prototype.multi && found.size < correctTargetCount) {
+            feedback.textContent = `${feedback.textContent} Find ${correctTargetCount - found.size} more.`;
+          } else if (prototype.multi) {
+            feedback.textContent = "Correct. Street and Place are the north-south family here.";
+          }
+        } else {
+          button.classList.add("is-wrong");
+          feedback.textContent = target.failure || "Not that spot. Try another part of the map.";
+          feedback.className = "map-feedback bad";
+          setTimeout(() => button.classList.remove("is-wrong"), 700);
+        }
+      });
+
+      map.appendChild(button);
+    });
+
+    reset.addEventListener("click", () => {
+      found.clear();
+      feedback.textContent = "";
+      feedback.className = "map-feedback";
+      article.querySelectorAll(".map-target").forEach((target) => {
+        target.classList.remove("is-correct", "is-wrong");
+      });
+    });
+
+    root.appendChild(article);
+  });
+}
+
 function setupLabs() {
   const manhattanInput = $("#manhattan-number");
   const avenueInput = $("#manhattan-avenue");
@@ -832,4 +1144,5 @@ function restartQuiz() {
 }
 
 setupLabs();
+setupMapPrototypes();
 renderQuiz();
