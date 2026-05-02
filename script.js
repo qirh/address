@@ -151,7 +151,11 @@ const quiz = [
     blanks: [
       { label: "Cross street", answer: "34" },
       { label: "House number", answer: "56" },
-      { label: "Street name", answer: "107th Street" },
+      {
+        label: "Street name",
+        answer: "107th Street",
+        alternates: ["107", "107th", "107 st", "107th st"],
+      },
     ],
     explain:
       "Louis Armstrong's house is on 107th Street, between 34th and 35th Avenues. 34 is the cross-street field, 56 is the house number, 107th Street is the street it sits on.",
@@ -351,7 +355,9 @@ function renderFillBlanks(card, question) {
   function matches(blank, value) {
     // Strict case-insensitive trim. The leading zero in addresses like
     // 123-01 is part of the field, so '01' should not equal '1'.
-    return value.trim().toLowerCase() === blank.answer.toLowerCase();
+    const v = value.trim().toLowerCase();
+    if (v === blank.answer.toLowerCase()) return true;
+    return (blank.alternates || []).some((a) => v === a.toLowerCase());
   }
 
   const commit = wireQuizActions(
