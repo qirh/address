@@ -70,8 +70,12 @@ th {
 
 /* Header, text-only */
 .site-header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: #fff;
+  padding: 0.6em 0 0.5em;
   margin-bottom: 1em;
-  padding-bottom: 0.5em;
   border-bottom: 1px solid #999;
 }
 
@@ -93,6 +97,13 @@ th {
 
 .top-nav a {
   margin-right: 0.5em;
+}
+
+.top-nav a.active {
+  color: #b933ad;
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 3px;
 }
 
 /* Sections, separated by horizontal rules */

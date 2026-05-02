@@ -1182,4 +1182,43 @@ function restartQuiz() {
 }
 
 setupLabs();
+setupSectionNav();
 renderQuiz();
+
+function setupSectionNav() {
+  const sections = Array.from(document.querySelectorAll("main > section[id]"));
+  const linkById = new Map();
+  document.querySelectorAll(".top-nav a[href^='#']").forEach((link) => {
+    linkById.set(link.getAttribute("href").slice(1), link);
+  });
+  if (!sections.length || !linkById.size) return;
+
+  const header = document.querySelector(".site-header");
+  let scheduled = false;
+
+  function update() {
+    scheduled = false;
+    const offset = (header?.getBoundingClientRect().bottom || 0) + 8;
+    let activeId = sections[0].id;
+    for (const section of sections) {
+      if (section.getBoundingClientRect().top <= offset) {
+        activeId = section.id;
+      } else {
+        break;
+      }
+    }
+    linkById.forEach((link, id) => {
+      link.classList.toggle("active", id === activeId);
+    });
+  }
+
+  function onScroll() {
+    if (scheduled) return;
+    scheduled = true;
+    requestAnimationFrame(update);
+  }
+
+  window.addEventListener("scroll", onScroll, { passive: true });
+  window.addEventListener("resize", onScroll, { passive: true });
+  update();
+}
