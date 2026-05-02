@@ -377,6 +377,7 @@ button:active,
 
 .fill-blanks-row input {
   width: 100%;
+  box-sizing: border-box;
 }
 
 .feedback {
