@@ -1,0 +1,151 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 1110" role="img" aria-labelledby="formula-title formula-desc" font-family="Georgia, 'Times New Roman', serif">
+  <title id="formula-title">Formula for estimating Manhattan street addresses</title>
+  <desc id="formula-desc">A formula card listing each Manhattan avenue's magic number for estimating the nearest cross street, plus special-case instructions for 5th, 7th, Broadway, Central Park West, and Riverside Drive.</desc>
+
+  <rect width="1100" height="1110" fill="#fff" />
+  <rect x="14" y="14" width="1072" height="1082" fill="none" stroke="#111" stroke-width="3" />
+
+  <!-- Alternating row highlights for legibility -->
+  <g fill="#e6e6e6">
+    <!-- Left column avenue list (odd rows) -->
+    <rect x="42" y="422" width="506" height="28"/>
+    <rect x="42" y="478" width="506" height="28"/>
+    <rect x="42" y="534" width="506" height="28"/>
+    <rect x="42" y="590" width="506" height="28"/>
+    <rect x="42" y="646" width="506" height="28"/>
+    <rect x="42" y="702" width="506" height="28"/>
+    <rect x="42" y="758" width="506" height="28"/>
+    <rect x="42" y="814" width="506" height="28"/>
+    <rect x="42" y="870" width="506" height="28"/>
+    <rect x="42" y="926" width="506" height="28"/>
+    <rect x="42" y="982" width="506" height="28"/>
+    <!-- Right column named avenues (odd rows) -->
+    <rect x="578" y="88" width="482" height="28"/>
+    <rect x="578" y="144" width="482" height="28"/>
+    <rect x="578" y="200" width="482" height="28"/>
+    <!-- 5TH AVE simple ranges (odd rows) -->
+    <rect x="610" y="399" width="450" height="26"/>
+    <rect x="610" y="451" width="450" height="26"/>
+    <!-- 5TH AVE 776-1286 multi-line block -->
+    <rect x="610" y="503" width="450" height="80"/>
+    <!-- 7TH AVE second row -->
+    <rect x="610" y="759" width="450" height="26"/>
+    <!-- BROADWAY 847-953 row -->
+    <rect x="610" y="911" width="450" height="26"/>
+    <!-- Riverside Dr. 568-and-up row -->
+    <rect x="610" y="1067" width="450" height="26"/>
+  </g>
+
+  <!-- Title -->
+  <g font-family="Helvetica, Arial, sans-serif" font-weight="900" fill="#111">
+    <text x="50" y="74" font-size="34">FORMULA FOR ESTIMATING</text>
+    <text x="50" y="112" font-size="34">STREET ADDRESSES</text>
+  </g>
+
+  <!-- Italic intro paragraph -->
+  <g font-style="italic" font-size="17" fill="#1a1a1a">
+    <text x="50" y="160">Unbeknownst to some lifetime New Yorkers, there is actually a formula to</text>
+    <text x="50" y="184">estimate the numbered cross street to many Manhattan addresses from the</text>
+    <text x="50" y="208">avenue addresses. In order to estimate the street, take the address number,</text>
+    <text x="50" y="232">cancel the last digit, divide by two and then add or subtract the avenue's</text>
+    <text x="50" y="256">magic number which is listed below.</text>
+  </g>
+
+  <!-- Italic worked example -->
+  <g font-style="italic" font-size="17" fill="#1a1a1a">
+    <text x="50" y="304">For example 523 Third Ave.: Cancel the "3" to get 52, then divide by two to</text>
+    <text x="50" y="328">get 26, then add the magic number for Third Ave., ten, to get 36. So 523</text>
+    <text x="50" y="352">Third Ave. is near 36th St.</text>
+  </g>
+
+  <!-- Left column avenue list -->
+  <g font-size="18" fill="#111">
+    <text x="50" y="408">Avenue A</text>           <text x="540" y="408" text-anchor="end">Add 3</text>
+    <text x="50" y="436">Avenue B</text>           <text x="540" y="436" text-anchor="end">Add 3</text>
+    <text x="50" y="464">Avenue C</text>           <text x="540" y="464" text-anchor="end">Add 3</text>
+    <text x="50" y="492">Avenue D</text>           <text x="540" y="492" text-anchor="end">Add 3</text>
+    <text x="50" y="520">1st Ave.</text>           <text x="540" y="520" text-anchor="end">Add 3</text>
+    <text x="50" y="548">2nd Ave.</text>           <text x="540" y="548" text-anchor="end">Add 3</text>
+    <text x="50" y="576">3rd Ave.</text>           <text x="540" y="576" text-anchor="end">Add 10</text>
+    <text x="50" y="604">4th Ave.</text>           <text x="540" y="604" text-anchor="end">Add 8</text>
+    <text x="50" y="632">Sixth Ave.</text>         <text x="540" y="632" text-anchor="end">Sub. 12</text>
+    <text x="50" y="660">8th Ave.</text>           <text x="540" y="660" text-anchor="end">Add 9</text>
+    <text x="50" y="688">9th Ave.</text>           <text x="540" y="688" text-anchor="end">Add 13</text>
+    <text x="50" y="716">10th Ave.</text>          <text x="540" y="716" text-anchor="end">Add 14</text>
+    <text x="50" y="744">11th Ave.</text>          <text x="540" y="744" text-anchor="end">Add 15</text>
+    <text x="50" y="772">Amsterdam Ave.</text>     <text x="540" y="772" text-anchor="end">Add 59</text>
+    <text x="50" y="800">Audubon Ave.</text>       <text x="540" y="800" text-anchor="end">Add 165</text>
+    <text x="50" y="828">Columbus Ave.</text>      <text x="540" y="828" text-anchor="end">Add 60</text>
+    <text x="50" y="856">Convent Ave.</text>       <text x="540" y="856" text-anchor="end">Add 127</text>
+    <text x="50" y="884">Edgecomb Ave.</text>      <text x="540" y="884" text-anchor="end">Add 134</text>
+    <text x="50" y="912">Ft. Washington Ave.</text><text x="540" y="912" text-anchor="end">Add 158</text>
+    <text x="50" y="940">Lenox Ave.</text>         <text x="540" y="940" text-anchor="end">Add 10</text>
+    <text x="50" y="968">Lexington Ave.</text>     <text x="540" y="968" text-anchor="end">Add 22</text>
+    <text x="50" y="996">Madison Ave.</text>       <text x="540" y="996" text-anchor="end">Add 27</text>
+    <text x="50" y="1024">Manhattan Ave.</text>    <text x="540" y="1024" text-anchor="end">Add 100</text>
+  </g>
+
+  <!-- Right column top: remaining named avenues -->
+  <g font-size="18" fill="#111">
+    <text x="586" y="74">Park Ave.</text>          <text x="1052" y="74" text-anchor="end">Add 34</text>
+    <text x="586" y="102">Park Ave. So.</text>     <text x="1052" y="102" text-anchor="end">Add 8</text>
+    <text x="586" y="130">Pleasant Ave.</text>     <text x="1052" y="130" text-anchor="end">Add 101</text>
+    <text x="586" y="158">St. Nicholas Ave.</text> <text x="1052" y="158" text-anchor="end">Add 110</text>
+    <text x="586" y="186">Wadsworth Ave.</text>    <text x="1052" y="186" text-anchor="end">Add 173</text>
+    <text x="586" y="214">West End Ave.</text>     <text x="1052" y="214" text-anchor="end">Add 59</text>
+    <text x="586" y="242">York Ave.</text>         <text x="1052" y="242" text-anchor="end">Add 4</text>
+  </g>
+
+  <!-- Italic special-instructions intro -->
+  <g font-style="italic" font-size="17" fill="#1a1a1a">
+    <text x="586" y="288">There are special instructions for estimating the cross streets for</text>
+    <text x="586" y="312">these avenues:</text>
+  </g>
+
+  <!-- 5TH AVE -->
+  <text x="586" y="356" font-family="Helvetica, Arial, sans-serif" font-weight="800" font-size="20" fill="#111">5TH AVE</text>
+  <g font-size="17" fill="#111">
+    <text x="618" y="386">63 to 108</text>      <text x="1052" y="386" text-anchor="end">Add 11</text>
+    <text x="618" y="412">109 to 200</text>     <text x="1052" y="412" text-anchor="end">Add 13</text>
+    <text x="618" y="438">201 to 400</text>     <text x="1052" y="438" text-anchor="end">Add 16</text>
+    <text x="618" y="464">401 to 600</text>     <text x="1052" y="464" text-anchor="end">Add 18</text>
+    <text x="618" y="490">601 to 775</text>     <text x="1052" y="490" text-anchor="end">Add 20</text>
+    <text x="618" y="516">776 to 1286</text>
+    <text x="784" y="516">Cancel last figure of building</text>
+    <text x="784" y="540">number and subtract 18.</text>
+    <text x="784" y="564">(DO NOT divide number by 2).</text>
+    <text x="618" y="600" font-style="italic">For 1310 to 1494</text>
+    <text x="784" y="600">Cancel last figure of building number.</text>
+    <text x="784" y="624">For 1310, subtract 20 and for every</text>
+    <text x="784" y="648">additional 20 street numbers,</text>
+    <text x="784" y="672">increase deduction by 1.</text>
+  </g>
+
+  <!-- 7TH AVE -->
+  <text x="586" y="716" font-family="Helvetica, Arial, sans-serif" font-weight="800" font-size="20" fill="#111">7TH AVE</text>
+  <g font-size="17" fill="#111">
+    <text x="618" y="746">1 to 1800</text>      <text x="1052" y="746" text-anchor="end">Add 12</text>
+    <text x="618" y="772">Above 1800</text>     <text x="1052" y="772" text-anchor="end">Add 20</text>
+  </g>
+
+  <!-- BROADWAY -->
+  <text x="586" y="816" font-family="Helvetica, Arial, sans-serif" font-weight="800" font-size="20" fill="#111">BROADWAY</text>
+  <g font-size="17" fill="#111">
+    <text x="618" y="846">Building numbers from 1 to 754 are on</text>
+    <text x="618" y="870">named streets south of 8th St.</text>
+    <text x="618" y="898">756 to 846</text>     <text x="1052" y="898" text-anchor="end">Subtract 29</text>
+    <text x="618" y="924">847 to 953</text>     <text x="1052" y="924" text-anchor="end">Subtract 25</text>
+    <text x="618" y="950">Above 953</text>      <text x="1052" y="950" text-anchor="end">Subtract 31</text>
+  </g>
+
+  <!-- Central Park West and Riverside Drive -->
+  <g font-size="17" fill="#111">
+    <text x="586" y="994" font-family="Helvetica, Arial, sans-serif" font-weight="800" font-size="18">Central Park West</text>
+    <text x="1052" y="994" text-anchor="end">Cancel last figure and add 60</text>
+
+    <text x="586" y="1028" font-family="Helvetica, Arial, sans-serif" font-weight="800" font-size="18">Riverside Dr.</text>
+    <text x="1052" y="1028" text-anchor="end">Cancel last figure and:</text>
+    <text x="618" y="1054">Up to 567</text>    <text x="1052" y="1054" text-anchor="end">Add 72</text>
+    <text x="618" y="1080">568 and up</text>   <text x="1052" y="1080" text-anchor="end">Add 78</text>
+  </g>
+</svg>

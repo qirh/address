@@ -195,9 +195,9 @@
 
                 <h2>B. Manhattan Avenue addresses</h2>
                 <p>
-                    Avenue addresses are not simple and you need to do
-                    math and know a "magic number" to know where an
-                    address is at. The formula is:
+                    Avenue addresses are not simple. You need a bit of
+                    math and a "magic number" to find where an address
+                    sits. The formula:
                 </p>
                 <ol>
                     <li>Take the address, drop the last digit</li>
@@ -205,8 +205,8 @@
                     <li>Then add a "magic number"</li>
                 </ol>
                 <p>
-                    Which will give you an estimate of the nearest
-                    cross street. For example 523 Third ave
+                    Which gives you an estimate of the nearest cross
+                    street. For example, 523 Third Ave:
                 </p>
                 <ol>
                     <li>523 --> 52</li>
@@ -214,17 +214,13 @@
                     <li>26 + 10 --> 36</li>
                 </ol>
                 <p>
-                    So 523 Third ave is "close to" 36th street
+                    So 523 Third Ave is close to 36th St.
                 </p>
                 <figure class="source-photo">
                     <img
-                        src="assets/manhattan-formula.webp"
+                        src="assets/manhattan-formula.svg"
                         alt="Readable formula sheet for estimating Manhattan cross streets from avenue addresses"
                     />
-                    <figcaption>
-                        Magic numbers for every Manhattan avenue, with
-                        the special-case ranges for 5th, 7th, and Broadway.
-                    </figcaption>
                 </figure>
 
                 <div class="examples-panel">
@@ -262,7 +258,7 @@
                         <article>
                             <h3>1271 Sixth Ave</h3>
                             <p>
-                                6th Avenue is one of the few avenues that subtracts instead of adds its magic number is −12.
+                                6th Avenue is one of the few avenues that subtracts instead of adds. Its magic number is −12.
                             </p>
                             <ol>
                                 <li>1271 --> 127</li>
@@ -407,11 +403,13 @@
                     <div class="chapter-copy">
                         <h1 class="chapter-title">2. Queens Address System</h1>
                         <p class="lede">
-                            Queens addresses usually have three fields:
-                            cross-street field, house-number field, and
-                            street-name field. The hyphen matters. For example let's look at
-
-                            43-12 47th Avenue
+                            In <strong>43-12 47th Avenue</strong>, the
+                            <strong>43</strong> means
+                            <strong>near 43rd Street</strong>, not
+                            building 43. Queens packs three pieces into
+                            a hyphenated address: the nearest cross
+                            street, the house number, and the street
+                            the building actually sits on.
                         </p>
 
                         <div
@@ -564,8 +562,8 @@
 
                 <div class="quiz-shell">
                     <div class="quiz-status">
-                        <span id="quiz-score">0 points</span>
                         <span id="quiz-count"></span>
+                        <span id="quiz-score">0 points</span>
                     </div>
                     <div
                         id="quiz-card"
