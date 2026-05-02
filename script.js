@@ -1198,13 +1198,18 @@ function setupSectionNav() {
 
   function update() {
     scheduled = false;
-    const offset = (header?.getBoundingClientRect().bottom || 0) + 8;
+    const visibleTop = header?.getBoundingClientRect().bottom || 0;
+    const visibleBottom = window.innerHeight;
     let activeId = sections[0].id;
+    let bestOverlap = -1;
     for (const section of sections) {
-      if (section.getBoundingClientRect().top <= offset) {
+      const rect = section.getBoundingClientRect();
+      const top = Math.max(rect.top, visibleTop);
+      const bottom = Math.min(rect.bottom, visibleBottom);
+      const overlap = Math.max(0, bottom - top);
+      if (overlap > bestOverlap) {
+        bestOverlap = overlap;
         activeId = section.id;
-      } else {
-        break;
       }
     }
     linkById.forEach((link, id) => {
