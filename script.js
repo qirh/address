@@ -166,7 +166,7 @@ const quiz = [
       "Citi Field is at 123-01 Roosevelt Avenue. Fill in each blank with the matching part of the address.",
     blanks: [
       { label: "Cross street", answer: "123" },
-      { label: "House number", answer: "01" },
+      { label: "House number", answer: "01", alternates: ["1"] },
       {
         label: "Street name",
         answer: "Roosevelt Avenue",
