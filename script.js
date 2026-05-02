@@ -297,6 +297,244 @@ function decodeQueensAddress(raw) {
   `;
 }
 
+const mapGames = [
+  {
+    id: "sunnyside-43-12",
+    address: "43-12 47th Avenue",
+    parts: { cross: "43", house: "12", street: "47th Avenue" },
+    map: "sunnyside",
+    correctIndex: 0,
+    explain: "43 means the closest cross street is 43rd Street. The address sits on 47th Avenue, so it's the block of 47th Avenue between 43rd and 44th.",
+  },
+  {
+    id: "corona-34-56",
+    address: "34-56 107th Street",
+    parts: { cross: "34", house: "56", street: "107th Street" },
+    map: "corona",
+    correctIndex: 0,
+    explain: "34 means the closest cross street is 34th Avenue. The address sits on 107th Street, so it's the block of 107th Street between 34th and 35th.",
+  },
+];
+
+const mapDefs = {
+  sunnyside: {
+    viewBox: "0 0 540 260",
+    streets: [
+      { label: "43rd St", x: 130 },
+      { label: "44th St", x: 220 },
+      { label: "45th St", x: 310 },
+      { label: "46th St", x: 400 },
+      { label: "47th St", x: 490 },
+    ],
+    avenues: [
+      { label: "Skillman Ave", y: 65 },
+      { label: "Queens Blvd", y: 135, major: true },
+      { label: "47th Ave", y: 215, target: true },
+    ],
+    segmentAxis: "horizontal",
+  },
+  corona: {
+    viewBox: "0 0 540 260",
+    streets: [
+      { label: "105th St", x: 130 },
+      { label: "106th St", x: 220 },
+      { label: "107th St", x: 310, target: true },
+      { label: "108th St", x: 400 },
+      { label: "109th St", x: 490 },
+    ],
+    avenues: [
+      { label: "34th Ave", y: 60 },
+      { label: "35th Ave", y: 110 },
+      { label: "37th Ave", y: 160 },
+      { label: "38th Ave", y: 205 },
+      { label: "39th Ave", y: 245 },
+    ],
+    segmentAxis: "vertical",
+  },
+};
+
+const SVG_NS = "http://www.w3.org/2000/svg";
+
+function svgEl(name, attrs, text) {
+  const el = document.createElementNS(SVG_NS, name);
+  for (const k in attrs) el.setAttribute(k, attrs[k]);
+  if (text != null) el.textContent = text;
+  return el;
+}
+
+function computeSegments(def) {
+  const segments = [];
+  if (def.segmentAxis === "horizontal") {
+    const ave = def.avenues.find((a) => a.target);
+    for (let i = 0; i < def.streets.length - 1; i++) {
+      const a = def.streets[i];
+      const b = def.streets[i + 1];
+      segments.push({
+        x: a.x,
+        y: ave.y - 16,
+        w: b.x - a.x,
+        h: 32,
+        between: `${a.label} and ${b.label}`,
+        roadLabel: ave.label,
+      });
+    }
+  } else {
+    const st = def.streets.find((s) => s.target);
+    for (let i = 0; i < def.avenues.length - 1; i++) {
+      const a = def.avenues[i];
+      const b = def.avenues[i + 1];
+      segments.push({
+        x: st.x - 16,
+        y: a.y,
+        w: 32,
+        h: b.y - a.y,
+        between: `${a.label} and ${b.label}`,
+        roadLabel: st.label,
+      });
+    }
+  }
+  return segments;
+}
+
+function drawMap(svg, def) {
+  const [, , vbW, vbH] = svg.getAttribute("viewBox").split(" ").map(Number);
+  const left = 100;
+  const right = vbW - 20;
+  const top = 30;
+  const bottom = vbH - 10;
+
+  def.avenues.forEach((ave) => {
+    const cls = `map-line${ave.major ? " major" : ""}${ave.target ? " target" : ""}`;
+    svg.appendChild(svgEl("line", { x1: left, x2: right, y1: ave.y, y2: ave.y, class: cls }));
+    svg.appendChild(svgEl("text", {
+      x: left - 6,
+      y: ave.y + 4,
+      class: "map-axis-label",
+      "text-anchor": "end",
+    }, ave.label));
+  });
+
+  def.streets.forEach((st) => {
+    const cls = `map-line${st.target ? " target" : ""}`;
+    svg.appendChild(svgEl("line", { x1: st.x, x2: st.x, y1: top, y2: bottom, class: cls }));
+    svg.appendChild(svgEl("text", {
+      x: st.x,
+      y: top - 8,
+      class: "map-axis-label",
+      "text-anchor": "middle",
+    }, st.label));
+  });
+}
+
+function renderMapGame(game) {
+  const def = mapDefs[game.map];
+  const article = document.createElement("article");
+  article.className = "map-game";
+
+  article.innerHTML = `
+    <h3>${escapeHtml(game.address)}</h3>
+    <div class="queens-address" aria-label="Address parts">
+      <span><strong>${escapeHtml(game.parts.cross)}</strong><small>cross street</small></span>
+      <b>-</b>
+      <span><strong>${escapeHtml(game.parts.house)}</strong><small>house number</small></span>
+      <span class="street-piece"><strong>${escapeHtml(game.parts.street)}</strong><small>street name</small></span>
+    </div>
+    <p class="map-prompt">Tap the block where this building sits.</p>
+    <div class="map-frame">
+      <svg class="map-svg" viewBox="${def.viewBox}" preserveAspectRatio="xMidYMid meet"></svg>
+    </div>
+    <p class="map-feedback" role="status" aria-live="polite"></p>
+    <div class="map-actions">
+      <button type="button" class="button" data-map-reset>Try another</button>
+    </div>
+  `;
+
+  const svg = article.querySelector(".map-svg");
+  const feedback = article.querySelector(".map-feedback");
+  const reset = article.querySelector("[data-map-reset]");
+
+  const segments = computeSegments(def);
+  let answered = false;
+
+  function paintSegments() {
+    segments.forEach((seg, i) => {
+      const rect = svgEl("rect", {
+        x: seg.x,
+        y: seg.y,
+        width: seg.w,
+        height: seg.h,
+        class: "map-target",
+        tabindex: "0",
+        role: "button",
+        "aria-label": `${seg.roadLabel} between ${seg.between}`,
+        "data-index": String(i),
+      });
+      rect.addEventListener("click", () => handle(i, rect));
+      rect.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          handle(i, rect);
+        }
+      });
+      svg.appendChild(rect);
+    });
+  }
+
+  function clearOverlays() {
+    svg.querySelectorAll(".map-target, .map-pin, .map-pin-label").forEach((n) => n.remove());
+  }
+
+  function handle(i, rect) {
+    if (answered) return;
+    if (i === game.correctIndex) {
+      rect.classList.add("correct");
+      const cx = Number(rect.getAttribute("x")) + Number(rect.getAttribute("width")) / 2;
+      const cy = Number(rect.getAttribute("y")) + Number(rect.getAttribute("height")) / 2;
+      const pin = svgEl("circle", { cx, cy, r: 0, class: "map-pin" });
+      svg.appendChild(pin);
+      requestAnimationFrame(() => pin.setAttribute("r", "10"));
+      svg.appendChild(svgEl("text", {
+        x: cx,
+        y: cy - 18,
+        class: "map-pin-label",
+        "text-anchor": "middle",
+      }, game.address));
+      feedback.className = "map-feedback good";
+      feedback.textContent = `Correct. ${game.explain}`;
+      answered = true;
+      svg.querySelectorAll(".map-target").forEach((t) => {
+        t.setAttribute("tabindex", "-1");
+        t.classList.add("locked");
+      });
+    } else {
+      rect.classList.add("wrong");
+      const seg = segments[i];
+      feedback.className = "map-feedback bad";
+      feedback.textContent = `That's the block between ${seg.between}. The first number is the cross-street clue, ${game.parts.cross}.`;
+      setTimeout(() => rect.classList.remove("wrong"), 700);
+    }
+  }
+
+  reset.addEventListener("click", () => {
+    answered = false;
+    clearOverlays();
+    paintSegments();
+    feedback.textContent = "";
+    feedback.className = "map-feedback";
+  });
+
+  drawMap(svg, def);
+  paintSegments();
+
+  return article;
+}
+
+function setupMapGames() {
+  const root = $("#map-games");
+  if (!root) return;
+  mapGames.forEach((game) => root.appendChild(renderMapGame(game)));
+}
+
 function setupLabs() {
   const manhattanInput = $("#manhattan-number");
   const avenueInput = $("#manhattan-avenue");
@@ -832,4 +1070,5 @@ function restartQuiz() {
 }
 
 setupLabs();
+setupMapGames();
 renderQuiz();
