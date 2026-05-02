@@ -186,15 +186,14 @@ const quiz = [
   },
   {
     type: "choice",
-    prompt: "Which pair could be very close to each other in Queens?",
+    prompt: "Which pair of addresses ends up around the same corner?",
     options: [
       "15-23 156th Street and 156-23 15th Avenue",
-      "15-23 156th Street and 15-23 156th Avenue",
       "501 Fifth Avenue and 43-12 47th Avenue",
-      "21-23 15th Avenue and 21-23 15th Street",
+      "31-23 47th Avenue and 88-09 144th Street",
     ],
     answer: 0,
-    explain: "Swapping the cross-street field and street name can put two Queens addresses around the corner from each other.",
+    explain: "Swapping the cross-street field and the street name (15-23 156th Street and 156-23 15th Avenue) lands you at the same Queens intersection.",
   },
   {
     type: "letters",
