@@ -537,7 +537,7 @@ function renderInput(card, question) {
 function renderMatch(card, question) {
   card.innerHTML = `
     <h3>${escapeHtml(question.prompt)}</h3>
-    <p>Tap one item on the left, then its match on the right.</p>
+    <p>Tap an item on either side, then tap its match.</p>
     <div class="match-board">
       <div class="match-column" data-left></div>
       <div class="match-column" data-right></div>
@@ -550,7 +550,8 @@ function renderMatch(card, question) {
 
   const leftColumn = card.querySelector("[data-left]");
   const rightColumn = card.querySelector("[data-right]");
-  let activeLeft = null;
+  let activeSide = null;
+  let activeLabel = null;
   // Each pair gets a color slot 1..5; reused if a left is re-paired.
   const colorByLeft = {};
   let nextColorSlot = 1;
@@ -566,9 +567,21 @@ function renderMatch(card, question) {
     token.classList.remove("matched");
     delete token.dataset.pairColor;
   }
+  function clearSelection() {
+    card.querySelectorAll(".match-token.selected").forEach((node) =>
+      node.classList.remove("selected"),
+    );
+  }
+  function selectToken(side, label, token) {
+    clearSelection();
+    token.classList.add("selected");
+    activeSide = side;
+    activeLabel = label;
+  }
   function resetMatchState() {
     quizState.matchPairs = {};
-    activeLeft = null;
+    activeSide = null;
+    activeLabel = null;
     nextColorSlot = 1;
     Object.keys(colorByLeft).forEach((k) => delete colorByLeft[k]);
     card.querySelectorAll(".match-token").forEach((node) => {
@@ -584,12 +597,56 @@ function renderMatch(card, question) {
     { onWrong: resetMatchState },
   );
 
+  function pair(leftLabel, rightLabel) {
+    // If this LEFT was previously paired with a different right, unpair the old right.
+    const prevRight = quizState.matchPairs[leftLabel];
+    if (prevRight && prevRight !== rightLabel) {
+      clearTokenPairing(rightToken(prevRight));
+    }
+    // If this RIGHT was previously paired with a different left, unpair the old left.
+    const prevLeft = Object.keys(quizState.matchPairs).find(
+      (k) => quizState.matchPairs[k] === rightLabel,
+    );
+    if (prevLeft && prevLeft !== leftLabel) {
+      clearTokenPairing(leftToken(prevLeft));
+      delete quizState.matchPairs[prevLeft];
+      delete colorByLeft[prevLeft];
+    }
+
+    quizState.matchPairs[leftLabel] = rightLabel;
+
+    // Reuse the color this left already had, or assign the next slot.
+    let color = colorByLeft[leftLabel];
+    if (!color) {
+      color = String(((nextColorSlot - 1) % 5) + 1);
+      colorByLeft[leftLabel] = color;
+      nextColorSlot++;
+    }
+
+    const lt = leftToken(leftLabel);
+    const rt = rightToken(rightLabel);
+    [lt, rt].forEach((node) => {
+      if (!node) return;
+      node.classList.add("matched");
+      node.classList.remove("selected");
+      node.dataset.pairColor = color;
+    });
+
+    activeSide = null;
+    activeLabel = null;
+    if (Object.keys(quizState.matchPairs).length === question.left.length) {
+      commit();
+    }
+  }
+
   question.left.forEach((label) => {
     const token = createMatchToken(label);
     token.addEventListener("click", () => {
-      activeLeft = label;
-      leftColumn.querySelectorAll(".match-token").forEach((node) => node.classList.remove("selected"));
-      token.classList.add("selected");
+      if (activeSide === "right") {
+        pair(label, activeLabel);
+      } else {
+        selectToken("left", label, token);
+      }
     });
     leftColumn.appendChild(token);
   });
@@ -597,45 +654,10 @@ function renderMatch(card, question) {
   question.right.forEach((label) => {
     const token = createMatchToken(label);
     token.addEventListener("click", () => {
-      if (!activeLeft) return;
-
-      // If this LEFT was previously paired with a different right, unpair the old right.
-      const prevRight = quizState.matchPairs[activeLeft];
-      if (prevRight && prevRight !== label) {
-        clearTokenPairing(rightToken(prevRight));
-      }
-      // If this RIGHT was previously paired with a different left, unpair the old left.
-      const prevLeft = Object.keys(quizState.matchPairs).find(
-        (k) => quizState.matchPairs[k] === label,
-      );
-      if (prevLeft && prevLeft !== activeLeft) {
-        clearTokenPairing(leftToken(prevLeft));
-        delete quizState.matchPairs[prevLeft];
-        delete colorByLeft[prevLeft];
-      }
-
-      quizState.matchPairs[activeLeft] = label;
-
-      // Reuse the color this left already had, or assign the next slot.
-      let color = colorByLeft[activeLeft];
-      if (!color) {
-        color = String(((nextColorSlot - 1) % 5) + 1);
-        colorByLeft[activeLeft] = color;
-        nextColorSlot++;
-      }
-
-      token.classList.add("matched");
-      token.dataset.pairColor = color;
-      const left = leftToken(activeLeft);
-      if (left) {
-        left.classList.add("matched");
-        left.dataset.pairColor = color;
-        left.classList.remove("selected");
-      }
-
-      activeLeft = null;
-      if (Object.keys(quizState.matchPairs).length === question.left.length) {
-        commit();
+      if (activeSide === "left") {
+        pair(activeLabel, label);
+      } else {
+        selectToken("right", label, token);
       }
     });
     rightColumn.appendChild(token);
