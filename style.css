@@ -304,6 +304,9 @@ button:active,
 }
 
 .quiz-status {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
   font-size: 0.9em;
   color: #555;
   margin-bottom: 0.7em;
@@ -413,7 +416,14 @@ button:active,
 }
 
 .quiz-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.6em;
   margin-top: 0.7em;
+}
+
+.quiz-actions [data-next] {
+  margin-left: auto;
 }
 
 .quiz-input {
