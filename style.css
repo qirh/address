@@ -589,10 +589,6 @@ button:disabled:hover,
   margin-left: auto;
 }
 
-.quiz-actions [data-submit] + [data-next] {
-  margin-left: 0;
-}
-
 .quiz-input {
   margin: 0.7em 0;
 }
