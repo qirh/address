@@ -800,8 +800,8 @@ const RANKS = [
   { min: 1.0, label: "Queens Address Legend" },
   { min: 0.75, label: "7-Train Regular" },
   { min: 0.5, label: "Grid Reader" },
-  { min: 0.25, label: "Just Off the LIRR" },
-  { min: 0, label: "Needs Another Walk Around the Block" },
+  { min: 0.25, label: "Took the F Instead of the 7" },
+  { min: 0, label: "Needs Another Tour" },
 ];
 
 function renderResults() {
