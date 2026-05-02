@@ -217,6 +217,7 @@ const quiz = [
   },
   {
     type: "input",
+    maxPoints: 20,
     prompt: "Which boro has the best address system?",
     answer: ["queens"],
     blocking: true,
@@ -236,6 +237,7 @@ const quiz = [
   },
   {
     type: "letters",
+    maxPoints: 20,
     prompt: "What is the best boro?",
     answer: "QUEENS",
     givenIndexes: [0],
@@ -580,7 +582,9 @@ function setupLabs() {
 function renderQuiz() {
   const card = $("#quiz-card");
   const question = quiz[quizState.index];
-  $("#quiz-count").textContent = `Question ${quizState.index + 1} / ${quiz.length}`;
+  const points = question.maxPoints || 1;
+  const pointWord = points === 1 ? "point" : "points";
+  $("#quiz-count").textContent = `Question ${quizState.index + 1} / ${quiz.length} · ${points} ${pointWord}`;
   updateScoreDisplay();
   quizState.selected = null;
   quizState.answered = false;
