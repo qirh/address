@@ -147,7 +147,8 @@ h1.chapter-title {
   margin-right: 0.4em;
 }
 
-.rule-card h2 {
+.rule-card h2,
+.rule-card h3 {
   display: inline;
   font-size: 1em;
   font-weight: bold;
@@ -307,6 +308,106 @@ button:disabled:hover,
   color: #555;
   text-transform: none;
   letter-spacing: 0;
+}
+
+/* Map quiz questions */
+.map-prompt {
+  margin: 0.7em 0 0.5em;
+  color: #444;
+}
+
+.map-frame {
+  margin: 0.6em 0 0;
+  border: 1px solid #999;
+  background: #fff;
+}
+
+.map-svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.map-line {
+  stroke: #d0d0d0;
+  stroke-width: 1.5;
+  fill: none;
+}
+
+.map-line.major {
+  stroke: #888;
+  stroke-width: 3;
+}
+
+.map-line.target {
+  stroke: #444;
+  stroke-width: 2.2;
+}
+
+.map-axis-label {
+  font: 600 12px Inter, system-ui, sans-serif;
+  fill: #555;
+}
+
+.map-target {
+  fill: rgba(255, 220, 100, 0.18);
+  stroke: #b88a00;
+  stroke-width: 1.2;
+  stroke-dasharray: 5 4;
+  cursor: pointer;
+  transition: fill 0.15s ease;
+}
+
+.map-target:hover,
+.map-target:focus {
+  fill: rgba(255, 220, 100, 0.55);
+  outline: none;
+}
+
+.map-target.correct {
+  fill: rgba(86, 184, 100, 0.55);
+  stroke: #2a8c3d;
+  stroke-dasharray: none;
+}
+
+.map-target.wrong {
+  fill: rgba(220, 60, 60, 0.55);
+  stroke: #b00020;
+  stroke-dasharray: none;
+}
+
+.map-target.locked {
+  pointer-events: none;
+}
+
+.map-target.locked:not(.correct) {
+  fill: rgba(255, 220, 100, 0.05);
+  stroke: #ccc;
+}
+
+.map-pin {
+  fill: #b933ad;
+  stroke: #fff;
+  stroke-width: 2.5;
+  transition: r 0.35s ease-out;
+}
+
+.map-pin-label {
+  font: 700 11px ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  fill: #111;
+  paint-order: stroke;
+  stroke: #fff;
+  stroke-width: 3;
+  stroke-linejoin: round;
+}
+
+@media (max-width: 600px) {
+  .map-axis-label {
+    font-size: 14px;
+  }
+  .map-pin-label {
+    font-size: 13px;
+  }
 }
 
 /* Quiz */
@@ -483,6 +584,7 @@ button:disabled:hover,
   color: #555;
 }
 
+.quiz-actions [data-submit],
 .quiz-actions [data-next] {
   margin-left: auto;
 }
