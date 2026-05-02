@@ -584,8 +584,13 @@ button:disabled:hover,
   color: #555;
 }
 
+.quiz-actions [data-submit],
 .quiz-actions [data-next] {
   margin-left: auto;
+}
+
+.quiz-actions [data-submit] + [data-next] {
+  margin-left: 0;
 }
 
 .quiz-input {

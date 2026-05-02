@@ -178,7 +178,7 @@ const quiz = [
   },
   {
     type: "map",
-    maxPoints: 2,
+    maxPoints: 5,
     prompt: "Place 43-25 43rd St on the map.",
     game: {
       address: "43-25 43rd St",
@@ -191,7 +191,7 @@ const quiz = [
   },
   {
     type: "map",
-    maxPoints: 2,
+    maxPoints: 5,
     prompt: "Place 34-56 107th Street on the map.",
     game: {
       address: "34-56 107th Street",
@@ -204,7 +204,7 @@ const quiz = [
   },
   {
     type: "map",
-    maxPoints: 2,
+    maxPoints: 5,
     prompt: "Place 44-13 Queens Blvd on the map.",
     game: {
       address: "44-13 Queens Blvd",
@@ -582,9 +582,7 @@ function setupLabs() {
 function renderQuiz() {
   const card = $("#quiz-card");
   const question = quiz[quizState.index];
-  const points = question.maxPoints || 1;
-  const pointWord = points === 1 ? "point" : "points";
-  $("#quiz-count").textContent = `Question ${quizState.index + 1} / ${quiz.length} · ${points} ${pointWord}`;
+  updateQuestionPointsLabel(question, 0);
   updateScoreDisplay();
   quizState.selected = null;
   quizState.answered = false;
@@ -604,12 +602,12 @@ function renderFillBlanks(card, question) {
     <h3>${escapeHtml(question.prompt)}</h3>
     <div class="fill-blanks-grid"></div>
     <div class="feedback" aria-live="polite"></div>
-    ${actionsHtml()}
+    ${actionsHtml({ submit: true })}
   `;
 
   const grid = card.querySelector(".fill-blanks-grid");
+  const submit = card.querySelector("[data-submit]");
   const inputs = [];
-  let autoTimer = null;
 
   function matches(blank, value) {
     // Strict case-insensitive trim. The leading zero in addresses like
@@ -625,6 +623,11 @@ function renderFillBlanks(card, question) {
     question,
   );
 
+  function refreshSubmitState() {
+    if (!submit) return;
+    submit.disabled = !inputs.every((inp) => inp.value.trim());
+  }
+
   question.blanks.forEach((blank, i) => {
     const row = document.createElement("div");
     row.className = "fill-blanks-row";
@@ -637,17 +640,11 @@ function renderFillBlanks(card, question) {
     input.autocomplete = "off";
     input.spellcheck = false;
     input.addEventListener("keydown", (event) => {
-      if (event.key === "Enter") {
-        clearTimeout(autoTimer);
-        if (inputs.every((inp) => inp.value.trim())) commit();
+      if (event.key === "Enter" && inputs.every((inp) => inp.value.trim())) {
+        commit();
       }
     });
-    input.addEventListener("input", () => {
-      clearTimeout(autoTimer);
-      if (inputs.every((inp) => inp.value.trim())) {
-        autoTimer = setTimeout(() => commit(), 1000);
-      }
-    });
+    input.addEventListener("input", refreshSubmitState);
     inputs.push(input);
     row.appendChild(label);
     row.appendChild(input);
@@ -784,9 +781,10 @@ function renderInput(card, question) {
     <h3>${escapeHtml(question.prompt)}</h3>
     <input class="quiz-input" autocomplete="off" />
     <div class="feedback" aria-live="polite"></div>
-    ${actionsHtml()}
+    ${actionsHtml({ submit: true })}
   `;
   const input = card.querySelector(".quiz-input");
+  const submit = card.querySelector("[data-submit]");
   input.focus();
 
   const commit = wireQuizActions(
@@ -795,18 +793,11 @@ function renderInput(card, question) {
     question,
   );
 
-  let autoTimer = null;
-  input.addEventListener("keydown", (event) => {
-    if (event.key === "Enter") {
-      clearTimeout(autoTimer);
-      commit();
-    }
-  });
   input.addEventListener("input", () => {
-    clearTimeout(autoTimer);
-    if (input.value.trim()) {
-      autoTimer = setTimeout(() => commit(), 1000);
-    }
+    if (submit) submit.disabled = !input.value.trim();
+  });
+  input.addEventListener("keydown", (event) => {
+    if (event.key === "Enter" && input.value.trim()) commit();
   });
 }
 
@@ -993,13 +984,18 @@ function renderBreakdown(card, question) {
   });
 }
 
-function actionsHtml() {
+function actionsHtml({ submit = false } = {}) {
   const nextLabel =
     quizState.index === quiz.length - 1 ? "See results" : "Next →";
+  const submitBtn = submit
+    ? `<button class="button" type="button" data-submit disabled>Submit</button>`
+    : "";
+  const nextHidden = submit ? " hidden" : "";
   return `
     <div class="quiz-actions">
       <button class="button" type="button" data-restart>Restart</button>
-      <button class="button" type="button" data-next disabled>${nextLabel}</button>
+      ${submitBtn}
+      <button class="button" type="button" data-next disabled${nextHidden}>${nextLabel}</button>
     </div>
   `;
 }
@@ -1007,12 +1003,17 @@ function actionsHtml() {
 function wireQuizActions(card, isCorrect, question, { onWrong, onCorrect } = {}) {
   const feedback = card.querySelector(".feedback");
   const next = card.querySelector("[data-next]");
+  const submit = card.querySelector("[data-submit]");
   card.querySelector("[data-restart]")?.addEventListener("click", restartQuiz);
   next?.addEventListener("click", () => {
-    if (next.disabled) return;
+    if (next.disabled || next.hidden) return;
     quizState.index += 1;
     if (quizState.index >= quiz.length) renderResults();
     else renderQuiz();
+  });
+  submit?.addEventListener("click", () => {
+    if (submit.disabled) return;
+    commit();
   });
 
   let wrongCount = 0;
@@ -1035,6 +1036,7 @@ function wireQuizActions(card, isCorrect, question, { onWrong, onCorrect } = {})
           : fallback;
       feedback.textContent = msg;
       feedback.className = "feedback bad";
+      updateQuestionPointsLabel(question, wrongCount);
       onWrong?.();
       return;
     }
@@ -1052,7 +1054,11 @@ function wireQuizActions(card, isCorrect, question, { onWrong, onCorrect } = {})
     feedback.className = "feedback good";
 
     advancing = true;
-    if (next) next.disabled = false;
+    if (submit) submit.hidden = true;
+    if (next) {
+      next.hidden = false;
+      next.disabled = false;
+    }
     onCorrect?.();
     // Deliberately not auto-focused: an Enter keydown that triggered
     // the commit would otherwise re-fire on the freshly focused Next
@@ -1068,6 +1074,13 @@ function quizMaxPoints() {
 
 function updateScoreDisplay() {
   $("#quiz-score").textContent = `${quizState.score} / ${quizMaxPoints()}`;
+}
+
+function updateQuestionPointsLabel(question, wrongCount = 0) {
+  const max = question.maxPoints || 1;
+  const current = Math.max(0, max - wrongCount);
+  const word = current === 1 ? "point" : "points";
+  $("#quiz-count").textContent = `Question ${quizState.index + 1} / ${quiz.length} · ${current} ${word}`;
 }
 
 const RANKS = [
