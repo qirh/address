@@ -425,6 +425,49 @@ button:active,
   margin-top: 0.7em;
 }
 
+.rank-ladder {
+  list-style: none;
+  margin: 0.8em 0;
+  padding: 0;
+  border: 1px solid #ccc;
+  background: #fff;
+}
+
+.rank-row {
+  display: grid;
+  grid-template-columns: 4.5em 1fr auto;
+  align-items: center;
+  gap: 0.7em;
+  padding: 0.4em 0.7em;
+  border-bottom: 1px solid #eee;
+}
+
+.rank-row:last-child {
+  border-bottom: none;
+}
+
+.rank-row.rank-achieved {
+  background: #ffd;
+}
+
+.rank-row.rank-achieved .rank-label {
+  font-weight: bold;
+}
+
+.rank-row.rank-achieved::after {
+  content: "your rank";
+  font-size: 0.8em;
+  color: #b933ad;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.rank-range {
+  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  font-size: 0.9em;
+  color: #555;
+}
+
 .quiz-actions [data-next] {
   margin-left: auto;
 }

@@ -796,18 +796,42 @@ function wireQuizActions(card, isCorrect, question, { onWrong } = {}) {
   return commit;
 }
 
+const RANKS = [
+  { min: 1.0, label: "Queens Address Legend" },
+  { min: 0.75, label: "7-Train Regular" },
+  { min: 0.5, label: "Grid Reader" },
+  { min: 0.25, label: "Just Off the LIRR" },
+  { min: 0, label: "Needs Another Walk Around the Block" },
+];
+
 function renderResults() {
   $("#quiz-count").textContent = "Complete";
   $("#quiz-score").textContent = `${quizState.score} / ${quiz.length}`;
-  const title = quizState.score === quiz.length
-    ? "Queens Address Legend"
-    : quizState.score / quiz.length >= 0.5
-      ? "Grid Reader"
-      : "Needs Another Walk Around the Block";
+
+  const total = quiz.length;
+  const tiers = RANKS.map((r) => ({
+    label: r.label,
+    minScore: Math.ceil(r.min * total),
+  }));
+  tiers.forEach((tier, i) => {
+    tier.maxScore = i === 0 ? total : tiers[i - 1].minScore - 1;
+  });
+  const achieved = tiers.find((tier) => quizState.score >= tier.minScore);
+
+  const ladder = tiers
+    .map((tier) => {
+      const range = tier.minScore === tier.maxScore
+        ? `${tier.minScore}/${total}`
+        : `${tier.minScore}–${tier.maxScore}/${total}`;
+      const cls = tier === achieved ? " rank-achieved" : "";
+      return `<li class="rank-row${cls}"><span class="rank-range">${range}</span><span class="rank-label">${tier.label}</span></li>`;
+    })
+    .join("");
+
   $("#quiz-card").innerHTML = `
-    <h3>${title}</h3>
+    <h3>${achieved.label}</h3>
     <p>You scored <strong>${quizState.score} out of ${quiz.length}</strong>.</p>
-    <p>Tour move: split the Queens hyphen first, then read the street type.</p>
+    <ul class="rank-ladder">${ladder}</ul>
     <button class="button" type="button" data-restart>Play again</button>
   `;
   $("#quiz-card [data-restart]").addEventListener("click", restartQuiz);
