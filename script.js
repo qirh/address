@@ -167,7 +167,11 @@ const quiz = [
     blanks: [
       { label: "Cross street", answer: "123" },
       { label: "House number", answer: "01" },
-      { label: "Street name", answer: "Roosevelt Avenue" },
+      {
+        label: "Street name",
+        answer: "Roosevelt Avenue",
+        alternates: ["Roosevelt", "Roosevelt Ave"],
+      },
     ],
     explain:
       "Citi Field sits on Roosevelt Avenue, between 123rd and 124th Streets. 123 is the cross-street field, 01 is the house number, Roosevelt Avenue is the street.",
