@@ -348,9 +348,7 @@ function renderFillBlanks(card, question) {
     <h3>${escapeHtml(question.prompt)}</h3>
     <div class="fill-blanks-grid"></div>
     <div class="feedback" aria-live="polite"></div>
-    <div class="quiz-actions">
-      <button class="button" type="button" data-restart>Restart</button>
-    </div>
+    ${actionsHtml()}
   `;
 
   const grid = card.querySelector(".fill-blanks-grid");
@@ -411,9 +409,7 @@ function renderLetters(card, question) {
     <h3>${escapeHtml(question.prompt)}</h3>
     <div class="letters-input" role="group" aria-label="${escapeHtml(groupLabel)}"></div>
     <div class="feedback" aria-live="polite"></div>
-    <div class="quiz-actions">
-      <button class="button" type="button" data-restart>Restart</button>
-    </div>
+    ${actionsHtml()}
   `;
 
   const container = card.querySelector(".letters-input");
@@ -494,9 +490,7 @@ function renderChoice(card, question) {
     <h3>${escapeHtml(question.prompt)}</h3>
     <div class="quiz-options"></div>
     <div class="feedback" aria-live="polite"></div>
-    <div class="quiz-actions">
-      <button class="button" type="button" data-restart>Restart</button>
-    </div>
+    ${actionsHtml()}
   `;
 
   const commit = wireQuizActions(
@@ -526,9 +520,7 @@ function renderInput(card, question) {
     <h3>${escapeHtml(question.prompt)}</h3>
     <input class="quiz-input" autocomplete="off" />
     <div class="feedback" aria-live="polite"></div>
-    <div class="quiz-actions">
-      <button class="button" type="button" data-restart>Restart</button>
-    </div>
+    ${actionsHtml()}
   `;
   const input = card.querySelector(".quiz-input");
   input.focus();
@@ -553,9 +545,7 @@ function renderMatch(card, question) {
       <div class="match-column" data-right></div>
     </div>
     <div class="feedback" aria-live="polite"></div>
-    <div class="quiz-actions">
-      <button class="button" type="button" data-restart>Restart</button>
-    </div>
+    ${actionsHtml()}
   `;
 
   const leftColumn = card.querySelector("[data-left]");
@@ -688,9 +678,7 @@ function renderBreakdown(card, question) {
     <h3>${escapeHtml(question.prompt)}</h3>
     <div class="breakdown-grid"></div>
     <div class="feedback" aria-live="polite"></div>
-    <div class="quiz-actions">
-      <button class="button" type="button" data-restart>Restart</button>
-    </div>
+    ${actionsHtml()}
   `;
 
   const commit = wireQuizActions(
@@ -731,9 +719,27 @@ function renderBreakdown(card, question) {
   });
 }
 
+function actionsHtml() {
+  const nextLabel =
+    quizState.index === quiz.length - 1 ? "See results" : "Next →";
+  return `
+    <div class="quiz-actions">
+      <button class="button" type="button" data-restart>Restart</button>
+      <button class="button" type="button" data-next disabled>${nextLabel}</button>
+    </div>
+  `;
+}
+
 function wireQuizActions(card, isCorrect, question, { onWrong } = {}) {
   const feedback = card.querySelector(".feedback");
+  const next = card.querySelector("[data-next]");
   card.querySelector("[data-restart]")?.addEventListener("click", restartQuiz);
+  next?.addEventListener("click", () => {
+    if (next.disabled) return;
+    quizState.index += 1;
+    if (quizState.index >= quiz.length) renderResults();
+    else renderQuiz();
+  });
 
   let attemptedWrong = false;
   let advancing = false;
@@ -770,24 +776,7 @@ function wireQuizActions(card, isCorrect, question, { onWrong } = {}) {
     feedback.className = "feedback good";
 
     advancing = true;
-    showNextButton();
-  }
-
-  function showNextButton() {
-    const actions = card.querySelector(".quiz-actions");
-    if (!actions || actions.querySelector("[data-next]")) return;
-    const next = document.createElement("button");
-    next.type = "button";
-    next.className = "button";
-    next.dataset.next = "";
-    next.textContent =
-      quizState.index === quiz.length - 1 ? "See results" : "Next →";
-    next.addEventListener("click", () => {
-      quizState.index += 1;
-      if (quizState.index >= quiz.length) renderResults();
-      else renderQuiz();
-    });
-    actions.appendChild(next);
+    if (next) next.disabled = false;
     // Deliberately not auto-focused: an Enter keydown that triggered
     // the commit would otherwise re-fire on the freshly focused Next
     // button and skip past the explanation.
