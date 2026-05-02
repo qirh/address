@@ -157,6 +157,9 @@ const quiz = [
         alternates: ["107", "107th", "107 st", "107th st"],
       },
     ],
+    wrongMessages: [
+      "Not quite. Re-read 34-56 107th Street and try again.",
+    ],
     explain:
       "Louis Armstrong's house is on 107th Street, between 34th and 35th Avenues. 34 is the cross-street field, 56 is the house number, 107th Street is the street it sits on.",
   },
@@ -172,6 +175,9 @@ const quiz = [
         answer: "Roosevelt Avenue",
         alternates: ["Roosevelt", "Roosevelt Ave"],
       },
+    ],
+    wrongMessages: [
+      "Not quite. Re-read 123-01 Roosevelt Avenue and try again.",
     ],
     explain:
       "Citi Field sits on Roosevelt Avenue, between 123rd and 124th Streets. 123 is the cross-street field, 01 is the house number, Roosevelt Avenue is the street.",
