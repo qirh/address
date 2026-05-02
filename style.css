@@ -405,6 +405,10 @@ button:active,
 }
 
 .breakdown-line {
+  display: grid;
+  grid-template-columns: 7em 1fr;
+  align-items: center;
+  gap: 0.6em;
   margin: 0.3em 0;
   padding: 0.2em 0;
   border-bottom: 1px dotted #ccc;
@@ -412,7 +416,6 @@ button:active,
 
 .breakdown-line span:first-child {
   font-weight: bold;
-  margin-right: 0.5em;
 }
 
 .quiz-actions {
