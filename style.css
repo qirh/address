@@ -509,7 +509,7 @@ button:disabled:hover,
 .feedback {
   margin: 0.5em 0;
   font-style: italic;
-  height: 5em;
+  height: 7em;
   overflow-y: auto;
 }
 
