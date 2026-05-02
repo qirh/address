@@ -764,10 +764,10 @@ function wireQuizActions(card, isCorrect, question, { onWrong } = {}) {
       $("#quiz-score").textContent = `${quizState.score} ${
         quizState.score === 1 ? "point" : "points"
       }`;
+      playTrainSlap({ big: question.type === "letters" });
     }
     feedback.textContent = question.explain || "Correct.";
     feedback.className = "feedback good";
-    playTrainSlap({ big: question.type === "letters" });
 
     advancing = true;
     showNextButton();
