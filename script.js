@@ -736,7 +736,7 @@ function wireQuizActions(card, isCorrect, question, { onWrong } = {}) {
       attemptedWrong = true;
       const fallback = question.explain
         ? `Not quite. ${question.explain}`
-        : "Not quite — try again.";
+        : "Not quite. Try again.";
       const msg =
         question.wrongMessages && question.wrongMessages.length
           ? question.wrongMessages[
