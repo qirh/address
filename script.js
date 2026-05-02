@@ -177,6 +177,45 @@ const quiz = [
       "Citi Field sits on Roosevelt Avenue, between 123rd and 124th Streets. 123 is the cross-street field, 01 is the house number, Roosevelt Avenue is the street.",
   },
   {
+    type: "map",
+    maxPoints: 2,
+    prompt: "Place 43-25 43rd St on the map.",
+    game: {
+      address: "43-25 43rd St",
+      parts: { cross: "43", house: "25", street: "43rd Street" },
+      map: "sunnyside",
+      targetRoad: { kind: "street", label: "43rd St" },
+      correctIndex: 2,
+    },
+    explain: "43 means the closest cross street is 43rd Avenue. The address sits on 43rd Street, so it's the block of 43rd Street next to 43rd Avenue.",
+  },
+  {
+    type: "map",
+    maxPoints: 2,
+    prompt: "Place 34-56 107th Street on the map.",
+    game: {
+      address: "34-56 107th Street",
+      parts: { cross: "34", house: "56", street: "107th Street" },
+      map: "corona",
+      targetRoad: { kind: "street", label: "107th St" },
+      correctIndex: 0,
+    },
+    explain: "34 means the closest cross street is 34th Avenue. The address sits on 107th Street, so it's the block of 107th Street between 34th and 35th.",
+  },
+  {
+    type: "map",
+    maxPoints: 2,
+    prompt: "Place 44-13 Queens Blvd on the map.",
+    game: {
+      address: "44-13 Queens Blvd",
+      parts: { cross: "44", house: "13", street: "Queens Blvd" },
+      map: "sunnyside",
+      targetRoad: { kind: "avenue", label: "Queens Blvd" },
+      correctIndex: 1,
+    },
+    explain: "44 means the closest cross street is 44th Street. The address sits on Queens Boulevard, so it's the block of Queens Blvd between 44th and 45th.",
+  },
+  {
     type: "input",
     prompt: "Which boro has the best address system?",
     answer: ["queens"],
@@ -297,36 +336,6 @@ function decodeQueensAddress(raw) {
   `;
 }
 
-const mapGames = [
-  {
-    id: "sunnyside-43-25",
-    address: "43-25 43rd St",
-    parts: { cross: "43", house: "25", street: "43rd Street" },
-    map: "sunnyside",
-    targetRoad: { kind: "street", label: "43rd St" },
-    correctIndex: 2, // between 43rd Ave and Queens Blvd
-    explain: "43 means the closest cross street is 43rd Avenue. The address sits on 43rd Street, so it's the block of 43rd Street next to 43rd Avenue.",
-  },
-  {
-    id: "corona-34-56",
-    address: "34-56 107th Street",
-    parts: { cross: "34", house: "56", street: "107th Street" },
-    map: "corona",
-    targetRoad: { kind: "street", label: "107th St" },
-    correctIndex: 0, // between 34th Ave and 35th Ave
-    explain: "34 means the closest cross street is 34th Avenue. The address sits on 107th Street, so it's the block of 107th Street between 34th and 35th.",
-  },
-  {
-    id: "sunnyside-44-13",
-    address: "44-13 Queens Blvd",
-    parts: { cross: "44", house: "13", street: "Queens Blvd" },
-    map: "sunnyside",
-    targetRoad: { kind: "avenue", label: "Queens Blvd" },
-    correctIndex: 1, // between 44th St and 45th St
-    explain: "44 means the closest cross street is 44th Street. The address sits on Queens Boulevard, so it's the block of Queens Blvd between 44th and 45th.",
-  },
-];
-
 const mapDefs = {
   sunnyside: {
     viewBox: "0 0 540 340",
@@ -440,13 +449,12 @@ function drawMap(svg, def, targetLabel) {
   });
 }
 
-function renderMapGame(game) {
+function renderMap(card, question) {
+  const game = question.game;
   const def = mapDefs[game.map];
-  const article = document.createElement("article");
-  article.className = "map-game";
 
-  article.innerHTML = `
-    <h3>${escapeHtml(game.address)}</h3>
+  card.innerHTML = `
+    <h3>${escapeHtml(question.prompt)}</h3>
     <div class="queens-address" aria-label="Address parts">
       <span><strong>${escapeHtml(game.parts.cross)}</strong><small>cross street</small></span>
       <b>-</b>
@@ -457,96 +465,88 @@ function renderMapGame(game) {
     <div class="map-frame">
       <svg class="map-svg" viewBox="${def.viewBox}" preserveAspectRatio="xMidYMid meet"></svg>
     </div>
-    <p class="map-feedback" role="status" aria-live="polite"></p>
-    <div class="map-actions">
-      <button type="button" class="button" data-map-reset>Try another</button>
-    </div>
+    <div class="feedback" aria-live="polite"></div>
+    ${actionsHtml()}
   `;
 
-  const svg = article.querySelector(".map-svg");
-  const feedback = article.querySelector(".map-feedback");
-  const reset = article.querySelector("[data-map-reset]");
-
+  const svg = card.querySelector(".map-svg");
   const segments = computeSegments(def, game);
+  let lastClickedIndex = -1;
   let answered = false;
-
-  function paintSegments() {
-    segments.forEach((seg, i) => {
-      const rect = svgEl("rect", {
-        x: seg.x,
-        y: seg.y,
-        width: seg.w,
-        height: seg.h,
-        class: "map-target",
-        tabindex: "0",
-        role: "button",
-        "aria-label": `${seg.roadLabel} between ${seg.between}`,
-        "data-index": String(i),
-      });
-      rect.addEventListener("click", () => handle(i, rect));
-      rect.addEventListener("keydown", (e) => {
-        if (e.key === "Enter" || e.key === " ") {
-          e.preventDefault();
-          handle(i, rect);
-        }
-      });
-      svg.appendChild(rect);
-    });
-  }
-
-  function clearOverlays() {
-    svg.querySelectorAll(".map-target, .map-pin, .map-pin-label").forEach((n) => n.remove());
-  }
-
-  function handle(i, rect) {
-    if (answered) return;
-    if (i === game.correctIndex) {
-      rect.classList.add("correct");
-      const cx = Number(rect.getAttribute("x")) + Number(rect.getAttribute("width")) / 2;
-      const cy = Number(rect.getAttribute("y")) + Number(rect.getAttribute("height")) / 2;
-      const pin = svgEl("circle", { cx, cy, r: 0, class: "map-pin" });
-      svg.appendChild(pin);
-      requestAnimationFrame(() => pin.setAttribute("r", "10"));
-      svg.appendChild(svgEl("text", {
-        x: cx,
-        y: cy - 18,
-        class: "map-pin-label",
-        "text-anchor": "middle",
-      }, game.address));
-      feedback.className = "map-feedback good";
-      feedback.textContent = `Correct. ${game.explain}`;
-      answered = true;
-      svg.querySelectorAll(".map-target").forEach((t) => {
-        t.setAttribute("tabindex", "-1");
-        t.classList.add("locked");
-      });
-    } else {
-      rect.classList.add("wrong");
-      const seg = segments[i];
-      feedback.className = "map-feedback bad";
-      feedback.textContent = `That's the block between ${seg.between}. The first number is the cross-street clue, ${game.parts.cross}.`;
-      setTimeout(() => rect.classList.remove("wrong"), 700);
-    }
-  }
-
-  reset.addEventListener("click", () => {
-    answered = false;
-    clearOverlays();
-    paintSegments();
-    feedback.textContent = "";
-    feedback.className = "map-feedback";
-  });
+  let commit;
 
   drawMap(svg, def, game.targetRoad.label);
-  paintSegments();
 
-  return article;
-}
+  segments.forEach((seg, i) => {
+    const rect = svgEl("rect", {
+      x: seg.x,
+      y: seg.y,
+      width: seg.w,
+      height: seg.h,
+      class: "map-target",
+      tabindex: "0",
+      role: "button",
+      "aria-label": `${seg.roadLabel} between ${seg.between}`,
+      "data-index": String(i),
+    });
+    rect.addEventListener("click", () => {
+      if (answered) return;
+      lastClickedIndex = i;
+      commit();
+    });
+    rect.addEventListener("keydown", (e) => {
+      if (answered) return;
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        lastClickedIndex = i;
+        commit();
+      }
+    });
+    svg.appendChild(rect);
+  });
 
-function setupMapGames() {
-  const root = $("#map-games");
-  if (!root) return;
-  mapGames.forEach((game) => root.appendChild(renderMapGame(game)));
+  commit = wireQuizActions(
+    card,
+    () => lastClickedIndex === game.correctIndex,
+    question,
+    {
+      onWrong: () => {
+        const rect = svg.querySelector(`.map-target[data-index="${lastClickedIndex}"]`);
+        if (rect) {
+          rect.classList.add("wrong");
+          setTimeout(() => rect.classList.remove("wrong"), 700);
+        }
+        const feedback = card.querySelector(".feedback");
+        if (feedback) {
+          feedback.textContent = `Not that block. The first number, ${game.parts.cross}, is the cross-street clue.`;
+          feedback.className = "feedback bad";
+        }
+      },
+      onCorrect: () => {
+        answered = true;
+        const rects = svg.querySelectorAll(".map-target");
+        rects.forEach((r, i) => {
+          r.setAttribute("tabindex", "-1");
+          r.classList.add("locked");
+          if (i === game.correctIndex) r.classList.add("correct");
+        });
+        const correctRect = svg.querySelector(`.map-target[data-index="${game.correctIndex}"]`);
+        if (correctRect) {
+          const cx = Number(correctRect.getAttribute("x")) + Number(correctRect.getAttribute("width")) / 2;
+          const cy = Number(correctRect.getAttribute("y")) + Number(correctRect.getAttribute("height")) / 2;
+          const pin = svgEl("circle", { cx, cy, r: 0, class: "map-pin" });
+          svg.appendChild(pin);
+          requestAnimationFrame(() => pin.setAttribute("r", "10"));
+          svg.appendChild(svgEl("text", {
+            x: cx,
+            y: cy - 18,
+            class: "map-pin-label",
+            "text-anchor": "middle",
+          }, game.address));
+        }
+      },
+    },
+  );
 }
 
 function setupLabs() {
@@ -581,7 +581,7 @@ function renderQuiz() {
   const card = $("#quiz-card");
   const question = quiz[quizState.index];
   $("#quiz-count").textContent = `Question ${quizState.index + 1} / ${quiz.length}`;
-  $("#quiz-score").textContent = `${quizState.score} ${quizState.score === 1 ? "point" : "points"}`;
+  updateScoreDisplay();
   quizState.selected = null;
   quizState.answered = false;
   quizState.matchPairs = {};
@@ -592,6 +592,7 @@ function renderQuiz() {
   else if (question.type === "breakdown") renderBreakdown(card, question);
   else if (question.type === "letters") renderLetters(card, question);
   else if (question.type === "fillBlanks") renderFillBlanks(card, question);
+  else if (question.type === "map") renderMap(card, question);
 }
 
 function renderFillBlanks(card, question) {
@@ -981,7 +982,7 @@ function actionsHtml() {
   `;
 }
 
-function wireQuizActions(card, isCorrect, question, { onWrong } = {}) {
+function wireQuizActions(card, isCorrect, question, { onWrong, onCorrect } = {}) {
   const feedback = card.querySelector(".feedback");
   const next = card.querySelector("[data-next]");
   card.querySelector("[data-restart]")?.addEventListener("click", restartQuiz);
@@ -992,7 +993,7 @@ function wireQuizActions(card, isCorrect, question, { onWrong } = {}) {
     else renderQuiz();
   });
 
-  let attemptedWrong = false;
+  let wrongCount = 0;
   let advancing = false;
 
   function commit() {
@@ -1000,7 +1001,7 @@ function wireQuizActions(card, isCorrect, question, { onWrong } = {}) {
 
     const correct = isCorrect();
     if (!correct) {
-      attemptedWrong = true;
+      wrongCount += 1;
       const fallback = question.explain
         ? `Not quite. ${question.explain}`
         : "Not quite. Try again.";
@@ -1016,24 +1017,35 @@ function wireQuizActions(card, isCorrect, question, { onWrong } = {}) {
       return;
     }
 
-    if (!attemptedWrong) {
-      quizState.score += 1;
-      $("#quiz-score").textContent = `${quizState.score} ${
-        quizState.score === 1 ? "point" : "points"
-      }`;
-      playTrainSlap({ big: question.type === "letters" });
+    const maxPoints = question.maxPoints || 1;
+    const earned = Math.max(0, maxPoints - wrongCount);
+    if (earned > 0) {
+      quizState.score += earned;
+      updateScoreDisplay();
+      if (wrongCount === 0) {
+        playTrainSlap({ big: question.type === "letters" });
+      }
     }
     feedback.textContent = question.explain || "Correct.";
     feedback.className = "feedback good";
 
     advancing = true;
     if (next) next.disabled = false;
+    onCorrect?.();
     // Deliberately not auto-focused: an Enter keydown that triggered
     // the commit would otherwise re-fire on the freshly focused Next
     // button and skip past the explanation.
   }
 
   return commit;
+}
+
+function quizMaxPoints() {
+  return quiz.reduce((sum, q) => sum + (q.maxPoints || 1), 0);
+}
+
+function updateScoreDisplay() {
+  $("#quiz-score").textContent = `${quizState.score} / ${quizMaxPoints()}`;
 }
 
 const RANKS = [
@@ -1046,9 +1058,10 @@ const RANKS = [
 
 function renderResults() {
   $("#quiz-count").textContent = "Complete";
-  $("#quiz-score").textContent = `${quizState.score} / ${quiz.length}`;
 
-  const total = quiz.length;
+  const total = quizMaxPoints();
+  $("#quiz-score").textContent = `${quizState.score} / ${total}`;
+
   const tiers = RANKS.map((r) => ({
     label: r.label,
     minScore: Math.ceil(r.min * total),
@@ -1070,7 +1083,7 @@ function renderResults() {
 
   $("#quiz-card").innerHTML = `
     <h3>${achieved.label}</h3>
-    <p>You scored <strong>${quizState.score} out of ${quiz.length}</strong>.</p>
+    <p>You scored <strong>${quizState.score} out of ${total}</strong>.</p>
     <ul class="rank-ladder">${ladder}</ul>
     <button class="button" type="button" data-restart>Play again</button>
   `;
@@ -1084,5 +1097,4 @@ function restartQuiz() {
 }
 
 setupLabs();
-setupMapGames();
 renderQuiz();

@@ -310,28 +310,7 @@ button:disabled:hover,
   letter-spacing: 0;
 }
 
-/* Mini-map games */
-.map-games {
-  display: grid;
-  gap: 1.4em;
-  margin: 1em 0;
-}
-
-.map-game {
-  border: 1px solid #999;
-  background: #fafafa;
-  padding: 0.8em 1em 1em;
-}
-
-.map-game h3 {
-  margin: 0 0 0.4em;
-  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
-}
-
-.map-game .queens-address {
-  margin: 0.5em 0;
-}
-
+/* Map quiz questions */
 .map-prompt {
   margin: 0.7em 0 0.5em;
   color: #444;
@@ -420,24 +399,6 @@ button:disabled:hover,
   stroke: #fff;
   stroke-width: 3;
   stroke-linejoin: round;
-}
-
-.map-feedback {
-  margin: 0.7em 0 0;
-  min-height: 1.4em;
-  font-style: italic;
-}
-
-.map-feedback.good {
-  color: green;
-}
-
-.map-feedback.bad {
-  color: red;
-}
-
-.map-actions {
-  margin-top: 0.7em;
 }
 
 @media (max-width: 600px) {
