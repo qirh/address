@@ -299,26 +299,37 @@ function decodeQueensAddress(raw) {
 
 const mapGames = [
   {
-    id: "sunnyside-43-12",
-    address: "43-12 47th Avenue",
-    parts: { cross: "43", house: "12", street: "47th Avenue" },
+    id: "sunnyside-43-25",
+    address: "43-25 43rd St",
+    parts: { cross: "43", house: "25", street: "43rd Street" },
     map: "sunnyside",
-    correctIndex: 0,
-    explain: "43 means the closest cross street is 43rd Street. The address sits on 47th Avenue, so it's the block of 47th Avenue between 43rd and 44th.",
+    targetRoad: { kind: "street", label: "43rd St" },
+    correctIndex: 2, // between 43rd Ave and Queens Blvd
+    explain: "43 means the closest cross street is 43rd Avenue. The address sits on 43rd Street, so it's the block of 43rd Street next to 43rd Avenue.",
   },
   {
     id: "corona-34-56",
     address: "34-56 107th Street",
     parts: { cross: "34", house: "56", street: "107th Street" },
     map: "corona",
-    correctIndex: 0,
+    targetRoad: { kind: "street", label: "107th St" },
+    correctIndex: 0, // between 34th Ave and 35th Ave
     explain: "34 means the closest cross street is 34th Avenue. The address sits on 107th Street, so it's the block of 107th Street between 34th and 35th.",
+  },
+  {
+    id: "sunnyside-44-13",
+    address: "44-13 Queens Blvd",
+    parts: { cross: "44", house: "13", street: "Queens Blvd" },
+    map: "sunnyside",
+    targetRoad: { kind: "avenue", label: "Queens Blvd" },
+    correctIndex: 1, // between 44th St and 45th St
+    explain: "44 means the closest cross street is 44th Street. The address sits on Queens Boulevard, so it's the block of Queens Blvd between 44th and 45th.",
   },
 ];
 
 const mapDefs = {
   sunnyside: {
-    viewBox: "0 0 540 260",
+    viewBox: "0 0 540 340",
     streets: [
       { label: "43rd St", x: 130 },
       { label: "44th St", x: 220 },
@@ -327,29 +338,29 @@ const mapDefs = {
       { label: "47th St", x: 490 },
     ],
     avenues: [
-      { label: "Skillman Ave", y: 65 },
-      { label: "Queens Blvd", y: 135, major: true },
-      { label: "47th Ave", y: 215, target: true },
+      { label: "39th Ave", y: 70 },
+      { label: "Skillman Ave", y: 130 },
+      { label: "43rd Ave", y: 190 },
+      { label: "Queens Blvd", y: 250, major: true },
+      { label: "47th Ave", y: 310 },
     ],
-    segmentAxis: "horizontal",
   },
   corona: {
-    viewBox: "0 0 540 260",
+    viewBox: "0 0 540 280",
     streets: [
       { label: "105th St", x: 130 },
       { label: "106th St", x: 220 },
-      { label: "107th St", x: 310, target: true },
+      { label: "107th St", x: 310 },
       { label: "108th St", x: 400 },
       { label: "109th St", x: 490 },
     ],
     avenues: [
-      { label: "34th Ave", y: 60 },
-      { label: "35th Ave", y: 110 },
-      { label: "37th Ave", y: 160 },
-      { label: "38th Ave", y: 205 },
-      { label: "39th Ave", y: 245 },
+      { label: "34th Ave", y: 65 },
+      { label: "35th Ave", y: 120 },
+      { label: "37th Ave", y: 170 },
+      { label: "38th Ave", y: 215 },
+      { label: "39th Ave", y: 260 },
     ],
-    segmentAxis: "vertical",
   },
 };
 
@@ -362,10 +373,11 @@ function svgEl(name, attrs, text) {
   return el;
 }
 
-function computeSegments(def) {
+function computeSegments(def, game) {
   const segments = [];
-  if (def.segmentAxis === "horizontal") {
-    const ave = def.avenues.find((a) => a.target);
+  const target = game.targetRoad;
+  if (target.kind === "avenue") {
+    const ave = def.avenues.find((a) => a.label === target.label);
     for (let i = 0; i < def.streets.length - 1; i++) {
       const a = def.streets[i];
       const b = def.streets[i + 1];
@@ -379,7 +391,7 @@ function computeSegments(def) {
       });
     }
   } else {
-    const st = def.streets.find((s) => s.target);
+    const st = def.streets.find((s) => s.label === target.label);
     for (let i = 0; i < def.avenues.length - 1; i++) {
       const a = def.avenues[i];
       const b = def.avenues[i + 1];
@@ -396,7 +408,7 @@ function computeSegments(def) {
   return segments;
 }
 
-function drawMap(svg, def) {
+function drawMap(svg, def, targetLabel) {
   const [, , vbW, vbH] = svg.getAttribute("viewBox").split(" ").map(Number);
   const left = 100;
   const right = vbW - 20;
@@ -404,7 +416,8 @@ function drawMap(svg, def) {
   const bottom = vbH - 10;
 
   def.avenues.forEach((ave) => {
-    const cls = `map-line${ave.major ? " major" : ""}${ave.target ? " target" : ""}`;
+    const isTarget = ave.label === targetLabel;
+    const cls = `map-line${ave.major ? " major" : ""}${isTarget ? " target" : ""}`;
     svg.appendChild(svgEl("line", { x1: left, x2: right, y1: ave.y, y2: ave.y, class: cls }));
     svg.appendChild(svgEl("text", {
       x: left - 6,
@@ -415,7 +428,8 @@ function drawMap(svg, def) {
   });
 
   def.streets.forEach((st) => {
-    const cls = `map-line${st.target ? " target" : ""}`;
+    const isTarget = st.label === targetLabel;
+    const cls = `map-line${isTarget ? " target" : ""}`;
     svg.appendChild(svgEl("line", { x1: st.x, x2: st.x, y1: top, y2: bottom, class: cls }));
     svg.appendChild(svgEl("text", {
       x: st.x,
@@ -453,7 +467,7 @@ function renderMapGame(game) {
   const feedback = article.querySelector(".map-feedback");
   const reset = article.querySelector("[data-map-reset]");
 
-  const segments = computeSegments(def);
+  const segments = computeSegments(def, game);
   let answered = false;
 
   function paintSegments() {
@@ -523,7 +537,7 @@ function renderMapGame(game) {
     feedback.className = "map-feedback";
   });
 
-  drawMap(svg, def);
+  drawMap(svg, def, game.targetRoad.label);
   paintSegments();
 
   return article;
