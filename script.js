@@ -216,6 +216,32 @@ const quiz = [
     explain: "44 means the closest cross street is 44th Street. The address sits on Queens Boulevard, so it's the block of Queens Blvd between 44th and 45th.",
   },
   {
+    type: "map",
+    maxPoints: 5,
+    prompt: "Place 32-02 Queens Blvd on the map.",
+    game: {
+      address: "32-02 Queens Blvd",
+      parts: { cross: "32", house: "02", street: "Queens Blvd" },
+      map: "lic",
+      targetRoad: { kind: "avenue", label: "Queens Blvd" },
+      correctIndex: 2,
+    },
+    explain: "32 means the closest cross street is 32nd Street. The address sits on Queens Boulevard, so it's the block of Queens Blvd between 32nd and 33rd.",
+  },
+  {
+    type: "map",
+    maxPoints: 5,
+    prompt: "Place 47-3 Queens Blvd on the map.",
+    game: {
+      address: "47-3 Queens Blvd",
+      parts: { cross: "47", house: "3", street: "Queens Blvd" },
+      map: "sunnyside",
+      targetRoad: { kind: "avenue", label: "Queens Blvd" },
+      correctIndex: 4,
+    },
+    explain: "47 means the closest cross street is 47th Street. The address sits on Queens Boulevard, so it's the block of Queens Blvd between 47th and 48th.",
+  },
+  {
     type: "input",
     maxPoints: 20,
     prompt: "Which boro has the best address system?",
@@ -340,13 +366,14 @@ function decodeQueensAddress(raw) {
 
 const mapDefs = {
   sunnyside: {
-    viewBox: "0 0 540 340",
+    viewBox: "0 0 620 340",
     streets: [
       { label: "43rd St", x: 130 },
       { label: "44th St", x: 220 },
       { label: "45th St", x: 310 },
       { label: "46th St", x: 400 },
       { label: "47th St", x: 490 },
+      { label: "48th St", x: 580 },
     ],
     avenues: [
       { label: "39th Ave", y: 70 },
@@ -354,6 +381,23 @@ const mapDefs = {
       { label: "43rd Ave", y: 190 },
       { label: "Queens Blvd", y: 250, major: true },
       { label: "47th Ave", y: 310 },
+    ],
+  },
+  lic: {
+    viewBox: "0 0 540 290",
+    streets: [
+      { label: "30th St", x: 130 },
+      { label: "31st St", x: 220 },
+      { label: "32nd St", x: 310 },
+      { label: "33rd St", x: 400 },
+      { label: "34th St", x: 490 },
+    ],
+    avenues: [
+      { label: "39th Ave", y: 65 },
+      { label: "40th Ave", y: 115 },
+      { label: "41st Ave", y: 165 },
+      { label: "Queens Blvd", y: 220, major: true },
+      { label: "44th Dr", y: 265 },
     ],
   },
   corona: {
