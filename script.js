@@ -605,6 +605,7 @@ function renderFillBlanks(card, question) {
 
   const grid = card.querySelector(".fill-blanks-grid");
   const inputs = [];
+  let autoTimer = null;
 
   function matches(blank, value) {
     // Strict case-insensitive trim. The leading zero in addresses like
@@ -633,7 +634,14 @@ function renderFillBlanks(card, question) {
     input.spellcheck = false;
     input.addEventListener("keydown", (event) => {
       if (event.key === "Enter") {
+        clearTimeout(autoTimer);
         if (inputs.every((inp) => inp.value.trim())) commit();
+      }
+    });
+    input.addEventListener("input", () => {
+      clearTimeout(autoTimer);
+      if (inputs.every((inp) => inp.value.trim())) {
+        autoTimer = setTimeout(() => commit(), 1000);
       }
     });
     inputs.push(input);
@@ -783,8 +791,18 @@ function renderInput(card, question) {
     question,
   );
 
+  let autoTimer = null;
   input.addEventListener("keydown", (event) => {
-    if (event.key === "Enter") commit();
+    if (event.key === "Enter") {
+      clearTimeout(autoTimer);
+      commit();
+    }
+  });
+  input.addEventListener("input", () => {
+    clearTimeout(autoTimer);
+    if (input.value.trim()) {
+      autoTimer = setTimeout(() => commit(), 1000);
+    }
   });
 }
 
