@@ -509,6 +509,8 @@ button:disabled:hover,
 .feedback {
   margin: 0.5em 0;
   font-style: italic;
+  height: 5em;
+  overflow-y: auto;
 }
 
 .feedback.good {
