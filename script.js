@@ -157,8 +157,11 @@ const quiz = [
         alternates: ["107", "107th", "107 st", "107th st"],
       },
     ],
+    wrongMessages: [
+      "Not quite. Re-read 34-56 107th Street and try again.",
+    ],
     explain:
-      "Louis Armstrong's house is on 107th Street, between 34th and 35th Avenues. 34 is the cross-street field, 56 is the house number, 107th Street is the street it sits on.",
+      "Louis Armstrong's house sits on 107th Street, between 34th and 35th Avenues.",
   },
   {
     type: "fillBlanks",
@@ -173,8 +176,11 @@ const quiz = [
         alternates: ["Roosevelt", "Roosevelt Ave"],
       },
     ],
+    wrongMessages: [
+      "Not quite. Re-read 123-01 Roosevelt Avenue and try again.",
+    ],
     explain:
-      "Citi Field sits on Roosevelt Avenue, between 123rd and 124th Streets. 123 is the cross-street field, 01 is the house number, Roosevelt Avenue is the street.",
+      "Citi Field sits on Roosevelt Avenue, between 123rd and 124th Streets.",
   },
   {
     type: "map",
@@ -187,7 +193,7 @@ const quiz = [
       targetRoad: { kind: "street", label: "43rd St" },
       correctIndex: 2,
     },
-    explain: "43 means the closest cross street is 43rd Avenue. The address sits on 43rd Street, so it's the block of 43rd Street next to 43rd Avenue.",
+    explain: "43 points to 43rd Avenue. The block is 43rd Street next to 43rd Avenue.",
   },
   {
     type: "map",
@@ -200,7 +206,7 @@ const quiz = [
       targetRoad: { kind: "street", label: "107th St" },
       correctIndex: 0,
     },
-    explain: "34 means the closest cross street is 34th Avenue. The address sits on 107th Street, so it's the block of 107th Street between 34th and 35th.",
+    explain: "34 points to 34th Avenue. The block is 107th Street between 34th and 35th.",
   },
   {
     type: "map",
@@ -213,7 +219,7 @@ const quiz = [
       targetRoad: { kind: "avenue", label: "Queens Blvd" },
       correctIndex: 1,
     },
-    explain: "44 means the closest cross street is 44th Street. The address sits on Queens Boulevard, so it's the block of Queens Blvd between 44th and 45th.",
+    explain: "44 points to 44th Street. The block is Queens Blvd between 44th and 45th.",
   },
   {
     type: "map",
@@ -226,7 +232,7 @@ const quiz = [
       targetRoad: { kind: "avenue", label: "Queens Blvd" },
       correctIndex: 2,
     },
-    explain: "32 means the closest cross street is 32nd Street. The address sits on Queens Boulevard, so it's the block of Queens Blvd between 32nd and 33rd.",
+    explain: "32 points to 32nd Street. The block is Queens Blvd between 32nd and 33rd.",
   },
   {
     type: "map",
@@ -239,7 +245,7 @@ const quiz = [
       targetRoad: { kind: "avenue", label: "Queens Blvd" },
       correctIndex: 4,
     },
-    explain: "47 means the closest cross street is 47th Street. The address sits on Queens Boulevard, so it's the block of Queens Blvd between 47th and 48th.",
+    explain: "47 points to 47th Street. The block is Queens Blvd between 47th and 48th.",
   },
   {
     type: "input",
@@ -259,7 +265,7 @@ const quiz = [
       "31-23 47th Avenue and 88-09 144th Street",
     ],
     answer: 0,
-    explain: "Swapping the cross-street field and the street name (15-23 156th Street and 156-23 15th Avenue) lands you at the same Queens intersection.",
+    explain: "Swapping the cross-street field and street name lands both addresses at the same intersection.",
   },
   {
     type: "letters",
@@ -1176,4 +1182,48 @@ function restartQuiz() {
 }
 
 setupLabs();
+setupSectionNav();
 renderQuiz();
+
+function setupSectionNav() {
+  const sections = Array.from(document.querySelectorAll("main > section[id]"));
+  const linkById = new Map();
+  document.querySelectorAll(".top-nav a[href^='#']").forEach((link) => {
+    linkById.set(link.getAttribute("href").slice(1), link);
+  });
+  if (!sections.length || !linkById.size) return;
+
+  const header = document.querySelector(".site-header");
+  let scheduled = false;
+
+  function update() {
+    scheduled = false;
+    const visibleTop = header?.getBoundingClientRect().bottom || 0;
+    const visibleBottom = window.innerHeight;
+    let activeId = sections[0].id;
+    let bestOverlap = -1;
+    for (const section of sections) {
+      const rect = section.getBoundingClientRect();
+      const top = Math.max(rect.top, visibleTop);
+      const bottom = Math.min(rect.bottom, visibleBottom);
+      const overlap = Math.max(0, bottom - top);
+      if (overlap > bestOverlap) {
+        bestOverlap = overlap;
+        activeId = section.id;
+      }
+    }
+    linkById.forEach((link, id) => {
+      link.classList.toggle("active", id === activeId);
+    });
+  }
+
+  function onScroll() {
+    if (scheduled) return;
+    scheduled = true;
+    requestAnimationFrame(update);
+  }
+
+  window.addEventListener("scroll", onScroll, { passive: true });
+  window.addEventListener("resize", onScroll, { passive: true });
+  update();
+}
